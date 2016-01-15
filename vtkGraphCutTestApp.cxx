@@ -10,6 +10,7 @@ void testIsValidCoordinate();
 void testIndexForCoordinate();
 void testCoordinateForIndex();
 void testEdgeFromNodeToNode();
+void testSettingSeedPoints();
 void testEdgeFromNodeToNodeWithConnectivity(vtkGraphCut*, std::vector<vtkEdge>*, int*, vtkConnectivity);
 
 vtkImageData* CreateTestImageData();
@@ -24,6 +25,7 @@ int main(int argc, char const *argv[]) {
 	testIndexForCoordinate();
 	testCoordinateForIndex();
 	testEdgeFromNodeToNode();
+	testSettingSeedPoints();
 	
 	return 0;
 }
@@ -323,5 +325,24 @@ void testEdgeFromNodeToNodeWithConnectivity(vtkGraphCut* graphCut, std::vector<v
 	edge = graphCut->EdgeFromNodeToNode(edges, 79, 80, dimensions, connectivity);
 	assert(edge.node1 == 79);
 	assert(edge.node2 == 80);
+}
+
+void testSettingSeedPoints() {
+	std::cout << __FUNCTION__ << "\n";
+	int dimensions[3] = {30, 30, 30};
+	vtkGraphCut* graphCut = vtkGraphCut::New();
+	std::vector<vtkNode>* nodes = graphCut->CreateNodesForDimensions(dimensions);
+	std::vector<vtkEdge>* edges = graphCut->CreateEdgesForNodes(nodes, dimensions, SIX);
+	vtkPoints* foregroundPoints = vtkPoints::New();
+	vtkPoints* backgroundPoints = vtkPoints::New();
+
+	graphCut->SetSeedPoints(foregroundPoints, backgroundPoints);
+
+	vtkPoints* foregroundResult = graphCut->GetForegroundPoints();
+	assert(foregroundPoints == foregroundResult);
+	vtkPoints* backgroundResult = graphCut->GetBackgroundPoints();
+	assert(backgroundPoints == backgroundResult);
+
+	std::cout << "Done!" << "\n";
 }
 

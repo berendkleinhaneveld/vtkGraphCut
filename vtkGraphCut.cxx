@@ -13,7 +13,7 @@ void vtkGraphCut::PrintSelf(ostream& os, vtkIndent indent) {
 
 void vtkGraphCut::Reset() {}
 void vtkGraphCut::Update() {
-	// Verify all inputs (if not changed):
+	// Verify all inputs (if changed since last update):
 
 	// Verify input image data
 	if (!this->inputImageData) {
@@ -73,11 +73,25 @@ void vtkGraphCut::Update() {
 }
 
 vtkImageData* vtkGraphCut::GetOutput() {return NULL;}
+
 void vtkGraphCut::SetInput(vtkImageData* imageData) {
 	this->inputImageData = imageData;
 }
-void vtkGraphCut::SetSeedPoints(vtkPoints* foreground, vtkPoints* background) {}
+
+void vtkGraphCut::SetSeedPoints(vtkPoints* foreground, vtkPoints* background) {
+	this->foregroundPoints = foreground;
+	this->backgroundPoints = background;
+}
+
 void vtkGraphCut::SetCostFunction(vtkGraphCutCostFunction* costFunction) {}
+
+vtkPoints* vtkGraphCut::GetForegroundPoints() {
+	return this->foregroundPoints;
+}
+
+vtkPoints* vtkGraphCut::GetBackgroundPoints() {
+	return this->backgroundPoints;
+}
 
 #pragma mark - Protected
 

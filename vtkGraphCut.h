@@ -75,6 +75,9 @@ public:
 	void SetSeedPoints(vtkPoints *foreground, vtkPoints *background);
 	void SetCostFunction(vtkGraphCutCostFunction*);
 
+	vtkPoints* GetForegroundPoints();
+	vtkPoints* GetBackgroundPoints();
+
 	std::vector<vtkNode>* CreateNodesForDimensions(int* dimensions);
 	std::vector<vtkEdge>* CreateEdgesForNodes(std::vector<vtkNode>* nodes, int* dimensions, vtkConnectivity connectivity);
 	void DimensionsForImageData(vtkImageData* imageData, int* dimensions);
@@ -94,6 +97,9 @@ protected:
 
 	std::vector<vtkNode>* nodes;
 	std::vector<vtkEdge>* edges;
+
+	vtkPoints* foregroundPoints;
+	vtkPoints* backgroundPoints;
 
 	int* dimensions;
 };
