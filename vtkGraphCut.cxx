@@ -22,6 +22,17 @@ void vtkGraphCut::Update() {
 	}
 
 	// Verify seed points
+	if (!this->foregroundPoints || !this->backgroundPoints) {
+		std::cout << "No fore- or background points were set. Skipping update.\n";
+		return;
+	} else if (this->foregroundPoints->GetNumberOfPoints() == 0) {
+		std::cout << "Number of foreground points is zero. Skipping update.\n";
+		return;
+	} else if (this->backgroundPoints->GetNumberOfPoints() == 0) {
+		std::cout << "Number of foreground points is zero. Skipping update.\n";
+		return;
+	}
+
 	// Verify cost function
 	assert(this->inputImageData);
 
@@ -101,7 +112,6 @@ vtkGraphCut::~vtkGraphCut() { }
 std::vector<vtkNode>* vtkGraphCut::CreateNodesForDimensions(int* dimensions) {
 	std::vector<vtkNode>* result = new std::vector<vtkNode>();
 
-	// Allocate memory for the vertices so that it doesn't have to resize during this method
 	int numberOfVertices = dimensions[0] * dimensions[1] * dimensions[2];
 	result->reserve(numberOfVertices);
 
@@ -124,7 +134,6 @@ std::vector<vtkEdge>* vtkGraphCut::CreateEdgesForNodes(std::vector<vtkNode>* nod
 	int numberOfNodes = nodes->size();
 	int numberOfEdges = numberOfNodes * 2 + numberOfNodes * NumberOfEdgesForConnectivity(connectivity);
 	assert(numberOfEdges >= 0);
-
 	result->reserve(numberOfEdges);
 
 	for (int i = 0; i < nodes->size(); ++i) {
