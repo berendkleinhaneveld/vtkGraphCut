@@ -4,7 +4,8 @@
 #pragma mark - Public
 
 vtkStandardNewMacro(vtkGraphCut);
-int FirstIndexOfEdgeWithNode(std::vector<vtkEdge>* edges, int sourceIndex, int* dimensions);
+bool IsNodeConnected(int x, int y, int z, vtkConnectivity connectivity);
+int NumberOfEdgesForConnectivity(vtkConnectivity connectivity);
 
 void vtkGraphCut::PrintSelf(ostream& os, vtkIndent indent) {
 	this->Superclass::PrintSelf(os, indent);
@@ -106,6 +107,12 @@ std::vector<vtkNode>* vtkGraphCut::CreateNodesForDimensions(int* dimensions) {
 std::vector<vtkEdge>* vtkGraphCut::CreateEdgesForNodes(std::vector<vtkNode>* nodes, int* dimensions, vtkConnectivity connectivity) {
 	std::vector<vtkEdge>* result = new std::vector<vtkEdge>();
 
+	int numberOfNodes = nodes->size();
+	int numberOfEdges = numberOfNodes * 2 + numberOfNodes * NumberOfEdgesForConnectivity(connectivity);
+	assert(numberOfEdges >= 0);
+
+	result->reserve(numberOfEdges);
+
 	for (int i = 0; i < nodes->size(); ++i) {
 		vtkEdge sourceEdge;
 		sourceEdge.node1 = SOURCE;
@@ -121,15 +128,26 @@ std::vector<vtkEdge>* vtkGraphCut::CreateEdgesForNodes(std::vector<vtkNode>* nod
 		sinkEdge.capacity = 0;
 		result->push_back(sinkEdge);
 
-		std::vector<int>* indices = IndicesForNeighbours(i, dimensions, connectivity);
-		for (std::vector<int>::iterator neighbourIdx = indices->begin(); neighbourIdx != indices->end(); ++neighbourIdx) {
-			if (*neighbourIdx > i) {
-				vtkEdge nodeEdge;
-				nodeEdge.node1 = i;
-				nodeEdge.node2 = *neighbourIdx;
-				nodeEdge.flow = 0;
-				nodeEdge.capacity = 0;
-				result->push_back(nodeEdge);
+		int coordinate[3] = {0, 0, 0};
+		CoordinateForIndex(i, dimensions, coordinate);
+		int coord[3] = {0, 0, 0};
+		int index = 0;
+		for (int z = 0; z < 2; ++z) {
+			for (int y = 0; y < 2; ++y) {
+				for (int x = 0; x < 2; ++x) {
+					coord[0] = coordinate[0]+x;
+					coord[1] = coordinate[1]+y;
+					coord[2] = coordinate[2]+z;
+					if (IsNodeConnected(x, y, z, connectivity)) {
+						vtkEdge nodeEdge;
+						nodeEdge.node1 = i;
+						nodeEdge.node2 = IsValidCoordinate(coord, dimensions) ? IndexForCoordinate(coord, dimensions) : INVALID;
+						nodeEdge.flow = 0;
+						nodeEdge.capacity = 0;
+						result->push_back(nodeEdge);
+					}
+					++index;
+				}
 			}
 		}
 	}
@@ -149,52 +167,18 @@ std::vector<int>* vtkGraphCut::IndicesForNeighbours(int index, int* dimensions, 
 	CoordinateForIndex(index, dimensions, coordinate);
 
 	int coord[3] = {0, 0, 0};
-	switch (connectivity) {
-		case SIX:
-			for (int z = -1; z < 2; ++z) {
-				for (int y = -1; y < 2; ++y) {
-					for (int x = -1; x < 2; ++x) {
-						coord[0] = coordinate[0]+x;
-						coord[1] = coordinate[1]+y;
-						coord[2] = coordinate[2]+z;
-						if (((std::abs(x + y) == 1 && z == 0) 
-							|| (std::abs(y + z) == 1 && x == 0) 
-							|| (std::abs(z + x) == 1 && y == 0)) 
-							&& IsValidCoordinate(coord, dimensions)) {
-							result->push_back(IndexForCoordinate(coord, dimensions));
-						}
-					}
+	for (int z = -1; z < 2; ++z) {
+		for (int y = -1; y < 2; ++y) {
+			for (int x = -1; x < 2; ++x) {
+				coord[0] = coordinate[0]+x;
+				coord[1] = coordinate[1]+y;
+				coord[2] = coordinate[2]+z;
+				if (IsNodeConnected(x, y, z, connectivity) 
+					&& IsValidCoordinate(coord, dimensions)) {
+					result->push_back(IndexForCoordinate(coord, dimensions));
 				}
 			}
-			break;
-		case EIGHTEEN:
-			for (int z = -1; z < 2; ++z) {
-				for (int y = -1; y < 2; ++y) {
-					for (int x = -1; x < 2; ++x) {
-						coord[0] = coordinate[0]+x;
-						coord[1] = coordinate[1]+y;
-						coord[2] = coordinate[2]+z;
-						if ((x != 0 || y != 0 || z != 0) && (std::abs(x) + std::abs(y) + std::abs(z) != 3) && IsValidCoordinate(coord, dimensions)) {
-							result->push_back(IndexForCoordinate(coord, dimensions));
-						}
-					}
-				}
-			}
-			break;
-		case TWENTYSIX:
-			for (int z = -1; z < 2; ++z) {
-				for (int y = -1; y < 2; ++y) {
-					for (int x = -1; x < 2; ++x) {
-						coord[0] = coordinate[0]+x;
-						coord[1] = coordinate[1]+y;
-						coord[2] = coordinate[2]+z;
-						if ((x != 0 || y != 0 || z != 0) && IsValidCoordinate(coord, dimensions)) {
-							result->push_back(IndexForCoordinate(coord, dimensions));
-						}
-					}
-				}
-			}
-			break;
+		}
 	}
 
 	return result;
@@ -240,55 +224,71 @@ bool vtkGraphCut::CoordinateForIndex(int index, int* dimensions, int* coordinate
 }
 
 vtkEdge vtkGraphCut::EdgeFromNodeToNode(std::vector<vtkEdge>* edges, int sourceIndex, int targetIndex, int* dimensions, vtkConnectivity connectivity) {
-	vtkEdge result;
-	int index = FirstIndexOfEdgeWithNode(edges, sourceIndex, dimensions);
-	if (index >= 0) {
-		vtkEdge edge = edges->at(index);
-		while (edge.node1 == sourceIndex && edge.node2 != targetIndex) {
-			index++;
+	assert(sourceIndex != INVALID);
+	assert(targetIndex != INVALID);
+
+	int from;
+	int to;
+
+	if (targetIndex < 0 || sourceIndex < 0) {
+		from = std::max(targetIndex, sourceIndex);
+		to = std::min(sourceIndex, targetIndex);
+		assert(from >= 0);
+	} else if (targetIndex < sourceIndex) {
+		from = targetIndex;
+		to = sourceIndex;
+	} else {
+		from = sourceIndex;
+		to = targetIndex;
+	}
+
+	assert(from >= 0);
+	assert(from < dimensions[0] * dimensions[1] * dimensions[2]);
+
+	int index = from * (2 + NumberOfEdgesForConnectivity(connectivity));
+	assert(index >= from);
+
+	vtkEdge edge = edges->at(index);
+	if (to == SOURCE) {
+		assert(edge.node1 == SOURCE && edge.node2 == from);
+		return edge;
+	} else {
+		while (edge.node1 <= from && edge.node2 != to) {
+			++index;
 			edge = edges->at(index);
 		}
-		if (edge.node1 == sourceIndex && edge.node2 == targetIndex) {
-			std::cout << "Edge is at " << index << "\n";
-			return edge;
-		}
-		return result;
 	}
-	return result;
+
+	assert(edge.node1 == from && edge.node2 == to);
+	return edge;
 }
 
 // Private methods
 
-int FirstIndexOfEdgeWithNode(std::vector<vtkEdge>* edges, int sourceIndex, int* dimensions) {
-	int startIndexNodes = 0;
-	int startIndexEdges = 0;
-	int endIndexNodes = dimensions[0] * dimensions[1] * dimensions[2];;
-	int endIndexEdges = edges->size();
-	int result = -1;
-	while (result < 0) {
-		int rangeNodes = endIndexNodes - startIndexNodes;
-		int rangeEdges = endIndexEdges - startIndexEdges;
-		double estimationInFraction = (double)(std::max(sourceIndex, 0) - startIndexNodes) / rangeNodes;
-		int estimation = startIndexEdges + round(estimationInFraction * rangeEdges);
-
-		vtkEdge edge = edges->at(estimation);
-		if (edge.node1 == sourceIndex) {
-			result = estimation;
-			break;
-		} else if (edge.node1 > sourceIndex) {
-			endIndexEdges = estimation;
-			endIndexNodes = std::max(edge.node1, 0);
-		} else if (edge.node1 < sourceIndex) {
-			startIndexEdges = estimation;
-			startIndexNodes = edge.node1;
-		}
+bool IsNodeConnected(int x, int y, int z, vtkConnectivity connectivity) {
+	switch (connectivity) {
+		case SIX:
+			return (std::abs(x + y) == 1 && z == 0) 
+				|| (std::abs(y + z) == 1 && x == 0) 
+				|| (std::abs(z + x) == 1 && y == 0);
+		case EIGHTEEN:
+			return (x != 0 || y != 0 || z != 0) 
+				&& (std::abs(x) + std::abs(y) + std::abs(z) != 3);
+		case TWENTYSIX:
+			return (x != 0 || y != 0 || z != 0);
+		default:
+			return false;
 	}
-	while (result > 0) {
-		result--;
-		if (edges->at(result).node1 < sourceIndex) {
-			return result + 1;
-		}
-	}
+}
 
+int NumberOfEdgesForConnectivity(vtkConnectivity connectivity) {
+	switch (connectivity) {
+		case SIX:
+			return 3;
+		case EIGHTEEN:
+			return 6;
+		case TWENTYSIX:
+			return 7;
+	}
 	return -1;
 }

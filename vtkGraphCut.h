@@ -10,14 +10,15 @@ enum vtkTreeType
 {
 	NONE = 0,
 	SOURCE = -1,
-	SINK = -2
+	SINK = -2,
+	INVALID = -3,
 };
 
 enum vtkConnectivity
 {
-	SIX,
-	EIGHTEEN,
-	TWENTYSIX
+	SIX = 6,
+	EIGHTEEN = 18,
+	TWENTYSIX = 26
 };
 
 struct vtkNode

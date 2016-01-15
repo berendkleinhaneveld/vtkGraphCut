@@ -10,7 +10,7 @@ void testIsValidCoordinate();
 void testIndexForCoordinate();
 void testCoordinateForIndex();
 void testEdgeFromNodeToNode();
-
+void testEdgeFromNodeToNodeWithConnectivity(vtkGraphCut*, std::vector<vtkEdge>*, int*, vtkConnectivity);
 
 vtkImageData* CreateTestImageData();
 
@@ -61,7 +61,9 @@ void testCreateEdges() {
 	std::vector<vtkNode>* nodes = graphCut->CreateNodesForDimensions(dimensions);
 	std::vector<vtkEdge>* edges = graphCut->CreateEdgesForNodes(nodes, dimensions, TWENTYSIX);
 
-	assert(edges->size() == 2);
+	int numberOfNodes = dimensions[0] * dimensions[1] * dimensions[2];
+	int numberOfEdges = numberOfNodes * 2 + numberOfNodes * (7);
+	assert(edges->size() == numberOfEdges);
 
 	dimensions[0] = 2;
 	dimensions[1] = 1;
@@ -69,13 +71,17 @@ void testCreateEdges() {
 
 	nodes = graphCut->CreateNodesForDimensions(dimensions);
 	edges = graphCut->CreateEdgesForNodes(nodes, dimensions, TWENTYSIX);
-	assert(edges->size() == 5);
+	numberOfNodes = dimensions[0] * dimensions[1] * dimensions[2];
+	numberOfEdges = numberOfNodes * 2 + numberOfNodes * (7);
+	assert(edges->size() == numberOfEdges);
 
 	edges = graphCut->CreateEdgesForNodes(nodes, dimensions, EIGHTEEN);
-	assert(edges->size() == 5);
+	numberOfEdges = numberOfNodes * 2 + numberOfNodes * (6);
+	assert(edges->size() == numberOfEdges);
 
 	edges = graphCut->CreateEdgesForNodes(nodes, dimensions, SIX);
-	assert(edges->size() == 5);
+	numberOfEdges = numberOfNodes * 2 + numberOfNodes * (3);
+	assert(edges->size() == numberOfEdges);
 
 	dimensions[0] = 2;
 	dimensions[1] = 2;
@@ -83,13 +89,17 @@ void testCreateEdges() {
 
 	nodes = graphCut->CreateNodesForDimensions(dimensions);
 	edges = graphCut->CreateEdgesForNodes(nodes, dimensions, TWENTYSIX);
-	assert(edges->size() == 14);
+	numberOfNodes = dimensions[0] * dimensions[1] * dimensions[2];
+	numberOfEdges = numberOfNodes * 2 + numberOfNodes * (7);
+	assert(edges->size() == numberOfEdges);
 
 	edges = graphCut->CreateEdgesForNodes(nodes, dimensions, EIGHTEEN);
-	assert(edges->size() == 14);
+	numberOfEdges = numberOfNodes * 2 + numberOfNodes * (6);
+	assert(edges->size() == numberOfEdges);
 
 	edges = graphCut->CreateEdgesForNodes(nodes, dimensions, SIX);
-	assert(edges->size() == 12);
+	numberOfEdges = numberOfNodes * 2 + numberOfNodes * (3);
+	assert(edges->size() == numberOfEdges);
 
 	dimensions[0] = 2;
 	dimensions[1] = 3;
@@ -97,8 +107,19 @@ void testCreateEdges() {
 
 	nodes = graphCut->CreateNodesForDimensions(dimensions);
 	edges = graphCut->CreateEdgesForNodes(nodes, dimensions, TWENTYSIX);
+	numberOfNodes = dimensions[0] * dimensions[1] * dimensions[2];
+	numberOfEdges = numberOfNodes * 2 + numberOfNodes * (7);
+	assert(edges->size() == numberOfEdges);
 
-	assert(edges->size() == 23);
+	dimensions[0] = 20;
+	dimensions[1] = 33;
+	dimensions[2] = 12;
+
+	nodes = graphCut->CreateNodesForDimensions(dimensions);
+	edges = graphCut->CreateEdgesForNodes(nodes, dimensions, TWENTYSIX);
+	numberOfNodes = dimensions[0] * dimensions[1] * dimensions[2];
+	numberOfEdges = numberOfNodes * 2 + numberOfNodes * (7);
+	assert(edges->size() == numberOfEdges);
 
 	std::cout << "Done!" << "\n";
 }
@@ -247,48 +268,60 @@ void testCoordinateForIndex() {
 void testEdgeFromNodeToNode() {
 	std::cout << __FUNCTION__ << "\n";
 	int dimensions[3] = {30, 30, 30};
-
-	vtkConnectivity connectivity = TWENTYSIX;
 	vtkGraphCut* graphCut = vtkGraphCut::New();
 	std::vector<vtkNode>* nodes = graphCut->CreateNodesForDimensions(dimensions);
-	std::vector<vtkEdge>* edges = graphCut->CreateEdgesForNodes(nodes, dimensions, connectivity);
 
+	std::vector<vtkEdge>* edges = graphCut->CreateEdgesForNodes(nodes, dimensions, SIX);
+	testEdgeFromNodeToNodeWithConnectivity(graphCut, edges, dimensions, SIX);
+	
+	edges = graphCut->CreateEdgesForNodes(nodes, dimensions, EIGHTEEN);
+	testEdgeFromNodeToNodeWithConnectivity(graphCut, edges, dimensions, EIGHTEEN);
+
+	edges = graphCut->CreateEdgesForNodes(nodes, dimensions, TWENTYSIX);
+	testEdgeFromNodeToNodeWithConnectivity(graphCut, edges, dimensions, TWENTYSIX);
+
+	std::cout << "Done!" << "\n";
+}
+
+void testEdgeFromNodeToNodeWithConnectivity(vtkGraphCut* graphCut, std::vector<vtkEdge>* edges, int* dimensions, vtkConnectivity connectivity) {
 	vtkEdge edge = graphCut->EdgeFromNodeToNode(edges, 0, 1, dimensions, connectivity);
 	assert(edge.node1 == 0);
 	assert(edge.node2 == 1);
 
-	edge = graphCut->EdgeFromNodeToNode(edges, 80, 81, dimensions, connectivity);
-	assert(edge.node1 == 80);
-	assert(edge.node2 == 81);
-
-	edge = graphCut->EdgeFromNodeToNode(edges, 80, SINK, dimensions, connectivity);
-	assert(edge.node1 == 80);
-	assert(edge.node2 == -2);
+	edge = graphCut->EdgeFromNodeToNode(edges, 1, 0, dimensions, connectivity);
+	assert(edge.node1 == 0);
+	assert(edge.node2 == 1);
 
 	edge = graphCut->EdgeFromNodeToNode(edges, SOURCE, 80, dimensions, connectivity);
 	assert(edge.node1 == SOURCE);
 	assert(edge.node2 == 80);
 
-	std::cout << "Done!" << "\n";
+	edge = graphCut->EdgeFromNodeToNode(edges, 80, SOURCE, dimensions, connectivity);
+	assert(edge.node1 == SOURCE);
+	assert(edge.node2 == 80);
+
+	edge = graphCut->EdgeFromNodeToNode(edges, 80, 81, dimensions, connectivity);
+	assert(edge.node1 == 80);
+	assert(edge.node2 == 81);
+
+	edge = graphCut->EdgeFromNodeToNode(edges, 81, 80, dimensions, connectivity);
+	assert(edge.node1 == 80);
+	assert(edge.node2 == 81);
+
+	edge = graphCut->EdgeFromNodeToNode(edges, 80, SINK, dimensions, connectivity);
+	assert(edge.node1 == 80);
+	assert(edge.node2 == SINK);
+
+	edge = graphCut->EdgeFromNodeToNode(edges, SINK, 80, dimensions, connectivity);
+	assert(edge.node1 == 80);
+	assert(edge.node2 == SINK);
+
+	edge = graphCut->EdgeFromNodeToNode(edges, 80, 79, dimensions, connectivity);
+	assert(edge.node1 == 79);
+	assert(edge.node2 == 80);
+
+	edge = graphCut->EdgeFromNodeToNode(edges, 79, 80, dimensions, connectivity);
+	assert(edge.node1 == 79);
+	assert(edge.node2 == 80);
 }
 
-// void runExample() {
-// 	vtkImageData* imageData = vtkImageData::New();
-// 	vtkGraphCut* graphCut = vtkGraphCut::New();
-// 	vtkGraphCutCostFunction* costFunction = vtkGraphCutCostFunction::New();
-// 	vtkPoints* foregroundPoints = vtkPoints::New();
-// 	vtkPoints* backgroundPoints = vtkPoints::New();
-
-// 	graphCut->SetInput(imageData);
-// 	graphCut->SetCostFunction(costFunction);
-// 	graphCut->SetSeedPoints(foregroundPoints, backgroundPoints);
-// 	graphCut->Update();
-
-// 	vtkImageData* result = graphCut->GetOutput();
-
-// 	backgroundPoints->Delete();
-// 	foregroundPoints->Delete();
-// 	costFunction->Delete();
-// 	graphCut->Delete();
-// 	imageData->Delete();
-// }
