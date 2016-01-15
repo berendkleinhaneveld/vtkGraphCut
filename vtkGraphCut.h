@@ -82,6 +82,8 @@ public:
 	int IndexForCoordinate(int* coordinate, int* dimensions);
 	bool CoordinateForIndex(int index, int* dimensions, int* coordinate);
 
+	vtkEdge EdgeFromNodeToNode(std::vector<vtkEdge>* edges, int sourceIndex, int targetIndex, int* dimensions, vtkConnectivity connectivity);
+
 protected:
 	vtkGraphCut();
 	~vtkGraphCut();

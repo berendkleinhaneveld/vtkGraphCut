@@ -9,6 +9,7 @@ void testIndicesForNeighbours();
 void testIsValidCoordinate();
 void testIndexForCoordinate();
 void testCoordinateForIndex();
+void testEdgeFromNodeToNode();
 
 
 vtkImageData* CreateTestImageData();
@@ -22,6 +23,7 @@ int main(int argc, char const *argv[]) {
 	testIsValidCoordinate();
 	testIndexForCoordinate();
 	testCoordinateForIndex();
+	testEdgeFromNodeToNode();
 	
 	return 0;
 }
@@ -242,3 +244,51 @@ void testCoordinateForIndex() {
 	std::cout << "Done!" << "\n";
 }
 
+void testEdgeFromNodeToNode() {
+	std::cout << __FUNCTION__ << "\n";
+	int dimensions[3] = {30, 30, 30};
+
+	vtkConnectivity connectivity = TWENTYSIX;
+	vtkGraphCut* graphCut = vtkGraphCut::New();
+	std::vector<vtkNode>* nodes = graphCut->CreateNodesForDimensions(dimensions);
+	std::vector<vtkEdge>* edges = graphCut->CreateEdgesForNodes(nodes, dimensions, connectivity);
+
+	vtkEdge edge = graphCut->EdgeFromNodeToNode(edges, 0, 1, dimensions, connectivity);
+	assert(edge.node1 == 0);
+	assert(edge.node2 == 1);
+
+	edge = graphCut->EdgeFromNodeToNode(edges, 80, 81, dimensions, connectivity);
+	assert(edge.node1 == 80);
+	assert(edge.node2 == 81);
+
+	edge = graphCut->EdgeFromNodeToNode(edges, 80, SINK, dimensions, connectivity);
+	assert(edge.node1 == 80);
+	assert(edge.node2 == -2);
+
+	edge = graphCut->EdgeFromNodeToNode(edges, SOURCE, 80, dimensions, connectivity);
+	assert(edge.node1 == SOURCE);
+	assert(edge.node2 == 80);
+
+	std::cout << "Done!" << "\n";
+}
+
+// void runExample() {
+// 	vtkImageData* imageData = vtkImageData::New();
+// 	vtkGraphCut* graphCut = vtkGraphCut::New();
+// 	vtkGraphCutCostFunction* costFunction = vtkGraphCutCostFunction::New();
+// 	vtkPoints* foregroundPoints = vtkPoints::New();
+// 	vtkPoints* backgroundPoints = vtkPoints::New();
+
+// 	graphCut->SetInput(imageData);
+// 	graphCut->SetCostFunction(costFunction);
+// 	graphCut->SetSeedPoints(foregroundPoints, backgroundPoints);
+// 	graphCut->Update();
+
+// 	vtkImageData* result = graphCut->GetOutput();
+
+// 	backgroundPoints->Delete();
+// 	foregroundPoints->Delete();
+// 	costFunction->Delete();
+// 	graphCut->Delete();
+// 	imageData->Delete();
+// }

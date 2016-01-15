@@ -4,6 +4,7 @@
 #pragma mark - Public
 
 vtkStandardNewMacro(vtkGraphCut);
+int FirstIndexOfEdgeWithNode(std::vector<vtkEdge>* edges, int sourceIndex, int* dimensions);
 
 void vtkGraphCut::PrintSelf(ostream& os, vtkIndent indent) {
 	this->Superclass::PrintSelf(os, indent);
@@ -236,4 +237,58 @@ bool vtkGraphCut::CoordinateForIndex(int index, int* dimensions, int* coordinate
 	coordinate[0] = rest;
 	
 	return true;
+}
+
+vtkEdge vtkGraphCut::EdgeFromNodeToNode(std::vector<vtkEdge>* edges, int sourceIndex, int targetIndex, int* dimensions, vtkConnectivity connectivity) {
+	vtkEdge result;
+	int index = FirstIndexOfEdgeWithNode(edges, sourceIndex, dimensions);
+	if (index >= 0) {
+		vtkEdge edge = edges->at(index);
+		while (edge.node1 == sourceIndex && edge.node2 != targetIndex) {
+			index++;
+			edge = edges->at(index);
+		}
+		if (edge.node1 == sourceIndex && edge.node2 == targetIndex) {
+			std::cout << "Edge is at " << index << "\n";
+			return edge;
+		}
+		return result;
+	}
+	return result;
+}
+
+// Private methods
+
+int FirstIndexOfEdgeWithNode(std::vector<vtkEdge>* edges, int sourceIndex, int* dimensions) {
+	int startIndexNodes = 0;
+	int startIndexEdges = 0;
+	int endIndexNodes = dimensions[0] * dimensions[1] * dimensions[2];;
+	int endIndexEdges = edges->size();
+	int result = -1;
+	while (result < 0) {
+		int rangeNodes = endIndexNodes - startIndexNodes;
+		int rangeEdges = endIndexEdges - startIndexEdges;
+		double estimationInFraction = (double)(std::max(sourceIndex, 0) - startIndexNodes) / rangeNodes;
+		int estimation = startIndexEdges + round(estimationInFraction * rangeEdges);
+
+		vtkEdge edge = edges->at(estimation);
+		if (edge.node1 == sourceIndex) {
+			result = estimation;
+			break;
+		} else if (edge.node1 > sourceIndex) {
+			endIndexEdges = estimation;
+			endIndexNodes = std::max(edge.node1, 0);
+		} else if (edge.node1 < sourceIndex) {
+			startIndexEdges = estimation;
+			startIndexNodes = edge.node1;
+		}
+	}
+	while (result > 0) {
+		result--;
+		if (edges->at(result).node1 < sourceIndex) {
+			return result + 1;
+		}
+	}
+
+	return -1;
 }
