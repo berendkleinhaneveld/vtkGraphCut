@@ -77,7 +77,7 @@ public:
 	std::vector<vtkNode>* CreateNodesForDimensions(int* dimensions);
 	std::vector<vtkEdge>* CreateEdgesForNodes(std::vector<vtkNode>* nodes, int* dimensions, vtkConnectivity connectivity);
 	void DimensionsForImageData(vtkImageData* imageData, int* dimensions);
-	std::vector<int>* IndicesForNeighbours(int index, int* dimensions, vtkConnectivity connected);
+	std::vector<int>* IndicesForNeighbours(int index, int* dimensions, vtkConnectivity connectivity);
 	bool IsValidCoordinate(int* coordinate, int* dimensions);
 	int IndexForCoordinate(int* coordinate, int* dimensions);
 	bool CoordinateForIndex(int index, int* dimensions, int* coordinate);
