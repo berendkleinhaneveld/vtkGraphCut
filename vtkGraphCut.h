@@ -4,41 +4,8 @@
 #include <vtkObjectFactory.h>
 #include <vtkPoints.h>
 #include <vtkImageData.h>
+#include "vtkGraphCutDataTypes.h"
 #include "vtkGraphCutCostFunction.h"
-
-enum vtkTreeType
-{
-	NONE = 0,
-	SOURCE = -1,
-	SINK = -2,
-	INVALID = -3,
-};
-
-enum vtkConnectivity
-{
-	SIX = 6,
-	EIGHTEEN = 18,
-	TWENTYSIX = 26
-};
-
-struct vtkNode
-{
-	bool terminal;
-	bool orphan;
-	bool active;
-	bool seedPoint;
-	vtkIdType timeStamp;
-	int depthInTree;
-	vtkTreeType tree;
-};
-
-struct vtkEdge
-{
-	int node1;
-	int node2;
-	int flow;
-	int capacity;
-};
 
 
 /**
