@@ -2,6 +2,9 @@
 #define __vtkGraphCutCostFunction_h
 
 #include <vtkObjectFactory.h>
+#include <vtkImageData.h>
+#include <vector>
+#include "vtkGraphCutDataTypes.h"
 
 class VTK_EXPORT vtkGraphCutCostFunction : public vtkObject
 {
@@ -10,10 +13,16 @@ public:
 	vtkTypeMacro(vtkGraphCutCostFunction, vtkObject);
 	void PrintSelf(ostream& os, vtkIndent indent);
 
-	void Reset();
-	void Update();
+	virtual void Reset();
+	virtual void Update();
 
-	void SetNodes(float *nodes);
+	// TODO: design API for cost function: what should it do? Does it need
+	// the following methods at all? Or should it work in a more functional
+	// manor?
+	virtual void SetNodes(std::vector<vtkNode>* nodes);
+	virtual void SetEdges(std::vector<vtkEdge>* edges);
+	virtual void SetInput(vtkImageData*);
+
 
 protected:
 	vtkGraphCutCostFunction();

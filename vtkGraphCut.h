@@ -39,15 +39,16 @@ public:
 
 	vtkImageData* GetOutput();
 	void SetInput(vtkImageData *);
+	vtkImageData* GetInput();
 	void SetSeedPoints(vtkPoints *foreground, vtkPoints *background);
 	void SetCostFunction(vtkGraphCutCostFunction*);
+	vtkGraphCutCostFunction* GetCostFunction();
 
 	vtkPoints* GetForegroundPoints();
 	vtkPoints* GetBackgroundPoints();
 
 	std::vector<vtkNode>* CreateNodesForDimensions(int* dimensions);
 	std::vector<vtkEdge>* CreateEdgesForNodes(std::vector<vtkNode>* nodes, int* dimensions, vtkConnectivity connectivity);
-	void DimensionsForImageData(vtkImageData* imageData, int* dimensions);
 	std::vector<int>* IndicesForNeighbours(int index, int* dimensions, vtkConnectivity connectivity);
 	bool IsValidCoordinate(int* coordinate, int* dimensions);
 	int IndexForCoordinate(int* coordinate, int* dimensions);
@@ -68,7 +69,16 @@ protected:
 	vtkPoints* foregroundPoints;
 	vtkPoints* backgroundPoints;
 
+	vtkGraphCutCostFunction* costFunction;
+
 	int* dimensions;
+
+	// Algorithm methods
+	vtkEdge Grow(vtkTreeType tree, bool& foundActiveNodes);
+	std::vector<vtkNode>* Augment(vtkEdge edge);
+	void Adopt(std::vector<vtkNode>*);
+
+	void CalculateCapacitiesForEdges();
 };
 
 #endif // __vtkGraphCut_h

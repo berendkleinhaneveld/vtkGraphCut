@@ -44,11 +44,13 @@ SET(HEADERS
   vtkGraphCutDataTypes.h
   vtkGraphCut.h
   vtkGraphCutCostFunction.h
+  vtkGraphCutCostFunctionSimple.h
 )
 
 SET(SOURCES 
   vtkGraphCut.cxx
   vtkGraphCutCostFunction.cxx
+  vtkGraphCutCostFunctionSimple.cxx
 )
 
 SET(ALL_SOURCES

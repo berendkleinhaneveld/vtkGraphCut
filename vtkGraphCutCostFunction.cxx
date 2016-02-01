@@ -10,7 +10,16 @@ void vtkGraphCutCostFunction::PrintSelf(ostream& os, vtkIndent indent) {
 
 void vtkGraphCutCostFunction::Reset() { }
 void vtkGraphCutCostFunction::Update() { }
-void vtkGraphCutCostFunction::SetNodes(float *nodes) { }
+void vtkGraphCutCostFunction::SetNodes(std::vector<vtkNode>* nodes) {
+	
+}
+void vtkGraphCutCostFunction::SetEdges(std::vector<vtkEdge>* edges) {
+	
+}
+void vtkGraphCutCostFunction::SetInput(vtkImageData* imageData) {
+	
+}
+
 
 #pragma mark - Protected
 
