@@ -17,7 +17,7 @@ void testCostFunctionSimple();
 void testBasicRunThrough();
 void testEdgeFromNodeToNodeWithConnectivity(vtkGraphCut*, std::vector<vtkEdge>*, int*, vtkConnectivity);
 
-vtkImageData* CreateTestImageData();
+vtkImageData* createTestImageData();
 
 
 int main(int argc, char const *argv[]) {
@@ -37,7 +37,7 @@ int main(int argc, char const *argv[]) {
 	return 0;
 }
 
-vtkImageData* CreateTestImageData() {
+vtkImageData* createTestImageData() {
 	vtkImageData* imageData = vtkImageData::New();
 	imageData->SetDimensions(2, 3, 1);
 	imageData->AllocateScalars(VTK_DOUBLE, 1);
