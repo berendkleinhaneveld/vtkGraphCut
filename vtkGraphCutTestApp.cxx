@@ -3,6 +3,7 @@
 #include "vtkGraphCutCostFunctionSimple.h"
 #include <assert.h>
 
+void testEdgeStruct();
 void testGraphCutReset();
 void testCreateNodes();
 void testCreateEdges();
@@ -31,6 +32,7 @@ int main(int argc, char const *argv[]) {
 	testBasicRunThrough();
 	testCostFunctionSimple();
 	testGraphCutReset();
+    testEdgeStruct();
 	
 	return 0;
 }
@@ -40,6 +42,48 @@ vtkImageData* CreateTestImageData() {
 	imageData->SetDimensions(2, 3, 1);
 	imageData->AllocateScalars(VTK_DOUBLE, 1);
 	return imageData;
+}
+
+void testEdgeStruct() {
+    vtkEdge edge;
+    edge.node1 = SINK;
+    edge.node2 = 1;
+    edge.flow = 0;
+    edge.capacity = 0;
+    assert(edge.isTerminal());
+    
+    edge.node1 = 0;
+    assert(!edge.isTerminal());
+    
+    edge.capacity = 5;
+    assert(edge.flowFromNode(0) == 0);
+    assert(!edge.isSaturatedFromNode(0));
+    assert(!edge.isSaturatedFromNode(0));
+    assert(edge.capacityFromNode(0) == 5);
+    assert(edge.capacityFromNode(1) == 5);
+    
+    edge.addFlowFromNode(0, 5);
+    assert(edge.flow == 5);
+    assert(edge.flowFromNode(0) == 5);
+    assert(edge.flowFromNode(1) == -5);
+    assert(edge.isSaturatedFromNode(0));
+    assert(!edge.isSaturatedFromNode(1));
+    assert(edge.capacityFromNode(0) == 0);
+    assert(edge.capacityFromNode(1) == 10);
+    
+    edge.addFlowFromNode(1, 2);
+    assert(edge.flowFromNode(1) == -3);
+    assert(edge.flowFromNode(0) == 3);
+    assert(!edge.isSaturatedFromNode(0));
+    assert(!edge.isSaturatedFromNode(1));
+    assert(edge.capacityFromNode(0) == 2);
+    assert(edge.capacityFromNode(1) == 8);
+    
+    edge.addFlowFromNode(1, 8);
+    assert(!edge.isSaturatedFromNode(0));
+    assert(edge.isSaturatedFromNode(1));
+    assert(edge.capacityFromNode(0) == 10);
+    assert(edge.capacityFromNode(1) == 0);
 }
 
 void testCreateNodes() {
