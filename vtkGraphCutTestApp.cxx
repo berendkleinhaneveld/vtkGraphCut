@@ -21,6 +21,7 @@ vtkImageData* createTestImageData();
 
 
 int main(int argc, char const *argv[]) {
+    testEdgeStruct();
 	testCoordinateForIndex();
 	testIndexForCoordinate();
 	testCreateNodes();
@@ -29,10 +30,9 @@ int main(int argc, char const *argv[]) {
 	testIsValidCoordinate();
 	testEdgeFromNodeToNode();
 	testSettingSeedPoints();
-	testBasicRunThrough();
 	testCostFunctionSimple();
 	testGraphCutReset();
-    testEdgeStruct();
+    //	testBasicRunThrough();
 	
 	return 0;
 }
