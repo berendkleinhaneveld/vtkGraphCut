@@ -424,8 +424,8 @@ void vtkGraphCut::Adopt(std::vector<vtkNode>* orphans) {
 }
 
 void vtkGraphCut::CalculateCapacitiesForEdges() {
-	double constantK 			= 0.0;
-	double lambda 				= 500.0;
+//	double constantK 			= 0.0;
+//	double lambda 				= 500.0;
 
 	double minimum 				= VTK_DOUBLE_MAX;
 	double maximum 				= VTK_DOUBLE_MIN;
