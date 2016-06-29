@@ -75,13 +75,11 @@ void vtkGraphCut::Update() {
 
 	// Build nodes data if not exists yet
 	if (!this->nodes) {
-		this->nodes = CreateNodesForDimensions(this->dimensions);	
-		std::cout << "Number of nodes: " << this->nodes->size() << "\n";
+		this->nodes = CreateNodesForDimensions(this->dimensions);
 	}
 	// Build edges data if not exists yet
 	if (!this->edges) {
 		this->edges = CreateEdgesForNodes(this->nodes, this->dimensions, TWENTYSIX);
-		std::cout << "Number of edges: " << this->edges->size() << "\n";
 	}
 
 	CalculateCapacitiesForEdges();
