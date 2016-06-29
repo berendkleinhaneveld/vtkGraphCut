@@ -354,7 +354,7 @@ void testSettingSeedPoints() {
 	int dimensions[3] = {30, 30, 30};
 	vtkGraphCut* graphCut = vtkGraphCut::New();
 	std::vector<vtkNode>* nodes = graphCut->CreateNodesForDimensions(dimensions);
-	std::vector<vtkEdge>* edges = graphCut->CreateEdgesForNodes(nodes, dimensions, SIX);
+	graphCut->CreateEdgesForNodes(nodes, dimensions, SIX);
 	vtkPoints* foregroundPoints = vtkPoints::New();
 	vtkPoints* backgroundPoints = vtkPoints::New();
 
