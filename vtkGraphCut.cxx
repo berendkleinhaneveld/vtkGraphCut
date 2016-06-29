@@ -17,9 +17,6 @@ vtkStandardNewMacro(vtkGraphCut);
 bool IsNodeConnected(int x, int y, int z, vtkConnectivity connectivity);
 int NumberOfEdgesForConnectivity(vtkConnectivity connectivity);
 
-bool IsTerminal(vtkEdge edge);
-
-
 bool CalculateCoordinateForIndex(int index, int* dimensions, int* coordinate);
 double GetIntensityForVoxel(vtkImageData* imageData, int index);
 double GetIntensityForVoxel(vtkImageData* imageData, double* xyz);
@@ -102,9 +99,7 @@ void vtkGraphCut::Update() {
 
 		int treeSelector = 0;
 		int noActiveNodesCounter = 0;
-		vtkEdge edgeBetweenGraphs;
-		edgeBetweenGraphs.node1 = INVALID;
-		edgeBetweenGraphs.node2 = INVALID;
+		vtkEdge edgeBetweenGraphs = vtkEdge(INVALID, INVALID);
 
 		// Stage 1: Growth stage
 		// Grow S or T (om-en-om) with breadth-first-search to find an augmenting path
@@ -131,13 +126,13 @@ void vtkGraphCut::Update() {
 			noActiveNodesCounter = foundActiveNodes ? 0 : noActiveNodesCounter + 1;
 
 			// If a path has been found, then we can break the loop and proceed to the next part
-			if (edgeBetweenGraphs.node1 != INVALID) {
+			if (edgeBetweenGraphs.isValid()) {
 				break;
 			}
 			treeSelector++;
 		}
 
-		if (edgeBetweenGraphs.node1 == INVALID) {
+		if (!edgeBetweenGraphs.isValid()) {
 			// Didn't find a path and there should be no more active nodes, so we can call it quits
 			// assert(activeSourceNodes->size() == 0);
 			// assert(activeSinkNodes->size() == 0);
@@ -253,18 +248,10 @@ std::vector<vtkEdge>* vtkGraphCut::CreateEdgesForNodes(std::vector<vtkNode>* nod
 	result->reserve(numberOfEdges);
 
 	for (int i = 0; i < nodes->size(); ++i) {
-		vtkEdge sourceEdge;
-		sourceEdge.node1 = SOURCE;
-		sourceEdge.node2 = i;
-		sourceEdge.flow = 0;
-		sourceEdge.capacity = 0;
+		vtkEdge sourceEdge = vtkEdge(SOURCE, i);
 		result->push_back(sourceEdge);
 
-		vtkEdge sinkEdge;
-		sinkEdge.node1 = i;
-		sinkEdge.node2 = SINK;
-		sinkEdge.flow = 0;
-		sinkEdge.capacity = 0;
+		vtkEdge sinkEdge = vtkEdge(i, SINK);
 		result->push_back(sinkEdge);
 
 		int coordinate[3] = {0, 0, 0};
@@ -278,11 +265,7 @@ std::vector<vtkEdge>* vtkGraphCut::CreateEdgesForNodes(std::vector<vtkNode>* nod
 					coord[1] = coordinate[1]+y;
 					coord[2] = coordinate[2]+z;
 					if (IsNodeConnected(x, y, z, connectivity)) {
-						vtkEdge nodeEdge;
-						nodeEdge.node1 = i;
-						nodeEdge.node2 = IsValidCoordinate(coord, dimensions) ? IndexForCoordinate(coord, dimensions) : INVALID;
-						nodeEdge.flow = 0;
-						nodeEdge.capacity = 0;
+						vtkEdge nodeEdge = vtkEdge(i, IsValidCoordinate(coord, dimensions) ? IndexForCoordinate(coord, dimensions) : INVALID);
 						result->push_back(nodeEdge);
 					}
 					++index;
@@ -372,16 +355,16 @@ vtkEdge vtkGraphCut::EdgeFromNodeToNode(std::vector<vtkEdge>* edges, int sourceI
 
 	vtkEdge edge = edges->at(index);
 	if (to == SOURCE) {
-		assert(edge.node1 == SOURCE && edge.node2 == from);
+		assert(edge.node1() == SOURCE && edge.node2() == from);
 		return edge;
 	} else {
-		while (edge.node1 <= from && edge.node2 != to) {
+		while (edge.node1() <= from && edge.node2() != to) {
 			++index;
 			edge = edges->at(index);
 		}
 	}
 
-	assert(edge.node1 == from && edge.node2 == to);
+	assert(edge.node1() == from && edge.node2() == to);
 	return edge;
 }
 
@@ -429,10 +412,7 @@ vtkEdge vtkGraphCut::Grow(vtkTreeType tree, bool& foundActiveNodes) {
 	// If it is not a free node and it is from the other tree: return a path
 
 	foundActiveNodes = false;
-	vtkEdge result;
-	result.node1 = INVALID;
-	result.node2 = INVALID;
-	return result;
+	return vtkEdge(INVALID, INVALID);
 }
 
 std::vector<vtkNode>* vtkGraphCut::Augment(vtkEdge edge) {
@@ -538,7 +518,7 @@ void vtkGraphCut::CalculateCapacitiesForEdges() {
 
 	for (int i = 0; i < this->edges->size(); i++) {
 		vtkEdge edge = this->edges->at(i);
-		edge.capacity = (int)(255.0 * CalculateCapacity(this->inputImageData, edge, statistics));
+        edge.setCapacity((int)(255.0 * CalculateCapacity(this->inputImageData, edge, statistics)));
 	}
 }
 
@@ -566,18 +546,14 @@ double GetIntensityForVoxel(vtkImageData* imageData, int x, int y, int z) {
 	return result;
 }
 
-bool IsTerminal(vtkEdge edge) {
-	return edge.node1 == SOURCE || edge.node2 == SINK;
-}
-
 double CalculateCapacity(vtkImageData* imageData, vtkEdge edge, vtkNodeStatistics statistics) {
-	if (IsTerminal(edge)) {
-		int nodeIndex = edge.node1 == SOURCE ? edge.node2 : edge.node1;
+	if (edge.isTerminal()) {
+		int nodeIndex = edge.node1() == SOURCE ? edge.node2() : edge.node1();
 		int coordinate[3] = {0, 0, 0};
 		CalculateCoordinateForIndex(nodeIndex, imageData->GetDimensions(), coordinate);
 		double intensity = GetIntensityForVoxel(imageData, coordinate);
-		double mean = edge.node1 == SINK ? statistics.foregroundMean : statistics.backgroundMean;
-		double variance = edge.node1 == SINK ? statistics.foregroundVariance : statistics.backgroundVariance;
+		double mean = edge.node1() == SINK ? statistics.foregroundMean : statistics.backgroundMean;
+		double variance = edge.node1() == SINK ? statistics.foregroundVariance : statistics.backgroundVariance;
 		return CalculateTerminalCapacity(intensity, mean, variance);
 	} else {
 		return CalculateRegionalCapacity(imageData, edge, statistics.variance);
@@ -591,9 +567,9 @@ double CalculateTerminalCapacity(double intensity, double mean, double variance)
 }
 
 double CalculateRegionalCapacity(vtkImageData* imageData, vtkEdge edge, double variance) {
-	assert(!IsTerminal(edge));
-	double intensity1 = GetIntensityForVoxel(imageData, edge.node1);
-	double intensity2 = GetIntensityForVoxel(imageData, edge.node2);
+	assert(!edge.isTerminal());
+	double intensity1 = GetIntensityForVoxel(imageData, edge.node1());
+	double intensity2 = GetIntensityForVoxel(imageData, edge.node2());
 	
 	// TODO: could be expanded with distance information
 	double result = exp(- pow(intensity1 - intensity2, 2) / (2 * pow(variance, 2)));

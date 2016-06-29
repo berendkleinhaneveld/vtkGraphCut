@@ -44,18 +44,19 @@ vtkImageData* createTestImageData() {
 	return imageData;
 }
 
+/**
+ * Tests the methods of an vtkEdge struct.
+ */
 void testEdgeStruct() {
-    vtkEdge edge;
-    edge.node1 = SINK;
-    edge.node2 = 1;
-    edge.flow = 0;
-    edge.capacity = 0;
+    vtkEdge edge = vtkEdge(SINK, 1);
     assert(edge.isTerminal());
+    assert(edge.flowFromNode(0) == 0);
+    assert(edge.capacityFromNode(0) == 0);
     
-    edge.node1 = 0;
+    edge = vtkEdge(0, 1);
     assert(!edge.isTerminal());
     
-    edge.capacity = 5;
+    edge.setCapacity(5);
     assert(edge.flowFromNode(0) == 0);
     assert(!edge.isSaturatedFromNode(0));
     assert(!edge.isSaturatedFromNode(0));
@@ -63,7 +64,6 @@ void testEdgeStruct() {
     assert(edge.capacityFromNode(1) == 5);
     
     edge.addFlowFromNode(0, 5);
-    assert(edge.flow == 5);
     assert(edge.flowFromNode(0) == 5);
     assert(edge.flowFromNode(1) == -5);
     assert(edge.isSaturatedFromNode(0));
@@ -353,44 +353,44 @@ void testEdgeFromNodeToNode() {
 
 void testEdgeFromNodeToNodeWithConnectivity(vtkGraphCut* graphCut, std::vector<vtkEdge>* edges, int* dimensions, vtkConnectivity connectivity) {
 	vtkEdge edge = graphCut->EdgeFromNodeToNode(edges, 0, 1, dimensions, connectivity);
-	assert(edge.node1 == 0);
-	assert(edge.node2 == 1);
+	assert(edge.node1() == 0);
+	assert(edge.node2() == 1);
 
 	edge = graphCut->EdgeFromNodeToNode(edges, 1, 0, dimensions, connectivity);
-	assert(edge.node1 == 0);
-	assert(edge.node2 == 1);
+	assert(edge.node1() == 0);
+	assert(edge.node2() == 1);
 
 	edge = graphCut->EdgeFromNodeToNode(edges, SOURCE, 80, dimensions, connectivity);
-	assert(edge.node1 == SOURCE);
-	assert(edge.node2 == 80);
+	assert(edge.node1() == SOURCE);
+	assert(edge.node2() == 80);
 
 	edge = graphCut->EdgeFromNodeToNode(edges, 80, SOURCE, dimensions, connectivity);
-	assert(edge.node1 == SOURCE);
-	assert(edge.node2 == 80);
+	assert(edge.node1() == SOURCE);
+	assert(edge.node2() == 80);
 
 	edge = graphCut->EdgeFromNodeToNode(edges, 80, 81, dimensions, connectivity);
-	assert(edge.node1 == 80);
-	assert(edge.node2 == 81);
+	assert(edge.node1() == 80);
+	assert(edge.node2() == 81);
 
 	edge = graphCut->EdgeFromNodeToNode(edges, 81, 80, dimensions, connectivity);
-	assert(edge.node1 == 80);
-	assert(edge.node2 == 81);
+	assert(edge.node1() == 80);
+	assert(edge.node2() == 81);
 
 	edge = graphCut->EdgeFromNodeToNode(edges, 80, SINK, dimensions, connectivity);
-	assert(edge.node1 == 80);
-	assert(edge.node2 == SINK);
+	assert(edge.node1() == 80);
+	assert(edge.node2() == SINK);
 
 	edge = graphCut->EdgeFromNodeToNode(edges, SINK, 80, dimensions, connectivity);
-	assert(edge.node1 == 80);
-	assert(edge.node2 == SINK);
+	assert(edge.node1() == 80);
+	assert(edge.node2() == SINK);
 
 	edge = graphCut->EdgeFromNodeToNode(edges, 80, 79, dimensions, connectivity);
-	assert(edge.node1 == 79);
-	assert(edge.node2 == 80);
+	assert(edge.node1() == 79);
+	assert(edge.node2() == 80);
 
 	edge = graphCut->EdgeFromNodeToNode(edges, 79, 80, dimensions, connectivity);
-	assert(edge.node1 == 79);
-	assert(edge.node2 == 80);
+	assert(edge.node1() == 79);
+	assert(edge.node2() == 80);
 }
 
 void testSettingSeedPoints() {
