@@ -233,6 +233,7 @@ std::vector<vtkNode>* vtkGraphCut::CreateNodesForDimensions(int* dimensions) {
 		node.seedPoint = false;
 		node.depthInTree = -1;
 		node.tree = NONE;
+		node.parent = INVALID;
 		result->push_back(node);
 	}
 	return result;
