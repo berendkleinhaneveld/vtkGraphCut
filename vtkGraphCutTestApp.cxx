@@ -30,9 +30,9 @@ int main(int argc, char const *argv[]) {
 	testIsValidCoordinate();
 	testEdgeFromNodeToNode();
 	testSettingSeedPoints();
-	testCostFunctionSimple();
 	testGraphCutReset();
     //	testBasicRunThrough();
+    //	testCostFunctionSimple();
 	
 	return 0;
 }
