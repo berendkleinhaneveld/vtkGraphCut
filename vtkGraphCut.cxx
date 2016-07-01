@@ -517,9 +517,9 @@ void vtkGraphCut::CalculateCapacitiesForEdges() {
 	statistics.backgroundMean = backgroundMean;
 	statistics.backgroundVariance = backgroundVariance;
 
-	for (int i = 0; i < this->edges->size(); i++) {
-		vtkEdge edge = this->edges->at(i);
-        edge.setCapacity((int)(255.0 * CalculateCapacity(this->inputImageData, edge, statistics)));
+	for (std::vector<vtkEdge>::iterator i = this->edges->begin(); i != this->edges->end(); ++i) {
+        double capacity = CalculateCapacity(this->inputImageData, *i, statistics);
+        i->setCapacity((int)(255.0 * capacity));
 	}
 }
 
