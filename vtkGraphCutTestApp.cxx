@@ -114,7 +114,9 @@ void testGraphCutReset() {
 	foregroundPoints->SetNumberOfPoints(2);
 	vtkPoints* backgroundPoints = vtkPoints::New();
 	backgroundPoints->SetNumberOfPoints(2);
+    assert(graphCut->GetConnectivity() == UNCONNECTED);
 
+    graphCut->SetConnectivity(TWENTYSIX);
 	graphCut->SetSeedPoints(foregroundPoints, backgroundPoints);
 
 	vtkGraphCutCostFunction* costFunction = vtkGraphCutCostFunctionSimple::New();
@@ -129,14 +131,15 @@ void testGraphCutReset() {
 	assert(graphCut->GetBackgroundPoints() != NULL);
 	assert(graphCut->GetInput() != NULL);
 	assert(graphCut->GetCostFunction() != NULL);
+    assert(graphCut->GetConnectivity() == TWENTYSIX);
 
-	graphCut->Update();
 	graphCut->Reset();
 
 	assert(graphCut->GetForegroundPoints() == NULL);
 	assert(graphCut->GetBackgroundPoints() == NULL);
 	assert(graphCut->GetInput() == NULL);
 	assert(graphCut->GetCostFunction() == NULL);
+    assert(graphCut->GetConnectivity() == UNCONNECTED);
 	assert(graphCut->GetOutput() == NULL);
 
 	std::cout << "Done!" << "\n";

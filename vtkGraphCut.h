@@ -6,6 +6,7 @@
 #include <vtkImageData.h>
 #include "vtkGraphCutDataTypes.h"
 #include "vtkGraphCutCostFunction.h"
+#include <queue>
 
 
 /**
@@ -43,6 +44,8 @@ public:
 	void SetSeedPoints(vtkPoints *foreground, vtkPoints *background);
 	void SetCostFunction(vtkGraphCutCostFunction*);
 	vtkGraphCutCostFunction* GetCostFunction();
+    void SetConnectivity(vtkConnectivity);
+    vtkConnectivity GetConnectivity();
 
 	vtkPoints* GetForegroundPoints();
 	vtkPoints* GetBackgroundPoints();
@@ -55,6 +58,9 @@ public:
 	bool CoordinateForIndex(int index, int* dimensions, int* coordinate);
 
 	vtkEdge EdgeFromNodeToNode(std::vector<vtkEdge>* edges, int sourceIndex, int targetIndex, int* dimensions, vtkConnectivity connectivity);
+	int IndexForEdgeFromNodeToNode(std::vector<vtkEdge>* edges, int sourceIndex, int targetIndex, int* dimensions, vtkConnectivity connectivity);
+	std::vector<int> PathToRoot(int aNodeIndex, vtkConnectivity connectivity, int* maxPossibleFlow);
+    void PushFlowThroughEdges(int flow, std::vector<int> edges, std::vector<int>* orphans, vtkTreeType);
 
 protected:
 	vtkGraphCut();
@@ -72,11 +78,12 @@ protected:
 	vtkGraphCutCostFunction* costFunction;
 
 	int* dimensions;
+    vtkConnectivity connectivity;
 
 	// Algorithm methods
-	vtkEdge Grow(vtkTreeType tree, bool& foundActiveNodes);
-	std::vector<vtkNode>* Augment(vtkEdge edge);
-	void Adopt(std::vector<vtkNode>*);
+	vtkEdge Grow(vtkTreeType tree, bool& foundActiveNodes, std::priority_queue<std::pair<int, int> > activeNodes);
+	std::vector<int>* Augment(vtkEdge edge);
+	void Adopt(std::vector<int>*);
 
 	void CalculateCapacitiesForEdges();
 };

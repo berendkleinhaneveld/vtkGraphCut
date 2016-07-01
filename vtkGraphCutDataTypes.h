@@ -1,6 +1,9 @@
 #ifndef __vtkGraphCutDataTypes_h
 #define __vtkGraphCutDataTypes_h
 
+
+#include <assert.h>
+
 enum vtkTreeType
 {
 	NONE = 0,
@@ -11,6 +14,7 @@ enum vtkTreeType
 
 enum vtkConnectivity
 {
+    UNCONNECTED = 0,
 	SIX = 6,
 	EIGHTEEN = 18,
 	TWENTYSIX = 26
@@ -25,6 +29,7 @@ struct vtkNode
 	vtkIdType timeStamp;
 	int depthInTree;
 	vtkTreeType tree;
+    int parent; // index of parent
 };
 
 
@@ -87,6 +92,22 @@ public:
         return INVALID;
     }
     
+    /**
+     * Returns the root node when this edge is a
+     * terminal node. Otherwise returns INVALID.
+     */
+    int rootNode() {
+        assert(isTerminal());
+        if (_node1 < 0) {
+            return _node1;
+        }
+        if (_node2 < 0) {
+            return _node2;
+        }
+        return INVALID;
+    }
+    
+    /**
      * Returns whether this edge is connected to eiter a
      * SOURCE or a SINK node.
      */

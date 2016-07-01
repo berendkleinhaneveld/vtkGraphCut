@@ -1,5 +1,6 @@
 #include "vtkGraphCut.h"
 #include <assert.h>
+#include <queue>
 
 struct vtkNodeStatistics
 {
@@ -42,11 +43,17 @@ void vtkGraphCut::Reset() {
 	this->foregroundPoints = NULL;
 	this->backgroundPoints = NULL;
 	this->costFunction = NULL;
+    this->connectivity = UNCONNECTED;
 }
 
 void vtkGraphCut::Update() {
 	// Verify all inputs (if changed since last update):
 
+    if (this->connectivity == UNCONNECTED) {
+        std::cout << "No connectivity was specified. Skipping update.\n";
+        return;
+    }
+    
 	// Verify input image data
 	if (!this->inputImageData) {
 		std::cout << "No image data was set. Skipping update.\n";
@@ -76,24 +83,24 @@ void vtkGraphCut::Update() {
 	}
 	// Build edges data if not exists yet
 	if (!this->edges) {
-		this->edges = CreateEdgesForNodes(this->nodes, this->dimensions, TWENTYSIX);
+		this->edges = CreateEdgesForNodes(this->nodes, this->dimensions, this->connectivity);
 	}
 
 	CalculateCapacitiesForEdges();
 
-	std::vector<int>* activeSourceNodes = new std::vector<int>();
-	std::vector<int>* activeSinkNodes = new std::vector<int>();
-	std::vector<vtkNode>* orphans = new std::vector<vtkNode>();
+	std::priority_queue<std::pair<int, int> > activeSourceNodes;
+	std::priority_queue<std::pair<int, int> > activeSinkNodes;
+	std::vector<int>* orphans = NULL;
 
-	activeSourceNodes->push_back(SOURCE);
-	activeSinkNodes->push_back(SINK);
+	activeSourceNodes.push(std::make_pair(0, SOURCE));
+	activeSinkNodes.push(std::make_pair(0, SINK));
 
 	// Start algorithm
 	while (true) {
 		// Stage 0: Adopt phase
 		// There might be orphans in the trees because the user
 		// might have added/removed fore- and background points
-		if (orphans->size() > 0) {
+		if (orphans != NULL && orphans->size() > 0) {
 			Adopt(orphans);
 		}
 
@@ -122,7 +129,7 @@ void vtkGraphCut::Update() {
 			// foundActiveNodes is set when active nodes are found, but no path was found
 			// If no path is found, but there was a succesful growing iteration the other tree may grow
 			bool foundActiveNodes;
-			edgeBetweenGraphs = Grow(tree, foundActiveNodes);
+			edgeBetweenGraphs = Grow(tree, foundActiveNodes, tree == SOURCE ? activeSourceNodes : activeSinkNodes);
 			noActiveNodesCounter = foundActiveNodes ? 0 : noActiveNodesCounter + 1;
 
 			// If a path has been found, then we can break the loop and proceed to the next part
@@ -134,8 +141,8 @@ void vtkGraphCut::Update() {
 
 		if (!edgeBetweenGraphs.isValid()) {
 			// Didn't find a path and there should be no more active nodes, so we can call it quits
-			// assert(activeSourceNodes->size() == 0);
-			// assert(activeSinkNodes->size() == 0);
+			assert(activeSourceNodes.size() == 0);
+			assert(activeSinkNodes.size() == 0);
 			break;
 		}
 
@@ -211,6 +218,14 @@ void vtkGraphCut::SetCostFunction(vtkGraphCutCostFunction* costFunction) {
 
 vtkGraphCutCostFunction* vtkGraphCut::GetCostFunction() {
 	return this->costFunction;
+}
+
+void vtkGraphCut::SetConnectivity(vtkConnectivity connectivity) {
+    this->connectivity = connectivity;
+}
+
+vtkConnectivity vtkGraphCut::GetConnectivity() {
+    return this->connectivity;
 }
 
 
@@ -328,8 +343,9 @@ bool vtkGraphCut::CoordinateForIndex(int index, int* dimensions, int* coordinate
 	return CalculateCoordinateForIndex(index, dimensions, coordinate);
 }
 
-vtkEdge vtkGraphCut::EdgeFromNodeToNode(std::vector<vtkEdge>* edges, int sourceIndex,
+int vtkGraphCut::IndexForEdgeFromNodeToNode(std::vector<vtkEdge>* edges, int sourceIndex,
 	int targetIndex, int* dimensions, vtkConnectivity connectivity) {
+
 	assert(sourceIndex != INVALID);
 	assert(targetIndex != INVALID);
 
@@ -357,7 +373,7 @@ vtkEdge vtkGraphCut::EdgeFromNodeToNode(std::vector<vtkEdge>* edges, int sourceI
 	vtkEdge edge = edges->at(index);
 	if (to == SOURCE) {
 		assert(edge.node1() == SOURCE && edge.node2() == from);
-		return edge;
+		return index;
 	} else {
 		while (edge.node1() <= from && edge.node2() != to) {
 			++index;
@@ -366,63 +382,213 @@ vtkEdge vtkGraphCut::EdgeFromNodeToNode(std::vector<vtkEdge>* edges, int sourceI
 	}
 
 	assert(edge.node1() == from && edge.node2() == to);
-	return edge;
+	return index;
 }
 
-
-// Private methods
-
-bool IsNodeConnected(int x, int y, int z, vtkConnectivity connectivity) {
-	switch (connectivity) {
-		case SIX:
-			return (std::abs(x + y) == 1 && z == 0) 
-				|| (std::abs(y + z) == 1 && x == 0) 
-				|| (std::abs(z + x) == 1 && y == 0);
-		case EIGHTEEN:
-			return (x != 0 || y != 0 || z != 0) 
-				&& (std::abs(x) + std::abs(y) + std::abs(z) != 3);
-		case TWENTYSIX:
-			return (x != 0 || y != 0 || z != 0);
-		default:
-			return false;
-	}
+vtkEdge vtkGraphCut::EdgeFromNodeToNode(std::vector<vtkEdge>* edges, int sourceIndex,
+	int targetIndex, int* dimensions, vtkConnectivity connectivity) {
+	return edges->at(IndexForEdgeFromNodeToNode(edges, sourceIndex, targetIndex, dimensions, connectivity));
 }
-
-int NumberOfEdgesForConnectivity(vtkConnectivity connectivity) {
-	switch (connectivity) {
-		case SIX:
-			return 3;
-		case EIGHTEEN:
-			return 6;
-		case TWENTYSIX:
-			return 7;
-	}
-	return -1;
-}
-
 
 // Algorithm steps
 
-vtkEdge vtkGraphCut::Grow(vtkTreeType tree, bool& foundActiveNodes) {
+vtkEdge vtkGraphCut::Grow(vtkTreeType tree, bool& foundActiveNodes, std::priority_queue<std::pair<int, int> > activeNodes) {
+	foundActiveNodes = false;
+
 	// Get an active node from the tree
-	// TODO: hier was ik gebleven...
-	// vtkNode node = tree == SOURCE ? activeSourceNodes->
+	std::pair<int, int> active = activeNodes.top();
+
+	// Pop until active node is found
+	while (true) {
+		if (active.second >= 0) {
+			vtkNode node = this->nodes->at(active.second);
+			if (node.active) {
+				break;
+			}
+
+			activeNodes.pop();
+			// If there are no more active nodes, just return an invalid edge
+			if (activeNodes.size() == 0) {
+                return vtkEdge(INVALID, INVALID);
+			}
+			active = activeNodes.top();
+		} else {
+			break;
+		}
+	}
+
+	int nodeIndex = active.second;
+	if (nodeIndex >= 0) {
+		std::vector<int>* neighbours = IndicesForNeighbours(nodeIndex, this->dimensions, this->connectivity);
+		vtkEdge edgeBetweenTrees = vtkEdge(INVALID, INVALID);
+
+		for (std::vector<int>::iterator i = neighbours->begin(); i != neighbours->end(); ++i) {
+			// Check to see if the edge to the node is saturated or not
+			vtkEdge edge = EdgeFromNodeToNode(this->edges, nodeIndex, *i, this->dimensions, this->connectivity);
+			if (!edge.isSaturatedFromNode(nodeIndex)) {
+		 		// If the other node is free, it can be added to the tree
+				vtkNode neighbour = this->nodes->at(*i);
+				if (neighbour.tree == NONE) {
+					// Other node is added as a child to active node
+					neighbour.tree = tree;
+					neighbour.depthInTree = active.first + 1;
+					neighbour.active = true;
+					neighbour.parent = nodeIndex;
+					this->nodes->data()[*i] = neighbour;
+					activeNodes.push(std::make_pair(neighbour.depthInTree, *i));
+				} else if (neighbour.tree != tree) {
+					// If the other node is from the other tree, we have found a path!
+					edgeBetweenTrees = edge;
+					break;
+				}
+			}
+		}
+
+		// If no edge has been found, then the current node can become inactive
+		if (!edgeBetweenTrees.isValid()) {
+			vtkNode node = this->nodes->at(nodeIndex);
+			node.active = false;
+			this->nodes->data()[nodeIndex] = node;
+		}
+		return edgeBetweenTrees;
+	} else {
+		int i = 0;
+		vtkEdge edgeBetweenTrees = vtkEdge(INVALID, INVALID);
+
+		for (std::vector<vtkNode>::iterator node = this->nodes->begin(); node != this->nodes->end(); ++node) {
+			// If the other node is free, it can be added to the tree
+			if (node->tree == NONE) {
+				// Other node is added as a child to active node
+				node->tree = tree;
+				node->depthInTree = active.first + 1;
+				node->parent = tree;
+				node->active = true;
+				activeNodes.push(std::make_pair(node->depthInTree, i));
+			} else if (node->tree != tree) {
+				// If the other node is from the other tree, we have found a path!
+				vtkEdge edge = EdgeFromNodeToNode(this->edges, nodeIndex, i, this->dimensions, this->connectivity);
+				edgeBetweenTrees = edge;
+				break;
+			}
+			i++;
+		}
+
+		if (!edgeBetweenTrees.isValid()) {
+			activeNodes.pop();
+		}
+		return edgeBetweenTrees;
+	}
 
 	// For all neighbors of the active node, connected through a non-saturated edge:
 	// add them to the tree if it is a free node.
 	// If it is not a free node and it is from the other tree: return a path
 
-	foundActiveNodes = false;
 	return vtkEdge(INVALID, INVALID);
 }
 
-std::vector<vtkNode>* vtkGraphCut::Augment(vtkEdge edge) {
-	return NULL;
+std::vector<int>* vtkGraphCut::Augment(vtkEdge edge) {
+	// Steps:
+	// * find path to source and find out max possible flow
+	// * find path to sink and find out max possible flow
+	// * apply maximum possible flow to both paths
+	// * return all orphan nodes
+	// When a path is found, the largest possible flow is pushed through the path,
+	// thus at least one edge becomes saturated. And the child(ren) of such a saturated
+	// path will become an orphan node (not connected to S or T anymore).
+    assert(edge.isValid());
+    assert(edge.node1() < this->nodes->size());
+    assert(edge.node2() < (int)this->nodes->size());
+    
+    // Figure out the tree type of the first node of the edge
+	int node1Tree = 0;
+	if (edge.isTerminal()) {
+        node1Tree = edge.rootNode();
+	} else {
+		vtkNode node1 = this->nodes->at(edge.node1());
+		assert(node1.tree == SOURCE || node1.tree == SINK);
+		node1Tree = node1.tree;
+	}
+
+    int fromNode = node1Tree == SOURCE ? edge.node1() : edge.node2();
+	int maxPossibleFlow = edge.flowFromNode(fromNode);
+    edge.addFlowFromNode(maxPossibleFlow, fromNode);
+
+	std::vector<int> pathToSource = PathToRoot(node1Tree == SOURCE ? edge.node1() : edge.node2(), this->connectivity, &maxPossibleFlow);
+	std::vector<int> pathToSink = PathToRoot(node1Tree == SOURCE ? edge.node2() : edge.node1(), this->connectivity, &maxPossibleFlow);
+
+	assert(maxPossibleFlow > 0);
+
+	std::vector<int>* orphans = new std::vector<int>();
+
+    PushFlowThroughEdges(maxPossibleFlow, pathToSource, orphans, SOURCE);
+    PushFlowThroughEdges(maxPossibleFlow, pathToSink, orphans, SINK);
+
+	return orphans;
 }
 
-void vtkGraphCut::Adopt(std::vector<vtkNode>* orphans) {
-
+void vtkGraphCut::PushFlowThroughEdges(int maxPossibleFlow, std::vector<int> edges, std::vector<int>* orphans, vtkTreeType tree) {
+    for (std::vector<int>::iterator i = edges.begin(); i != edges.end(); ++i) {
+        // Update the flow for the current edge
+        vtkEdge edge = this->edges->at(*i);
+        edge.addFlowFromNode(tree == SOURCE ? edge.node1() : edge.node2(), maxPossibleFlow);
+        this->edges->data()[*i] = edge;
+        
+        int nodes[2] = {edge.node1(), edge.node2()};
+        int closestToRoot = -1;
+        
+        if (edge.isTerminal()) {
+            // One of the nodes is a negative number to indicate that it is a sink node
+            closestToRoot = edge.node1() < edge.node2() ? 0 : 1;
+        } else {
+            vtkNode node = this->nodes->at(edge.node1());
+            vtkNode otherNode = this->nodes->at(edge.node2());
+            closestToRoot = node.depthInTree < otherNode.depthInTree ? 0 : 1;
+        }
+        
+        int parent = nodes[closestToRoot];
+        int child = nodes[(closestToRoot + 1) % 2];
+        
+        assert(child >= 0);
+        
+        // When tree type is SINK, then the flow should be pushed from children to parents
+        if (edge.isSaturatedFromNode(tree == SOURCE ? parent : child)) {
+            // Push the child
+            orphans->push_back(child);
+        }
+    }
 }
+
+std::vector<int> vtkGraphCut::PathToRoot(int aNodeIndex, vtkConnectivity connectivity, int* maxPossibleFlow) {
+	std::vector<int> edges;
+	vtkNode node;
+	int nodeIndex = aNodeIndex;
+	while (true) {
+		if (nodeIndex < 0) {
+            // Encountered root node
+			break;
+		}
+		node = this->nodes->at(nodeIndex);
+		int edgeIndex = IndexForEdgeFromNodeToNode(this->edges, nodeIndex, node.parent, this->dimensions, connectivity);
+		assert(edgeIndex >= 0);
+		assert(edgeIndex < this->edges->size());
+		edges.push_back(edgeIndex);
+		vtkEdge edge = this->edges->at(edgeIndex);
+		int possibleFlow = edge.capacityFromNode(node.tree == SOURCE ? node.parent : nodeIndex);
+		*maxPossibleFlow = std::max(possibleFlow, *maxPossibleFlow);
+		nodeIndex = node.parent;
+		if (edge.isTerminal()) {
+			break;
+		}
+	}
+	return edges;
+}
+
+void vtkGraphCut::Adopt(std::vector<int>* orphans) {
+	// TODO: implement Adopt stage
+}
+
+
+// Private methods
 
 void vtkGraphCut::CalculateCapacitiesForEdges() {
 //	double constantK 			= 0.0;
@@ -521,6 +687,36 @@ void vtkGraphCut::CalculateCapacitiesForEdges() {
         double capacity = CalculateCapacity(this->inputImageData, *i, statistics);
         i->setCapacity((int)(255.0 * capacity));
 	}
+}
+
+bool IsNodeConnected(int x, int y, int z, vtkConnectivity connectivity) {
+	switch (connectivity) {
+		case SIX:
+			return (std::abs(x + y) == 1 && z == 0) 
+				|| (std::abs(y + z) == 1 && x == 0) 
+				|| (std::abs(z + x) == 1 && y == 0);
+		case EIGHTEEN:
+			return (x != 0 || y != 0 || z != 0) 
+				&& (std::abs(x) + std::abs(y) + std::abs(z) != 3);
+		case TWENTYSIX:
+			return (x != 0 || y != 0 || z != 0);
+		default:
+			return false;
+	}
+}
+
+int NumberOfEdgesForConnectivity(vtkConnectivity connectivity) {
+	switch (connectivity) {
+		case SIX:
+			return 3;
+		case EIGHTEEN:
+			return 6;
+		case TWENTYSIX:
+			return 7;
+        case UNCONNECTED:
+            return 0;
+	}
+	return -1;
 }
 
 double GetIntensityForVoxel(vtkImageData* imageData, int index) {
