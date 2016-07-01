@@ -549,7 +549,8 @@ double GetIntensityForVoxel(vtkImageData* imageData, int x, int y, int z) {
 
 double CalculateCapacity(vtkImageData* imageData, vtkEdge edge, vtkNodeStatistics statistics) {
 	if (edge.isTerminal()) {
-		int nodeIndex = edge.node1() == SOURCE ? edge.node2() : edge.node1();
+        int nodeIndex = edge.nonRootNode();
+        assert(nodeIndex >= 0);
 		int coordinate[3] = {0, 0, 0};
 		CalculateCoordinateForIndex(nodeIndex, imageData->GetDimensions(), coordinate);
 		double intensity = GetIntensityForVoxel(imageData, coordinate);

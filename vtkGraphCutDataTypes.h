@@ -73,6 +73,20 @@ public:
     }
 
     /**
+     * Returns the non-root node when this edge
+     * is a terminal node. Otherwise returns INVALID.
+     */
+    int nonRootNode() {
+        assert(isTerminal());
+        if (_node1 < 0) {
+            return _node2;
+        }
+        if (_node2 < 0) {
+            return _node1;
+        }
+        return INVALID;
+    }
+    
      * Returns whether this edge is connected to eiter a
      * SOURCE or a SINK node.
      */
