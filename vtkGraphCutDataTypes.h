@@ -101,6 +101,7 @@ public:
      */
     void addFlowFromNode(int node, int addedFlow) {
         assert(node == _node1 || node == _node2);
+        assert(capacityFromNode(node) >= addedFlow);
         if (node == _node1) {
             _flow += addedFlow;
         } else {
