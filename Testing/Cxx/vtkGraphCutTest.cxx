@@ -15,7 +15,7 @@ int main() {
 	if (graphCut != NULL)
 	{
 		printf("Succesfully made a thing\n");
-		return -1;
+		return 0;
 	}
 	printf("Could not make thingy\n");
 	return 1;
