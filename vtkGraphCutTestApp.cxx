@@ -48,6 +48,7 @@ vtkImageData* createTestImageData() {
  * Tests the methods of an vtkEdge struct.
  */
 void testEdgeStruct() {
+    std::cout << __FUNCTION__ << "\n";
     vtkEdge edge = vtkEdge(SINK, 1);
     assert(edge.isTerminal());
     assert(edge.flowFromNode(0) == 0);
@@ -84,6 +85,7 @@ void testEdgeStruct() {
     assert(edge.isSaturatedFromNode(1));
     assert(edge.capacityFromNode(0) == 10);
     assert(edge.capacityFromNode(1) == 0);
+    std::cout << "Done!" << "\n";
 }
 
 void testCreateNodes() {
