@@ -100,6 +100,7 @@ public:
      * from the direction of the given node.
      */
     void addFlowFromNode(int node, int addedFlow) {
+        assert(node == _node1 || node == _node2);
         if (node == _node1) {
             _flow += addedFlow;
         } else {
