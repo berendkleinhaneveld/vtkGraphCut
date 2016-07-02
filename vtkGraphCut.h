@@ -81,8 +81,8 @@ protected:
     vtkConnectivity connectivity;
 
 	// Algorithm methods
-	vtkEdge Grow(vtkTreeType tree, bool& foundActiveNodes, std::priority_queue<std::pair<int, int> > activeNodes);
-	std::vector<int>* Augment(vtkEdge edge);
+	int Grow(vtkTreeType tree, bool& foundActiveNodes, std::priority_queue<std::pair<int, int> > activeNodes);
+	std::vector<int>* Augment(int edgeIndex);
 	void Adopt(std::vector<int>*);
 
 	void CalculateCapacitiesForEdges();
