@@ -231,7 +231,9 @@ vtkConnectivity vtkGraphCut::GetConnectivity() {
 
 // Protected
 
-vtkGraphCut::vtkGraphCut() { }
+vtkGraphCut::vtkGraphCut() {
+    Reset();
+}
 vtkGraphCut::~vtkGraphCut() { }
 
 std::vector<vtkNode>* vtkGraphCut::CreateNodesForDimensions(int* dimensions) {
