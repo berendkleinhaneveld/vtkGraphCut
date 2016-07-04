@@ -564,7 +564,6 @@ void vtkGraphCut::PushFlowThroughEdges(int maxPossibleFlow, std::vector<int> edg
         int nodeFromWhichToPush = tree == SOURCE ? parent : child;
 
         // Update the flow
-        int cap = edge.capacityFromNode(nodeFromWhichToPush);
         edge.addFlowFromNode(nodeFromWhichToPush, maxPossibleFlow);
         this->edges->data()[*i] = edge;
 
