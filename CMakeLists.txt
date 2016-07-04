@@ -41,8 +41,10 @@ INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR})
 INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIR})
 
 SET(HEADERS
+  vtkGraphCutDefinitions.h
   vtkGraphCutDataTypes.h
   vtkGraphCut.h
+  vtkGraphCutProtected.h
   vtkGraphCutCostFunction.h
   vtkGraphCutCostFunctionSimple.h
   vtkEdge.h
@@ -50,6 +52,7 @@ SET(HEADERS
 
 SET(SOURCES 
   vtkGraphCut.cxx
+  vtkGraphCutProtected.cxx
   vtkGraphCutCostFunction.cxx
   vtkGraphCutCostFunctionSimple.cxx
   vtkEdge.cxx

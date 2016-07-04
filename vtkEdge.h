@@ -1,5 +1,5 @@
 //
-//  vtkEdge.hpp
+//  vtkEdge.h
 //  vtkGraphCut
 //
 //  Created by Berend Klein Haneveld on 04/07/16.

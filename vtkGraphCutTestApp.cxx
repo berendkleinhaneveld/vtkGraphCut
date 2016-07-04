@@ -1,7 +1,18 @@
+//
+//  vtkGraphCutTestApp.cxx
+//  vtkGraphCut
+//
+//  Created by Berend Klein Haneveld.
+//
+//
+
 #include <assert.h>
 #include <iostream>
 #include "vtkGraphCut.h"
 #include "vtkGraphCutCostFunctionSimple.h"
+#include "vtkEdge.h"
+#include "vtkGraphCutDataTypes.h"
+#include "vtkGraphCutProtected.h"
 
 void testEdgeStruct();
 void testCreateNodes();
@@ -11,11 +22,11 @@ void testIndexForCoordinate();
 void testCoordinateForIndex();
 void testIndicesForNeighbours();
 void testEdgeFromNodeToNode();
-void testEdgeFromNodeToNodeWithConnectivity(vtkGraphCut*, std::vector<vtkEdge>*, int*, vtkConnectivity);
+void testEdgeFromNodeToNodeWithConnectivity(vtkGraphCutProtected*, std::vector<vtkEdge>*, int*, vtkConnectivity);
 void testSettingSeedPoints();
 void testGraphCutReset();
 void testIncomingEdge();
-void testIncomingEdgeWithConnectivity(vtkGraphCut*, std::vector<vtkNode>*, std::vector<vtkEdge>*, int*, vtkConnectivity);
+void testIncomingEdgeWithConnectivity(vtkGraphCutProtected*, std::vector<vtkNode>*, std::vector<vtkEdge>*, int*, vtkConnectivity);
 void testCostFunctionSimple();
 void testBasicRunThrough();
 
@@ -117,7 +128,7 @@ void testCreateNodes() {
 	std::cout << __FUNCTION__ << "\n";
 	int dimensions[3] = {3, 3, 2};
 
-	vtkGraphCut* graphCut = vtkGraphCut::New();
+	vtkGraphCutProtected* graphCut = vtkGraphCutProtected::New();
 	std::vector<vtkNode>* nodes = graphCut->CreateNodesForDimensions(dimensions);
 
 	assert(nodes->size() == 18);
@@ -139,7 +150,7 @@ void testCreateEdges() {
 	std::cout << __FUNCTION__ << "\n";
 	int dimensions[3] = {1, 1, 1};
 
-	vtkGraphCut* graphCut = vtkGraphCut::New();
+	vtkGraphCutProtected* graphCut = vtkGraphCutProtected::New();
 	std::vector<vtkNode>* nodes = graphCut->CreateNodesForDimensions(dimensions);
 	std::vector<vtkEdge>* edges = graphCut->CreateEdgesForNodes(nodes, dimensions, TWENTYSIX);
 
@@ -213,7 +224,7 @@ void testCreateEdges() {
  */
 void testIsValidCoordinate() {
     std::cout << __FUNCTION__ << "\n";
-    vtkGraphCut* graphCut = vtkGraphCut::New();
+    vtkGraphCutProtected* graphCut = vtkGraphCutProtected::New();
 
     int dimensions[3] = {4, 6, 7};
     int coordinate[3] = {4, 6, 7};
@@ -249,7 +260,7 @@ void testIsValidCoordinate() {
  */
 void testIndexForCoordinate() {
 	std::cout << __FUNCTION__ << "\n";
-	vtkGraphCut* graphCut = vtkGraphCut::New();
+	vtkGraphCutProtected* graphCut = vtkGraphCutProtected::New();
 	
 	int dimensions[3] = {2, 3, 4};
 	int coordinate[3] = {0, 0, 0};
@@ -291,7 +302,7 @@ void testIndexForCoordinate() {
  */
 void testCoordinateForIndex() {
 	std::cout << __FUNCTION__ << "\n";
-	vtkGraphCut* graphCut = vtkGraphCut::New();
+	vtkGraphCutProtected* graphCut = vtkGraphCutProtected::New();
 
 	int dimensions[3] = {2, 3, 4};
 	int coordinate[3] = {0, 0, 0};
@@ -331,7 +342,7 @@ void testCoordinateForIndex() {
  */
 void testIndicesForNeighbours() {
     std::cout << __FUNCTION__ << "\n";
-    vtkGraphCut* graphCut = vtkGraphCut::New();
+    vtkGraphCutProtected* graphCut = vtkGraphCutProtected::New();
 
     int coordinate[3] = {1, 1, 1};
     int dimensions[3] = {3, 4, 5};
@@ -356,7 +367,7 @@ void testIndicesForNeighbours() {
 void testEdgeFromNodeToNode() {
 	std::cout << __FUNCTION__ << "\n";
 	int dimensions[3] = {30, 30, 30};
-	vtkGraphCut* graphCut = vtkGraphCut::New();
+	vtkGraphCutProtected* graphCut = vtkGraphCutProtected::New();
 	std::vector<vtkNode>* nodes = graphCut->CreateNodesForDimensions(dimensions);
 
 	std::vector<vtkEdge>* edges = graphCut->CreateEdgesForNodes(nodes, dimensions, SIX);
@@ -375,7 +386,7 @@ void testEdgeFromNodeToNode() {
 /**
  * Tests getting the edge between two nodes for the specified connectivity.
  */
-void testEdgeFromNodeToNodeWithConnectivity(vtkGraphCut* graphCut, std::vector<vtkEdge>* edges, int* dimensions, vtkConnectivity connectivity) {
+void testEdgeFromNodeToNodeWithConnectivity(vtkGraphCutProtected* graphCut, std::vector<vtkEdge>* edges, int* dimensions, vtkConnectivity connectivity) {
     vtkEdge edge = graphCut->EdgeFromNodeToNode(edges, 0, 1, dimensions, connectivity);
     assert(edge.node1() == 0);
     assert(edge.node2() == 1);
@@ -423,7 +434,7 @@ void testEdgeFromNodeToNodeWithConnectivity(vtkGraphCut* graphCut, std::vector<v
 void testSettingSeedPoints() {
     std::cout << __FUNCTION__ << "\n";
     int dimensions[3] = {30, 30, 30};
-    vtkGraphCut* graphCut = vtkGraphCut::New();
+    vtkGraphCutProtected* graphCut = vtkGraphCutProtected::New();
     std::vector<vtkNode>* nodes = graphCut->CreateNodesForDimensions(dimensions);
     graphCut->CreateEdgesForNodes(nodes, dimensions, SIX);
     vtkPoints* foregroundPoints = vtkPoints::New();
@@ -511,7 +522,7 @@ void testGraphCutReset() {
 void testIncomingEdge() {
 	std::cout << __FUNCTION__ << "\n";
 	int dimensions[3] = {30, 30, 30};
-	vtkGraphCut* graphCut = vtkGraphCut::New();
+	vtkGraphCutProtected* graphCut = vtkGraphCutProtected::New();
 	std::vector<vtkNode>* nodes = graphCut->CreateNodesForDimensions(dimensions);
 
 	std::vector<vtkEdge>* edges = graphCut->CreateEdgesForNodes(nodes, dimensions, SIX);
@@ -530,7 +541,7 @@ void testIncomingEdge() {
 /**
  * Tests retrieving the incoming edge for the specified connectivity.
  */
-void testIncomingEdgeWithConnectivity(vtkGraphCut* graphCut, std::vector<vtkNode>* nodes, std::vector<vtkEdge>* edges, int* dimensions, vtkConnectivity connectivity) {
+void testIncomingEdgeWithConnectivity(vtkGraphCutProtected* graphCut, std::vector<vtkNode>* nodes, std::vector<vtkEdge>* edges, int* dimensions, vtkConnectivity connectivity) {
 	// int index = graphCut->IndexForEdgeFromNodeToNode(edges, 0, 1, dimensions, connectivity);
 	// vtkEdge edge = edges->at(index);
 	// assert(edge.child() == -1);

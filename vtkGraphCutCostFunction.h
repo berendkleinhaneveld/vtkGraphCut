@@ -1,11 +1,22 @@
+//
+//  vtkGraphCutCostFunction.h
+//  vtkGraphCut
+//
+//  Created by Berend Klein Haneveld.
+//
+//
+
 #ifndef __vtkGraphCutCostFunction_h
 #define __vtkGraphCutCostFunction_h
+
+class vtkEdge;
+struct vtkNode;
 
 #include <vtkObjectFactory.h>
 #include <vtkImageData.h>
 #include <vector>
-#include "vtkGraphCutDataTypes.h"
-#include "vtkEdge.h"
+//#include "vtkGraphCutDataTypes.h"
+//#include "vtkEdge.h"
 
 class VTK_EXPORT vtkGraphCutCostFunction : public vtkObject
 {

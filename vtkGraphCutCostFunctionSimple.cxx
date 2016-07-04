@@ -1,5 +1,12 @@
-#include "vtkGraphCutCostFunctionSimple.h"
+//
+//  vtkGraphCutCostFunctionSimple.cxx
+//  vtkGraphCut
+//
+//  Created by Berend Klein Haneveld.
+//
+//
 
+#include "vtkGraphCutCostFunctionSimple.h"
 
 #pragma mark - Public
 

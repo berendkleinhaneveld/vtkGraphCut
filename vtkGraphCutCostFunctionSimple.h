@@ -1,3 +1,11 @@
+//
+//  vtkGraphCutCostFunctionSimple.h
+//  vtkGraphCut
+//
+//  Created by Berend Klein Haneveld.
+//
+//
+
 #ifndef __vtkGraphCutCostFunctionSimple_h
 #define __vtkGraphCutCostFunctionSimple_h
 

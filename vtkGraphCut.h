@@ -1,13 +1,27 @@
+//
+//  vtkGraphCut.h
+//  vtkGraphCut
+//
+//  Created by Berend Klein Haneveld.
+//
+//
+
 #ifndef __vtkGraphCut_h
 #define __vtkGraphCut_h
 
+
+// Forward declaration of helper types
+class vtkEdge;
+struct vtkNode;
+class vtkGraphCutProtected;
+
+
+// Dependencies
 #include <vtkObjectFactory.h>
 #include <vtkPoints.h>
 #include <vtkImageData.h>
-#include "vtkGraphCutDataTypes.h"
+#include "vtkGraphCutDefinitions.h"
 #include "vtkGraphCutCostFunction.h"
-#include "vtkEdge.h"
-#include <queue>
 
 
 /**
@@ -51,42 +65,11 @@ public:
 	vtkPoints* GetForegroundPoints();
 	vtkPoints* GetBackgroundPoints();
 
-	std::vector<vtkNode>* CreateNodesForDimensions(int* dimensions);
-	std::vector<vtkEdge>* CreateEdgesForNodes(std::vector<vtkNode>* nodes, int* dimensions, vtkConnectivity connectivity);
-	std::vector<int>* IndicesForNeighbours(int index, int* dimensions, vtkConnectivity connectivity);
-	bool IsValidCoordinate(int* coordinate, int* dimensions);
-	int IndexForCoordinate(int* coordinate, int* dimensions);
-	bool CoordinateForIndex(int index, int* dimensions, int* coordinate);
-
-	vtkEdge EdgeFromNodeToNode(std::vector<vtkEdge>* edges, int sourceIndex, int targetIndex, int* dimensions, vtkConnectivity connectivity);
-	int IndexForEdgeFromNodeToNode(std::vector<vtkEdge>* edges, int sourceIndex, int targetIndex, int* dimensions, vtkConnectivity connectivity);
-	std::vector<int> PathToRoot(int aNodeIndex, vtkConnectivity connectivity, int* maxPossibleFlow);
-    void PushFlowThroughEdges(int flow, std::vector<int> edges, std::vector<int>* orphans, vtkTreeType);
-
 protected:
 	vtkGraphCut();
 	~vtkGraphCut();
-
-	vtkImageData* inputImageData;
-	vtkImageData* outputImageData;
-
-	std::vector<vtkNode>* nodes;
-	std::vector<vtkEdge>* edges;
-
-	vtkPoints* foregroundPoints;
-	vtkPoints* backgroundPoints;
-
-	vtkGraphCutCostFunction* costFunction;
-
-	int* dimensions;
-    vtkConnectivity connectivity;
-
-	// Algorithm methods
-	int Grow(vtkTreeType tree, bool& foundActiveNodes, std::priority_queue<std::pair<int, int> > activeNodes);
-	std::vector<int>* Augment(int edgeIndex);
-	void Adopt(std::vector<int>*);
-
-	void CalculateCapacitiesForEdges();
+    
+    vtkGraphCutProtected* graphCut;
 };
 
 #endif // __vtkGraphCut_h
