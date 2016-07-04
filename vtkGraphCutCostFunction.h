@@ -5,6 +5,7 @@
 #include <vtkImageData.h>
 #include <vector>
 #include "vtkGraphCutDataTypes.h"
+#include "vtkEdge.h"
 
 class VTK_EXPORT vtkGraphCutCostFunction : public vtkObject
 {

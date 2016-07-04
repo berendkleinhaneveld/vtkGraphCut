@@ -6,6 +6,7 @@
 #include <vtkImageData.h>
 #include "vtkGraphCutDataTypes.h"
 #include "vtkGraphCutCostFunction.h"
+#include "vtkEdge.h"
 #include <queue>
 
 
