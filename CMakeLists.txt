@@ -103,7 +103,7 @@ IF(EXISTS ${VTK_DIR}/bin)
 ENDIF(EXISTS ${VTK_DIR}/bin)
 
 # Create the library.
-ADD_LIBRARY(${PROJECT_NAME} 
+ADD_LIBRARY(${PROJECT_NAME}
   ${HEADERS}
   ${SOURCES}
 )
@@ -129,20 +129,6 @@ OPTION(BUILD_TEST
   "Build a test application."
   ON
 )
-
-IF(BUILD_TEST)
-  # Create the test
-  ADD_EXECUTABLE(${KIT}
-    ${EXECUTABLE_FLAG} 
-    ${ALL_SOURCES}
-    ${KIT_EXTRA_SRCS}
-  )
-
-  TARGET_LINK_LIBRARIES(${KIT}
-    ${VTK_LOCAL_LIBS}
-    ${OPENGL_gl_LIBRARY}
-  )
-ENDIF(BUILD_TEST)
 
 # Give the user the option of wrapping the library in Python
 OPTION(WRAP_PYTHON 
