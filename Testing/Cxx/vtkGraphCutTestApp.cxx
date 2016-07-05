@@ -14,7 +14,6 @@
 #include "vtkGraphCutDataTypes.h"
 #include "vtkGraphCutProtected.h"
 
-void testEdgeStruct();
 void testCreateNodes();
 void testCreateEdges();
 void testIsValidCoordinate();
@@ -27,14 +26,12 @@ void testSettingSeedPoints();
 void testGraphCutReset();
 void testIncomingEdge();
 void testIncomingEdgeWithConnectivity(vtkGraphCutProtected*, std::vector<vtkNode>*, std::vector<vtkEdge>*, int*, vtkConnectivity);
-void testCostFunctionSimple();
-void testBasicRunThrough();
 
-vtkImageData* createTestImageData();
+
+vtkImageData* createTestImageData(int dimensions[3]);
 
 
 int main(int argc, char const *argv[]) {
-    testEdgeStruct();
     testCreateNodes();
     testCreateEdges();
     testIsValidCoordinate();
@@ -45,28 +42,8 @@ int main(int argc, char const *argv[]) {
     testSettingSeedPoints();
 	testGraphCutReset();
 //	testIncomingEdge();
-//	testCostFunctionSimple();
-//	testBasicRunThrough();
 	
 	return 0;
-}
-
-/**
- * Convenience method for creating a simple dataset.
- */
-vtkImageData* createTestImageData() {
-	vtkImageData* imageData = vtkImageData::New();
-    int dimensions[3] = {2, 3, 1};
-	imageData->SetDimensions(dimensions[0], dimensions[1], dimensions[2]);
-	imageData->AllocateScalars(VTK_DOUBLE, 1);
-    for (int z = 0; z < dimensions[2]; z++) {
-        for (int y = 0; y < dimensions[1]; y++) {
-            for (int x = 0; x < dimensions[0]; x++) {
-                imageData->SetScalarComponentFromDouble(x, y, z, 0, rand() % 100);
-            }
-        }
-    }
-	return imageData;
 }
 
 /**
@@ -509,106 +486,3 @@ void testIncomingEdgeWithConnectivity(vtkGraphCutProtected* graphCut, std::vecto
 	// int parent = graphCut->ParentForNode(edge.node2, nodes, edges, dimensions, connectivity);
 	// assert(parent == edge.node1);
 }
-
-void testCostFunctionSimple() {
-    std::cout << __FUNCTION__ << "\n";
-    vtkGraphCut* graphCut = vtkGraphCut::New();
-    vtkPoints* foregroundPoints = vtkPoints::New();
-    foregroundPoints->SetNumberOfPoints(2);
-    foregroundPoints->SetPoint(1, 0, 0, 1);
-
-    vtkPoints* backgroundPoints = vtkPoints::New();
-    backgroundPoints->SetNumberOfPoints(2);
-    backgroundPoints->SetPoint(0, 2, 3, 4);
-    backgroundPoints->SetPoint(1, 2, 3, 5);
-
-    graphCut->SetSeedPoints(foregroundPoints, backgroundPoints);
-
-    vtkGraphCutCostFunction* costFunction = vtkGraphCutCostFunctionSimple::New();
-    graphCut->SetCostFunction(costFunction);
-
-    assert(graphCut->GetCostFunction() == costFunction);
-
-    vtkImageData* imageData = vtkImageData::New();
-    imageData->SetDimensions(5, 6, 7);
-    imageData->AllocateScalars(VTK_DOUBLE, 1);
-    for (int z = 0; z < 7; z++) {
-        for (int y = 0; y < 6; y++) {
-            for (int x = 0; x < 5; x++) {
-                imageData->SetScalarComponentFromDouble(x, y, z, 0, rand() % 100);
-            }
-        }
-    }
-    graphCut->SetInput(imageData);
-    graphCut->SetConnectivity(SIX);
-
-    graphCut->Update();
-    
-    graphCut->Delete();
-    std::cout << "Done!" << "\n";
-}
-
-void testBasicRunThrough() {
-	std::cout << __FUNCTION__ << "\n";
-
-	vtkImageData* input = vtkImageData::New();
-	input->SetDimensions(2, 3, 4);
-	input->AllocateScalars(VTK_DOUBLE, 1);
-	input->SetOrigin(0.0, 0.5, 1.0);
-
-	for (int z = 0; z < 4; ++z)	{
-		for (int y = 0; y < 3; ++y)	{
-			for (int x = 0; x < 2; ++x)	{
-				input->SetScalarComponentFromDouble(x, y, z, 0, (double)(rand() % 100));
-			}
-		}
-	}
-
-	vtkPoints* foregroundPoints = vtkPoints::New();
-	foregroundPoints->SetNumberOfPoints(1);
-	foregroundPoints->SetPoint(0, 0, 0, 0);
-	vtkPoints* backgroundPoints = vtkPoints::New();
-	backgroundPoints->SetNumberOfPoints(1);
-	foregroundPoints->SetPoint(0, 1, 1, 1);
-
-	vtkGraphCut* graphCut = vtkGraphCut::New();
-	graphCut->SetSeedPoints(foregroundPoints, backgroundPoints);
-	graphCut->SetInput(input);
-
-	assert(graphCut->GetOutput() == NULL);
-
-	graphCut->Update();
-
-	vtkImageData* output = graphCut->GetOutput();
-	assert(output != NULL);
-	int* inputDimensions = input->GetDimensions();
-	int* outputDimensions = output->GetDimensions();
-	assert(inputDimensions[0] == outputDimensions[0]);
-	assert(inputDimensions[1] == outputDimensions[1]);
-	assert(inputDimensions[2] == outputDimensions[2]);
-
-	double* inputSpacing = input->GetSpacing();
-	double* outputSpacing = output->GetSpacing();
-	assert(inputSpacing[0] == outputSpacing[0]);
-	assert(inputSpacing[1] == outputSpacing[1]);
-	assert(inputSpacing[2] == outputSpacing[2]);
-
-	double* inputOrigin = input->GetOrigin();
-	double* outputOrigin = output->GetOrigin();
-	assert(inputOrigin[0] == outputOrigin[0]);
-	assert(inputOrigin[1] == outputOrigin[1]);
-	assert(inputOrigin[2] == outputOrigin[2]);
-
-	float outputPoint1 = output->GetScalarComponentAsFloat(0, 0, 0, 0);
-	float outputPoint2 = output->GetScalarComponentAsFloat(1, 1, 1, 0);
-	assert(outputPoint2 < outputPoint1);
-	assert(outputPoint2 == 0.0);
-	assert(outputPoint1 == 1.0);
-
-	graphCut->Reset();
-	assert(graphCut->GetOutput() == NULL);
-
-    graphCut->Delete();
-	std::cout << "Done!" << "\n";
-}
-
