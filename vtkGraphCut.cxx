@@ -70,6 +70,7 @@ vtkConnectivity vtkGraphCut::GetConnectivity() {
 vtkGraphCut::vtkGraphCut() {
     this->graphCut = vtkGraphCutProtected::New();
 }
+
 vtkGraphCut::~vtkGraphCut() {
     this->graphCut->Delete();
 }
