@@ -40,26 +40,13 @@ INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR})
 INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR})
 INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIR})
 
-SET(HEADERS
-  vtkGraphCutDefinitions.h
-  vtkGraphCutDataTypes.h
-  vtkGraphCut.h
-  vtkGraphCutProtected.h
-  vtkGraphCutCostFunction.h
-  vtkGraphCutCostFunctionSimple.h
-  vtkEdge.h
-)
+# Find all headers in root folder
+file(GLOB HEADERS *.h)
 
-SET(SOURCES 
-  vtkGraphCut.cxx
-  vtkGraphCutProtected.cxx
-  vtkGraphCutCostFunction.cxx
-  vtkGraphCutCostFunctionSimple.cxx
-  vtkEdge.cxx
-)
+# Find all source files in root folder
+FILE(GLOB SOURCES *.cxx)
 
 SET(ALL_SOURCES
-  ${KIT}.cxx
   ${SOURCES}
 )
 
