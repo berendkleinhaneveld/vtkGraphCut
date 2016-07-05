@@ -51,8 +51,8 @@ public:
     int IndexForCoordinate(int* coordinate, int* dimensions);
     bool CoordinateForIndex(int index, int* dimensions, int* coordinate);
     
-    vtkEdge EdgeFromNodeToNode(std::vector<vtkEdge>* edges, int sourceIndex, int targetIndex, int* dimensions, vtkConnectivity connectivity);
     int IndexForEdgeFromNodeToNode(std::vector<vtkEdge>* edges, int sourceIndex, int targetIndex, int* dimensions, vtkConnectivity connectivity);
+    vtkEdge EdgeFromNodeToNode(std::vector<vtkEdge>* edges, int sourceIndex, int targetIndex, int* dimensions, vtkConnectivity connectivity);
     std::vector<int> PathToRoot(int aNodeIndex, vtkConnectivity connectivity, int* maxPossibleFlow);
     void PushFlowThroughEdges(int flow, std::vector<int> edges, std::vector<int>* orphans, vtkTreeType);
     
@@ -60,8 +60,6 @@ public:
     int Grow(vtkTreeType tree, bool& foundActiveNodes, std::priority_queue<std::pair<int, int> > activeNodes);
     std::vector<int>* Augment(int edgeIndex);
     void Adopt(std::vector<int>*);
-    
-    void CalculateCapacitiesForEdges();
     
 protected:
     vtkGraphCutProtected();
@@ -80,6 +78,9 @@ protected:
     
     int* dimensions;
     vtkConnectivity connectivity;
+    
+private:
+    void CalculateCapacitiesForEdges();
 };
 
 #endif /* vtkGraphCutProtected_h */

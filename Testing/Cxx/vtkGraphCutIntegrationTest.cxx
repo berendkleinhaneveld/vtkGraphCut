@@ -13,6 +13,7 @@
 
 
 // Test methods
+void testGraphCutReset();
 void testCostFunctionSimple();
 void testBasicRunThrough();
 
@@ -21,6 +22,7 @@ vtkImageData* createTestImageData(int dimensions[3]);
 
 
 int main(int argc, char const *argv[]) {
+    testGraphCutReset();
 	testCostFunctionSimple();
 	testBasicRunThrough();	
 	return 0;
@@ -38,6 +40,70 @@ vtkImageData* createTestImageData(int dimensions[3]) {
         }
     }
 	return imageData;
+}
+
+/**
+ * Tests the default state of a new vtkGraphCut object and tests whether
+ * the Reset function resets all the cached data.
+ * - Reset
+ * - SetConnectivity
+ * - SetSeedPoints
+ * - SetCostFunction
+ * - SetInput
+ * - GetForegroundPoints
+ * - GetBackgroundPoints
+ * - GetInput
+ * - GetCostFunction
+ * - GetConnectivity
+ * - GetOutput
+ */
+void testGraphCutReset() {
+    std::cout << __FUNCTION__ << "\n";
+    
+    vtkGraphCut* graphCut = vtkGraphCut::New();
+    
+    assert(graphCut->GetForegroundPoints() == NULL);
+    assert(graphCut->GetBackgroundPoints() == NULL);
+    assert(graphCut->GetInput() == NULL);
+    assert(graphCut->GetCostFunction() == NULL);
+    assert(graphCut->GetConnectivity() == UNCONNECTED);
+    assert(graphCut->GetOutput() == NULL);
+    
+    vtkPoints* foregroundPoints = vtkPoints::New();
+    foregroundPoints->SetNumberOfPoints(2);
+    vtkPoints* backgroundPoints = vtkPoints::New();
+    backgroundPoints->SetNumberOfPoints(2);
+    
+    assert(graphCut->GetConnectivity() == UNCONNECTED);
+    
+    graphCut->SetConnectivity(TWENTYSIX);
+    graphCut->SetSeedPoints(foregroundPoints, backgroundPoints);
+    
+    vtkGraphCutCostFunction* costFunction = vtkGraphCutCostFunctionSimple::New();
+    graphCut->SetCostFunction(costFunction);
+    
+    vtkImageData* imageData = vtkImageData::New();
+    imageData->SetDimensions(5, 6, 7);
+    imageData->AllocateScalars(VTK_DOUBLE, 1);
+    graphCut->SetInput(imageData);
+    
+    assert(graphCut->GetForegroundPoints() == foregroundPoints);
+    assert(graphCut->GetBackgroundPoints() == backgroundPoints);
+    assert(graphCut->GetInput() == imageData);
+    assert(graphCut->GetCostFunction() == costFunction);
+    assert(graphCut->GetConnectivity() == TWENTYSIX);
+    
+    graphCut->Reset();
+    
+    assert(graphCut->GetForegroundPoints() == NULL);
+    assert(graphCut->GetBackgroundPoints() == NULL);
+    assert(graphCut->GetInput() == NULL);
+    assert(graphCut->GetCostFunction() == NULL);
+    assert(graphCut->GetConnectivity() == UNCONNECTED);
+    assert(graphCut->GetOutput() == NULL);
+    
+    graphCut->Delete();
+    std::cout << "Done!" << "\n";
 }
 
 void testCostFunctionSimple() {
@@ -81,7 +147,8 @@ void testCostFunctionSimple() {
 void testBasicRunThrough() {
 	std::cout << __FUNCTION__ << "\n";
 
-	vtkImageData* input = createTestImageData({2, 3, 4});
+    int dimensions[3] = {2, 3, 4};
+	vtkImageData* input = createTestImageData(dimensions);
 	input->SetOrigin(0.0, 0.5, 1.0);
 
 	vtkPoints* foregroundPoints = vtkPoints::New();

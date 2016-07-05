@@ -33,4 +33,16 @@ struct vtkNode
     int parent; // index of parent
 };
 
+struct vtkNodeStatistics
+{
+    double minimum;
+    double maximum;
+    double mean;
+    double variance;
+    double foregroundMean;
+    double foregroundVariance;
+    double backgroundMean;
+    double backgroundVariance;
+};
+
 #endif // __vtkGraphCutDataTypes_h

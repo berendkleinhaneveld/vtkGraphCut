@@ -10,31 +10,7 @@
 #include <vtkImageData.h>
 #include <vtkPoints.h>
 #include "vtkEdge.h"
-
-struct vtkNodeStatistics
-{
-    double minimum;
-    double maximum;
-    double mean;
-    double variance;
-    double foregroundMean;
-    double foregroundVariance;
-    double backgroundMean;
-    double backgroundVariance;
-};
-
-
-bool IsNodeConnected(int x, int y, int z, vtkConnectivity connectivity);
-int NumberOfEdgesForConnectivity(vtkConnectivity connectivity);
-
-bool CalculateCoordinateForIndex(int index, int* dimensions, int* coordinate);
-double GetIntensityForVoxel(vtkImageData* imageData, int index);
-double GetIntensityForVoxel(vtkImageData* imageData, double* xyz);
-double GetIntensityForVoxel(vtkImageData* imageData, int* xyz);
-double GetIntensityForVoxel(vtkImageData* imageData, int x, int y, int z);
-double CalculateTerminalCapacity(double intensity, double mean, double variance);
-double CalculateRegionalCapacity(vtkImageData* imageData, vtkEdge edge, double variance);
-double CalculateCapacity(vtkImageData* imageData, vtkEdge edge, vtkNodeStatistics statistics);
+#include "vtkGraphCutHelperFunctions.h"
 
 vtkStandardNewMacro(vtkGraphCutProtected);
 
@@ -234,55 +210,6 @@ void vtkGraphCutProtected::Update() {
     this->outputImageData->SetSpacing(this->inputImageData->GetSpacing());
     this->outputImageData->SetOrigin(this->inputImageData->GetOrigin());
     // TODO: copy data from tree property of all the nodes
-}
-
-
-
-int vtkGraphCutProtected::IndexForEdgeFromNodeToNode(std::vector<vtkEdge>* edges, int sourceIndex,
-                                                     int targetIndex, int* dimensions, vtkConnectivity connectivity) {
-    
-    assert(sourceIndex != INVALID);
-    assert(targetIndex != INVALID);
-    
-    int from;
-    int to;
-    
-    if (targetIndex < 0 || sourceIndex < 0) {
-        from = std::max(targetIndex, sourceIndex);
-        to = std::min(sourceIndex, targetIndex);
-        assert(from >= 0);
-    } else if (targetIndex < sourceIndex) {
-        from = targetIndex;
-        to = sourceIndex;
-    } else {
-        from = sourceIndex;
-        to = targetIndex;
-    }
-    
-    assert(from >= 0);
-    assert(from < dimensions[0] * dimensions[1] * dimensions[2]);
-    
-    int index = from * (2 + NumberOfEdgesForConnectivity(connectivity));
-    assert(index >= from);
-    
-    vtkEdge edge = edges->at(index);
-    if (to == SOURCE) {
-        assert(edge.node1() == SOURCE && edge.node2() == from);
-        return index;
-    } else {
-        while (edge.node1() <= from && edge.node2() != to) {
-            ++index;
-            edge = edges->at(index);
-        }
-    }
-    
-    assert(edge.node1() == from && edge.node2() == to);
-    return index;
-}
-
-vtkEdge vtkGraphCutProtected::EdgeFromNodeToNode(std::vector<vtkEdge>* edges, int sourceIndex,
-                                                 int targetIndex, int* dimensions, vtkConnectivity connectivity) {
-    return edges->at(IndexForEdgeFromNodeToNode(edges, sourceIndex, targetIndex, dimensions, connectivity));
 }
 
 // Algorithm steps
@@ -492,8 +419,51 @@ std::vector<int> vtkGraphCutProtected::PathToRoot(int aNodeIndex, vtkConnectivit
     return edges;
 }
 
-void vtkGraphCutProtected::Adopt(std::vector<int>* orphans) {
-    // TODO: implement Adopt stage
+int vtkGraphCutProtected::IndexForEdgeFromNodeToNode(std::vector<vtkEdge>* edges, int sourceIndex,
+                                                     int targetIndex, int* dimensions, vtkConnectivity connectivity) {
+    
+    assert(sourceIndex != INVALID);
+    assert(targetIndex != INVALID);
+    
+    int from;
+    int to;
+    
+    if (targetIndex < 0 || sourceIndex < 0) {
+        from = std::max(targetIndex, sourceIndex);
+        to = std::min(sourceIndex, targetIndex);
+        assert(from >= 0);
+    } else if (targetIndex < sourceIndex) {
+        from = targetIndex;
+        to = sourceIndex;
+    } else {
+        from = sourceIndex;
+        to = targetIndex;
+    }
+    
+    assert(from >= 0);
+    assert(from < dimensions[0] * dimensions[1] * dimensions[2]);
+    
+    int index = from * (2 + vtkGraphCutHelper::NumberOfEdgesForConnectivity(connectivity));
+    assert(index >= from);
+    
+    vtkEdge edge = edges->at(index);
+    if (to == SOURCE) {
+        assert(edge.node1() == SOURCE && edge.node2() == from);
+        return index;
+    } else {
+        while (edge.node1() <= from && edge.node2() != to) {
+            ++index;
+            edge = edges->at(index);
+        }
+    }
+    
+    assert(edge.node1() == from && edge.node2() == to);
+    return index;
+}
+
+vtkEdge vtkGraphCutProtected::EdgeFromNodeToNode(std::vector<vtkEdge>* edges, int sourceIndex,
+                                                 int targetIndex, int* dimensions, vtkConnectivity connectivity) {
+    return edges->at(IndexForEdgeFromNodeToNode(edges, sourceIndex, targetIndex, dimensions, connectivity));
 }
 
 std::vector<vtkNode>* vtkGraphCutProtected::CreateNodesForDimensions(int* dimensions) {
@@ -521,7 +491,7 @@ std::vector<vtkEdge>* vtkGraphCutProtected::CreateEdgesForNodes(std::vector<vtkN
     std::vector<vtkEdge>* result = new std::vector<vtkEdge>();
     
     int numberOfNodes = nodes->size();
-    int numberOfEdges = numberOfNodes * 2 + numberOfNodes * NumberOfEdgesForConnectivity(connectivity);
+    int numberOfEdges = numberOfNodes * 2 + numberOfNodes * vtkGraphCutHelper::NumberOfEdgesForConnectivity(connectivity);
     assert(numberOfEdges >= 0);
     result->reserve(numberOfEdges);
     
@@ -542,7 +512,7 @@ std::vector<vtkEdge>* vtkGraphCutProtected::CreateEdgesForNodes(std::vector<vtkN
                     coord[0] = coordinate[0]+x;
                     coord[1] = coordinate[1]+y;
                     coord[2] = coordinate[2]+z;
-                    if (IsNodeConnected(x, y, z, connectivity)) {
+                    if (vtkGraphCutHelper::IsNodeConnected(x, y, z, connectivity)) {
                         vtkEdge nodeEdge = vtkEdge(i, IsValidCoordinate(coord, dimensions) ? IndexForCoordinate(coord, dimensions) : INVALID);
                         result->push_back(nodeEdge);
                     }
@@ -568,7 +538,7 @@ std::vector<int>* vtkGraphCutProtected::IndicesForNeighbours(int index, int* dim
                 coord[0] = coordinate[0]+x;
                 coord[1] = coordinate[1]+y;
                 coord[2] = coordinate[2]+z;
-                if (IsNodeConnected(x, y, z, connectivity)
+                if (vtkGraphCutHelper::IsNodeConnected(x, y, z, connectivity)
                     && IsValidCoordinate(coord, dimensions)) {
                     result->push_back(IndexForCoordinate(coord, dimensions));
                 }
@@ -602,7 +572,7 @@ int vtkGraphCutProtected::IndexForCoordinate(int* coordinate, int* dimensions) {
 }
 
 bool vtkGraphCutProtected::CoordinateForIndex(int index, int* dimensions, int* coordinate) {
-    return CalculateCoordinateForIndex(index, dimensions, coordinate);
+    return vtkGraphCutHelper::CalculateCoordinateForIndex(index, dimensions, coordinate);
 }
 
 // Protected methods
@@ -629,7 +599,7 @@ void vtkGraphCutProtected::CalculateCapacitiesForEdges() {
     for (int z = 0; z < dimensions[2]; z++) {
         for (int y = 0; y < dimensions[1]; y++) {
             for (int x = 0; x < dimensions[0]; x++) {
-                double intensity = GetIntensityForVoxel(this->inputImageData, x, y, z);
+                double intensity = vtkGraphCutHelper::GetIntensityForVoxel(this->inputImageData, x, y, z);
                 minimum = std::min(minimum, intensity);
                 maximum = std::max(maximum, intensity);
                 mean += intensity;
@@ -648,7 +618,7 @@ void vtkGraphCutProtected::CalculateCapacitiesForEdges() {
     for (int z = 0; z < dimensions[2]; z++) {
         for (int y = 0; y < dimensions[1]; y++) {
             for (int x = 0; x < dimensions[0]; x++) {
-                double intensity = GetIntensityForVoxel(this->inputImageData, x, y, z);
+                double intensity = vtkGraphCutHelper::GetIntensityForVoxel(this->inputImageData, x, y, z);
                 variance += pow(intensity - mean, 2);
             }
         }
@@ -666,7 +636,7 @@ void vtkGraphCutProtected::CalculateCapacitiesForEdges() {
     int numberOfForegroundPoints = this->foregroundPoints->GetNumberOfPoints();
     for (int i = 0; i < numberOfForegroundPoints; i++) {
         double* xyz = this->foregroundPoints->GetPoint(i);
-        double foregroundIntensity = GetIntensityForVoxel(this->inputImageData, xyz);
+        double foregroundIntensity = vtkGraphCutHelper::GetIntensityForVoxel(this->inputImageData, xyz);
         foregroundMean += foregroundIntensity / (double)numberOfForegroundPoints;
         foregroundVariance += (foregroundIntensity * foregroundIntensity) / (double)numberOfForegroundPoints;
     }
@@ -675,7 +645,7 @@ void vtkGraphCutProtected::CalculateCapacitiesForEdges() {
     int numberOfBackgroundPoints = this->backgroundPoints->GetNumberOfPoints();
     for (int i = 0; i < numberOfBackgroundPoints; i++) {
         double* xyz = this->backgroundPoints->GetPoint(i);
-        double backgroundIntensity = GetIntensityForVoxel(this->inputImageData, xyz);
+        double backgroundIntensity = vtkGraphCutHelper::GetIntensityForVoxel(this->inputImageData, xyz);
         backgroundMean += backgroundIntensity / (double)numberOfBackgroundPoints;
         backgroundVariance += (backgroundIntensity * backgroundIntensity) / (double)numberOfBackgroundPoints;
     }
@@ -706,112 +676,7 @@ void vtkGraphCutProtected::CalculateCapacitiesForEdges() {
     statistics.backgroundVariance = backgroundVariance;
     
     for (std::vector<vtkEdge>::iterator i = this->edges->begin(); i != this->edges->end(); ++i) {
-        double capacity = CalculateCapacity(this->inputImageData, *i, statistics);
+        double capacity = vtkGraphCutHelper::CalculateCapacity(this->inputImageData, *i, statistics);
         i->setCapacity((int)(255.0 * capacity));
     }
-}
-
-// Helper functions
-
-bool IsNodeConnected(int x, int y, int z, vtkConnectivity connectivity) {
-    switch (connectivity) {
-        case SIX:
-            return (std::abs(x + y) == 1 && z == 0)
-            || (std::abs(y + z) == 1 && x == 0)
-            || (std::abs(z + x) == 1 && y == 0);
-        case EIGHTEEN:
-            return (x != 0 || y != 0 || z != 0)
-            && (std::abs(x) + std::abs(y) + std::abs(z) != 3);
-        case TWENTYSIX:
-            return (x != 0 || y != 0 || z != 0);
-        default:
-            return false;
-    }
-}
-
-int NumberOfEdgesForConnectivity(vtkConnectivity connectivity) {
-    switch (connectivity) {
-        case SIX:
-            return 3;
-        case EIGHTEEN:
-            return 6;
-        case TWENTYSIX:
-            return 7;
-        case UNCONNECTED:
-            return 0;
-    }
-    return -1;
-}
-
-double GetIntensityForVoxel(vtkImageData* imageData, int index) {
-    int coordinate[3] = {0, 0, 0};
-    CalculateCoordinateForIndex(index, imageData->GetDimensions(), coordinate);
-    return GetIntensityForVoxel(imageData, coordinate);
-}
-
-double GetIntensityForVoxel(vtkImageData* imageData, double* xyz) {
-    return GetIntensityForVoxel(imageData, (int)xyz[0], (int)xyz[1], (int)xyz[2]);
-}
-
-double GetIntensityForVoxel(vtkImageData* imageData, int* xyz) {
-    return GetIntensityForVoxel(imageData, xyz[0], xyz[1], xyz[2]);
-}
-
-double GetIntensityForVoxel(vtkImageData* imageData, int x, int y, int z) {
-    int numberOfComponents = imageData->GetNumberOfScalarComponents();
-    double result = 0.0;
-    for (int i = 0; i < numberOfComponents; i++) {
-        result += imageData->GetScalarComponentAsDouble(x, y, z, i);
-    }
-    result /= (double)numberOfComponents;
-    return result;
-}
-
-double CalculateCapacity(vtkImageData* imageData, vtkEdge edge, vtkNodeStatistics statistics) {
-    if (edge.isTerminal()) {
-        int nodeIndex = edge.nonRootNode();
-        assert(nodeIndex >= 0);
-        int coordinate[3] = {0, 0, 0};
-        CalculateCoordinateForIndex(nodeIndex, imageData->GetDimensions(), coordinate);
-        double intensity = GetIntensityForVoxel(imageData, coordinate);
-        double mean = edge.node1() == SINK ? statistics.foregroundMean : statistics.backgroundMean;
-        double variance = edge.node1() == SINK ? statistics.foregroundVariance : statistics.backgroundVariance;
-        return CalculateTerminalCapacity(intensity, mean, variance);
-    } else {
-        return CalculateRegionalCapacity(imageData, edge, statistics.variance);
-    }
-}
-
-double CalculateTerminalCapacity(double intensity, double mean, double variance) {
-    // The mean and var values have already been normalized. So now the costs are
-    // calculated as the absolute difference from the mean devided by the variance
-    return fabs(intensity - mean) / variance;
-}
-
-double CalculateRegionalCapacity(vtkImageData* imageData, vtkEdge edge, double variance) {
-    assert(!edge.isTerminal());
-    double intensity1 = GetIntensityForVoxel(imageData, edge.node1());
-    double intensity2 = GetIntensityForVoxel(imageData, edge.node2());
-    
-    // TODO: could be expanded with distance information
-    double result = exp(- pow(intensity1 - intensity2, 2) / (2 * pow(variance, 2)));
-    // std::cout << intensity1 << ", " << intensity2 << ", " << variance << ", " << result << "\n";
-    return result;
-}
-
-bool CalculateCoordinateForIndex(int index, int* dimensions, int* coordinate) {
-    if (index >= dimensions[0] * dimensions[1] * dimensions[2] || index < 0) {
-        return false;
-    }
-    
-    int dims = dimensions[0] * dimensions[1];
-    int rest = index;
-    coordinate[2] = rest / dims;
-    rest -= coordinate[2] * dims;
-    dims = dimensions[0];
-    coordinate[1] = rest / dims;
-    rest -= coordinate[1] * dims;
-    coordinate[0] = rest;
-    
-    return true;
 }
