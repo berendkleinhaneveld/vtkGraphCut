@@ -359,6 +359,10 @@ std::vector<int>* vtkGraphCutProtected::Augment(int edgeIndex) {
     return orphans;
 }
 
+void vtkGraphCutProtected::Adopt(std::vector<int>*) {
+    
+}
+
 void vtkGraphCutProtected::PushFlowThroughEdges(int maxPossibleFlow, std::vector<int> edges, std::vector<int>* orphans, vtkTreeType tree) {
     for (std::vector<int>::iterator i = edges.begin(); i != edges.end(); ++i) {
         vtkEdge edge = this->edges->at(*i);
