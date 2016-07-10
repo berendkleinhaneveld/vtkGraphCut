@@ -677,6 +677,7 @@ void vtkGraphCutProtected::CalculateCapacitiesForEdges() {
     
     for (std::vector<vtkEdge>::iterator i = this->edges->begin(); i != this->edges->end(); ++i) {
         double capacity = vtkGraphCutHelper::CalculateCapacity(this->inputImageData, *i, statistics);
-        i->setCapacity((int)(255.0 * capacity));
+        int cap = (int)(255.0 * capacity) + 1;
+        i->setCapacity(cap);
     }
 }
