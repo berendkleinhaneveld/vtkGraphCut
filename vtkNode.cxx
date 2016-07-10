@@ -7,3 +7,12 @@
 //
 
 #include "vtkNode.h"
+
+vtkNode::vtkNode() {
+    active = false;
+    orphan = false;
+    seedPoint = false;
+    depthInTree = -1;
+    tree = NONE;
+    parent = INVALID;
+}

@@ -13,7 +13,7 @@ class vtkImageData;
 class vtkPoints;
 class vtkEdge;
 class vtkGraphCutCostFunction;
-struct vtkNode;
+class vtkNode;
 
 #include <vtkObjectFactory.h>
 #include <stdio.h>

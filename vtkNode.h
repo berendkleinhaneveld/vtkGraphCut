@@ -6,9 +6,22 @@
 //
 //
 
-#ifndef vtkNode_hpp
-#define vtkNode_hpp
+#ifndef vtkNode_h
+#define vtkNode_h
 
-#include <stdio.h>
+#include "vtkGraphCutDataTypes.h"
+
+class vtkNode
+{
+public:
+    vtkNode();
+    
+    vtkTreeType tree;
+    int depthInTree;
+    int parent;
+    bool active;
+    bool orphan;
+    bool seedPoint;
+};
 
 #endif /* vtkNode_h */
