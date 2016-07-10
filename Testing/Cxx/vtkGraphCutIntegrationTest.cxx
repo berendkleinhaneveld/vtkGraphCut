@@ -161,6 +161,7 @@ void testBasicRunThrough() {
 	vtkGraphCut* graphCut = vtkGraphCut::New();
 	graphCut->SetSeedPoints(foregroundPoints, backgroundPoints);
 	graphCut->SetInput(input);
+    graphCut->SetConnectivity(SIX);
 
 	assert(graphCut->GetOutput() == NULL);
 
