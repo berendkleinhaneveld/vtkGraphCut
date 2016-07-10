@@ -23,8 +23,8 @@ vtkImageData* createTestImageData(int dimensions[3]);
 
 int main(int argc, char const *argv[]) {
     testGraphCutReset();
-	testCostFunctionSimple();
-	testBasicRunThrough();	
+    // testCostFunctionSimple();
+    // testBasicRunThrough();
     return 0;
 }
 
