@@ -1,0 +1,33 @@
+//
+//  vtkNodeTest.cpp
+//  vtkGraphCut
+//
+//  Created by Berend Klein Haneveld on 10/07/16.
+//
+//
+
+#include <iostream>
+#include "vtkNode.h"
+
+void testNodeConstructor();
+
+int main() {
+    testNodeConstructor();
+    return 0;
+}
+
+void testNodeConstructor() {
+    std::cout << __FUNCTION__ << "\n";
+    
+    vtkNode* node = new vtkNode();
+    
+    assert(node->active == false);
+    assert(node->depthInTree == -1);
+    assert(node->tree == NONE);
+    assert(node->parent == INVALID);
+    assert(node->orphan == false);
+    
+    delete node;
+    
+    std::cout << "Done!" << "\n";
+}

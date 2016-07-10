@@ -10,6 +10,7 @@
 #include <vtkImageData.h>
 #include <vtkPoints.h>
 #include "vtkEdge.h"
+#include "vtkNode.h"
 #include "vtkGraphCutHelperFunctions.h"
 
 vtkStandardNewMacro(vtkGraphCutProtected);
@@ -478,13 +479,6 @@ std::vector<vtkNode>* vtkGraphCutProtected::CreateNodesForDimensions(int* dimens
     
     for (int i = 0; i < numberOfVertices; i++) {
         vtkNode node;
-        node.active = false;
-        node.orphan = false;
-        node.terminal = false;
-        node.seedPoint = false;
-        node.depthInTree = -1;
-        node.tree = NONE;
-        node.parent = INVALID;
         result->push_back(node);
     }
     return result;

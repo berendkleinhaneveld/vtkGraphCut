@@ -10,7 +10,7 @@
 #define __vtkGraphCutCostFunction_h
 
 class vtkEdge;
-struct vtkNode;
+class vtkNode;
 
 #include <vtkObjectFactory.h>
 #include <vtkImageData.h>

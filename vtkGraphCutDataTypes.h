@@ -9,9 +9,7 @@
 #ifndef __vtkGraphCutDataTypes_h
 #define __vtkGraphCutDataTypes_h
 
-
 #include <assert.h>
-#include <vtkObjectFactory.h>
 
 enum vtkTreeType
 {
@@ -19,18 +17,6 @@ enum vtkTreeType
 	SOURCE = -1,
 	SINK = -2,
 	INVALID = -3,
-};
-
-struct vtkNode
-{
-	bool terminal;
-	bool orphan;
-	bool active;
-	bool seedPoint;
-	vtkIdType timeStamp;
-	int depthInTree;
-	vtkTreeType tree;
-    int parent; // index of parent
 };
 
 struct vtkNodeStatistics
