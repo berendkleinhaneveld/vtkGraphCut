@@ -7,6 +7,7 @@
 //
 
 #include <iostream>
+#include <assert.h>
 #include "vtkNode.h"
 
 void testNodeConstructor();
