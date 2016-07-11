@@ -20,7 +20,9 @@ int main() {
 void testNodesConstructor() {
     std::cout << __FUNCTION__ << "\n";
     
-    assert(true);
+    vtkNodes* nodes = new vtkNodes();
+    
+    delete nodes;
     
     std::cout << "Done!" << "\n";
 }
