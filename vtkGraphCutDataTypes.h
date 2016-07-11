@@ -9,8 +9,6 @@
 #ifndef __vtkGraphCutDataTypes_h
 #define __vtkGraphCutDataTypes_h
 
-#include <assert.h>
-
 enum vtkTreeType
 {
 	NONE = 0,

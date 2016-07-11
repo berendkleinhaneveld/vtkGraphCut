@@ -7,10 +7,12 @@
 //
 
 #include "vtkGraphCutCostFunction.h"
+#include "vtkNode.h"
+#include "vtkEdge.h"
 
-#pragma mark - Public
 
 vtkStandardNewMacro(vtkGraphCutCostFunction);
+
 
 void vtkGraphCutCostFunction::PrintSelf(ostream& os, vtkIndent indent) {
 	this->Superclass::PrintSelf(os, indent);

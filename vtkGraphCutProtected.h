@@ -14,6 +14,7 @@ class vtkPoints;
 class vtkEdge;
 class vtkGraphCutCostFunction;
 class vtkNode;
+class vtkNodes;
 
 #include <vtkObjectFactory.h>
 #include <stdio.h>
@@ -44,12 +45,7 @@ public:
     vtkPoints* GetForegroundPoints();
     vtkPoints* GetBackgroundPoints();
     
-    std::vector<vtkNode>* CreateNodesForDimensions(int* dimensions);
-    std::vector<vtkEdge>* CreateEdgesForNodes(std::vector<vtkNode>* nodes, int* dimensions, vtkConnectivity connectivity);
-    std::vector<int>* IndicesForNeighbours(int index, int* dimensions, vtkConnectivity connectivity);
-    bool IsValidCoordinate(int* coordinate, int* dimensions);
-    int IndexForCoordinate(int* coordinate, int* dimensions);
-    bool CoordinateForIndex(int index, int* dimensions, int* coordinate);
+    std::vector<vtkEdge>* CreateEdgesForNodes(vtkNodes* nodes, int* dimensions, vtkConnectivity connectivity);
     
     int IndexForEdgeFromNodeToNode(std::vector<vtkEdge>* edges, int sourceIndex, int targetIndex, int* dimensions, vtkConnectivity connectivity);
     vtkEdge EdgeFromNodeToNode(std::vector<vtkEdge>* edges, int sourceIndex, int targetIndex, int* dimensions, vtkConnectivity connectivity);
@@ -68,7 +64,7 @@ protected:
     vtkImageData* inputImageData;
     vtkImageData* outputImageData;
     
-    std::vector<vtkNode>* nodes;
+    vtkNodes* nodes;
     std::vector<vtkEdge>* edges;
     
     vtkPoints* foregroundPoints;

@@ -7,6 +7,7 @@
 //
 
 #include <iostream>
+#include <assert.h>
 #include "vtkEdge.h"
 #include "vtkGraphCutDataTypes.h"
 

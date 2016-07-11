@@ -9,6 +9,8 @@
 #ifndef vtkGraphCutHelperFunctions_h
 #define vtkGraphCutHelperFunctions_h
 
+#include <assert.h>
+
 namespace vtkGraphCutHelper
 {
     // Helper functions
