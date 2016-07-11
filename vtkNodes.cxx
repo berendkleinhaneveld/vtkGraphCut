@@ -172,6 +172,24 @@ vtkNode* vtkNodes::GetNode(int index) {
 }
 
 
+int vtkNodes::GetSize() {
+    if (_nodes == NULL) {
+        return 0;
+    }
+    return _nodes->size();
+}
+
+
+std::vector<vtkNode*>::iterator vtkNodes::GetIterator() {
+    return _nodes->begin();
+}
+
+
+std::vector<vtkNode*>::iterator vtkNodes::GetEnd() {
+    return _nodes->end();
+}
+
+
 std::vector<vtkNode*>* vtkNodes::CreateNodesForDimensions(int* dimensions) {
     std::vector<vtkNode*>* result = new std::vector<vtkNode*>();
     

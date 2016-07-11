@@ -9,12 +9,15 @@
 #ifndef __vtkGraphCutCostFunction_h
 #define __vtkGraphCutCostFunction_h
 
+
 class vtkEdge;
 class vtkNode;
+
 
 #include <vtkObjectFactory.h>
 #include <vtkImageData.h>
 #include <vector>
+
 
 class VTK_EXPORT vtkGraphCutCostFunction : public vtkObject
 {
@@ -32,7 +35,6 @@ public:
 	virtual void SetNodes(std::vector<vtkNode>* nodes);
 	virtual void SetEdges(std::vector<vtkEdge>* edges);
 	virtual void SetInput(vtkImageData*);
-
 
 protected:
 	vtkGraphCutCostFunction();

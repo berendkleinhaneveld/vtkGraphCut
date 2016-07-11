@@ -14,6 +14,7 @@
 #include "vtkNode.h"
 #include "vtkGraphCutDataTypes.h"
 #include "vtkGraphCutProtected.h"
+#include "vtkNodes.h"
 
 
 void testCreateEdges();
@@ -21,7 +22,7 @@ void testEdgeFromNodeToNode();
 void testEdgeFromNodeToNodeWithConnectivity(vtkGraphCutProtected*, std::vector<vtkEdge>*, int*, vtkConnectivity);
 void testSettingSeedPoints();
 void testIncomingEdge();
-void testIncomingEdgeWithConnectivity(vtkGraphCutProtected*, std::vector<vtkNode>*, std::vector<vtkEdge>*, int*, vtkConnectivity);
+void testIncomingEdgeWithConnectivity(vtkGraphCutProtected*, vtkNodes*, std::vector<vtkEdge>*, int*, vtkConnectivity);
 
 
 int main(int argc, char const *argv[]) {
@@ -43,7 +44,11 @@ void testCreateEdges() {
     int dimensions[3] = {1, 1, 1};
 
     vtkGraphCutProtected* graphCut = vtkGraphCutProtected::New();
-    std::vector<vtkNode>* nodes = graphCut->CreateNodesForDimensions(dimensions);
+    vtkNodes* nodes = new vtkNodes();
+    nodes->SetDimensions(dimensions);
+    nodes->SetConnectivity(TWENTYSIX);
+    nodes->Update();
+    
     std::vector<vtkEdge>* edges = graphCut->CreateEdgesForNodes(nodes, dimensions, TWENTYSIX);
 
     int numberOfNodes = dimensions[0] * dimensions[1] * dimensions[2];
@@ -54,16 +59,27 @@ void testCreateEdges() {
     dimensions[1] = 1;
     dimensions[2] = 1;
 
-    nodes = graphCut->CreateNodesForDimensions(dimensions);
+    nodes->Reset();
+    nodes->SetDimensions(dimensions);
+    nodes->SetConnectivity(TWENTYSIX);
+    nodes->Update();
     edges = graphCut->CreateEdgesForNodes(nodes, dimensions, TWENTYSIX);
     numberOfNodes = dimensions[0] * dimensions[1] * dimensions[2];
     numberOfEdges = numberOfNodes * 2 + numberOfNodes * (7);
     assert(edges->size() == numberOfEdges);
 
+    nodes->Reset();
+    nodes->SetDimensions(dimensions);
+    nodes->SetConnectivity(EIGHTEEN);
+    nodes->Update();
     edges = graphCut->CreateEdgesForNodes(nodes, dimensions, EIGHTEEN);
     numberOfEdges = numberOfNodes * 2 + numberOfNodes * (6);
     assert(edges->size() == numberOfEdges);
 
+    nodes->Reset();
+    nodes->SetDimensions(dimensions);
+    nodes->SetConnectivity(SIX);
+    nodes->Update();
     edges = graphCut->CreateEdgesForNodes(nodes, dimensions, SIX);
     numberOfEdges = numberOfNodes * 2 + numberOfNodes * (3);
     assert(edges->size() == numberOfEdges);
@@ -72,16 +88,27 @@ void testCreateEdges() {
     dimensions[1] = 2;
     dimensions[2] = 1;
 
-    nodes = graphCut->CreateNodesForDimensions(dimensions);
+    nodes->Reset();
+    nodes->SetDimensions(dimensions);
+    nodes->SetConnectivity(TWENTYSIX);
+    nodes->Update();
     edges = graphCut->CreateEdgesForNodes(nodes, dimensions, TWENTYSIX);
     numberOfNodes = dimensions[0] * dimensions[1] * dimensions[2];
     numberOfEdges = numberOfNodes * 2 + numberOfNodes * (7);
     assert(edges->size() == numberOfEdges);
 
+    nodes->Reset();
+    nodes->SetDimensions(dimensions);
+    nodes->SetConnectivity(EIGHTEEN);
+    nodes->Update();
     edges = graphCut->CreateEdgesForNodes(nodes, dimensions, EIGHTEEN);
     numberOfEdges = numberOfNodes * 2 + numberOfNodes * (6);
     assert(edges->size() == numberOfEdges);
 
+    nodes->Reset();
+    nodes->SetDimensions(dimensions);
+    nodes->SetConnectivity(SIX);
+    nodes->Update();
     edges = graphCut->CreateEdgesForNodes(nodes, dimensions, SIX);
     numberOfEdges = numberOfNodes * 2 + numberOfNodes * (3);
     assert(edges->size() == numberOfEdges);
@@ -90,7 +117,10 @@ void testCreateEdges() {
     dimensions[1] = 3;
     dimensions[2] = 1;
 
-    nodes = graphCut->CreateNodesForDimensions(dimensions);
+    nodes->Reset();
+    nodes->SetDimensions(dimensions);
+    nodes->SetConnectivity(TWENTYSIX);
+    nodes->Update();
     edges = graphCut->CreateEdgesForNodes(nodes, dimensions, TWENTYSIX);
     numberOfNodes = dimensions[0] * dimensions[1] * dimensions[2];
     numberOfEdges = numberOfNodes * 2 + numberOfNodes * (7);
@@ -100,13 +130,18 @@ void testCreateEdges() {
     dimensions[1] = 33;
     dimensions[2] = 12;
 
-    nodes = graphCut->CreateNodesForDimensions(dimensions);
+    nodes->Reset();
+    nodes->SetDimensions(dimensions);
+    nodes->SetConnectivity(TWENTYSIX);
+    nodes->Update();
     edges = graphCut->CreateEdgesForNodes(nodes, dimensions, TWENTYSIX);
     numberOfNodes = dimensions[0] * dimensions[1] * dimensions[2];
     numberOfEdges = numberOfNodes * 2 + numberOfNodes * (7);
     assert(edges->size() == numberOfEdges);
 
     graphCut->Delete();
+    delete nodes;
+    
     std::cout << "Done!" << "\n";
 }
 
@@ -120,18 +155,31 @@ void testEdgeFromNodeToNode() {
     std::cout << __FUNCTION__ << "\n";
     int dimensions[3] = {30, 30, 30};
     vtkGraphCutProtected* graphCut = vtkGraphCutProtected::New();
-    std::vector<vtkNode>* nodes = graphCut->CreateNodesForDimensions(dimensions);
+    vtkNodes* nodes = new vtkNodes();
+    nodes->SetDimensions(dimensions);
+    nodes->SetConnectivity(SIX);
+    nodes->Update();
 
     std::vector<vtkEdge>* edges = graphCut->CreateEdgesForNodes(nodes, dimensions, SIX);
     testEdgeFromNodeToNodeWithConnectivity(graphCut, edges, dimensions, SIX);
     
+    nodes->Reset();
+    nodes->SetDimensions(dimensions);
+    nodes->SetConnectivity(EIGHTEEN);
+    nodes->Update();
     edges = graphCut->CreateEdgesForNodes(nodes, dimensions, EIGHTEEN);
     testEdgeFromNodeToNodeWithConnectivity(graphCut, edges, dimensions, EIGHTEEN);
 
+    nodes->Reset();
+    nodes->SetDimensions(dimensions);
+    nodes->SetConnectivity(TWENTYSIX);
+    nodes->Update();
     edges = graphCut->CreateEdgesForNodes(nodes, dimensions, TWENTYSIX);
     testEdgeFromNodeToNodeWithConnectivity(graphCut, edges, dimensions, TWENTYSIX);
 
     graphCut->Delete();
+    delete nodes;
+
     std::cout << "Done!\n";
 }
 
@@ -187,7 +235,9 @@ void testSettingSeedPoints() {
     std::cout << __FUNCTION__ << "\n";
     int dimensions[3] = {30, 30, 30};
     vtkGraphCutProtected* graphCut = vtkGraphCutProtected::New();
-    std::vector<vtkNode>* nodes = graphCut->CreateNodesForDimensions(dimensions);
+    vtkNodes* nodes = new vtkNodes();
+    nodes->SetDimensions(dimensions);
+
     graphCut->CreateEdgesForNodes(nodes, dimensions, SIX);
     vtkPoints* foregroundPoints = vtkPoints::New();
     vtkPoints* backgroundPoints = vtkPoints::New();
@@ -200,6 +250,8 @@ void testSettingSeedPoints() {
     assert(backgroundPoints == backgroundResult);
 
     graphCut->Delete();
+    delete nodes;
+    
     std::cout << "Done!\n";
 }
 
@@ -213,7 +265,8 @@ void testIncomingEdge() {
     std::cout << __FUNCTION__ << "\n";
     int dimensions[3] = {30, 30, 30};
     vtkGraphCutProtected* graphCut = vtkGraphCutProtected::New();
-    std::vector<vtkNode>* nodes = graphCut->CreateNodesForDimensions(dimensions);
+    vtkNodes* nodes = new vtkNodes();
+    nodes->SetDimensions(dimensions);
 
     std::vector<vtkEdge>* edges = graphCut->CreateEdgesForNodes(nodes, dimensions, SIX);
     testIncomingEdgeWithConnectivity(graphCut, nodes, edges, dimensions, SIX);
@@ -225,13 +278,15 @@ void testIncomingEdge() {
     testIncomingEdgeWithConnectivity(graphCut, nodes, edges, dimensions, TWENTYSIX);
 
     graphCut->Delete();
+    delete nodes;
+
     std::cout << "Done!\n";
 }
 
 /**
  * Tests retrieving the incoming edge for the specified connectivity.
  */
-void testIncomingEdgeWithConnectivity(vtkGraphCutProtected* graphCut, std::vector<vtkNode>* nodes, std::vector<vtkEdge>* edges, int* dimensions, vtkConnectivity connectivity) {
+void testIncomingEdgeWithConnectivity(vtkGraphCutProtected* graphCut, vtkNodes* nodes, std::vector<vtkEdge>* edges, int* dimensions, vtkConnectivity connectivity) {
     // int index = graphCut->IndexForEdgeFromNodeToNode(edges, 0, 1, dimensions, connectivity);
     // vtkEdge edge = edges->at(index);
     // assert(edge.child() == -1);

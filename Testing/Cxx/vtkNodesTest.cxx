@@ -79,6 +79,8 @@ void testNodesProperties() {
     
     assert(nodes->GetConnectivity() == TWENTYSIX);
     
+    assert(nodes->GetSize() == 27);
+    
     delete nodes;
     
     std::cout << "Done!" << "\n";

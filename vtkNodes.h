@@ -75,6 +75,21 @@ public:
     vtkNode* GetNode(int index);
     
     /**
+     * Returns the number of nodes;
+     */
+    int GetSize();
+
+    /**
+     * Returns an iterator to the start of the internal vector.
+     */
+    std::vector<vtkNode*>::iterator GetIterator();
+    
+    /**
+     * Returns the iterator at the end of the internal vector.
+     */
+    std::vector<vtkNode*>::iterator GetEnd();
+    
+    /**
      * Creates and returns a vector of vtkNode objects.
      */
     std::vector<vtkNode*>* CreateNodesForDimensions(int* dimensions);
