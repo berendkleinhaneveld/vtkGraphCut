@@ -51,7 +51,10 @@ public:
     bool GetCoordinateForIndex(int index, int* coordinate);
     
     /**
-     * 
+     * Returns true iff a node at the proposed offset
+     * would be connected with an edge, given the current
+     * connectivity.
+     * x, y and z should be either -1, 0 or 1.
      */
     bool IsNodeAtOffsetConnected(int x, int y, int z);
     
@@ -65,6 +68,11 @@ public:
      * Returns the index of a node for a given coordinate.
      */
     int GetIndexForCoordinate(int* coordinate);
+    
+    /**
+     * Returns the node for a given index.
+     */
+    vtkNode* GetNode(int index);
     
     /**
      * Creates and returns a vector of vtkNode objects.

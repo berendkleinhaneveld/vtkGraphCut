@@ -9,20 +9,76 @@
 #include "vtkNodes.h"
 #include <cstdlib>
 #include <assert.h>
+#include <stdio.h>
 
 
 vtkNodes::vtkNodes() {
-    
+    _nodes = NULL;
+    _dimensions = NULL;
+    Reset();
 }
 
 
 vtkNodes::~vtkNodes() {
+    Reset();
+}
+
+
+void vtkNodes::SetConnectivity(vtkConnectivity connectivity) {
+    _connectivity = connectivity;
+}
+
+
+vtkConnectivity vtkNodes::GetConnectivity() {
+    return _connectivity;
+}
+
+
+void vtkNodes::SetDimensions(int *dimensions) {
+    if (_dimensions == NULL) {
+        _dimensions = new int[3];
+    }
+    for (int i = 0; i < 3; i++) {
+        _dimensions[i] = dimensions[i];
+    }
+}
+
+
+int* vtkNodes::GetDimensions() {
+    return _dimensions;
+}
+
+
+void vtkNodes::Update() {
+    if (_connectivity == UNCONNECTED) {
+        printf("No connectivity is specified. Skipping update.");
+        return;
+    }
+    
+    if (!_dimensions) {
+        printf("No dimensions are set. Skipping update.");
+        return;
+    }
+    
+    if (!_nodes) {
+        _nodes = CreateNodesForDimensions(_dimensions);
+    }
+}
+
+
+void vtkNodes::Reset() {
     if (_nodes != NULL) {
         for (std::vector<vtkNode*>::iterator i = _nodes->begin(); i != _nodes->end(); ++i) {
             delete *i;
         }
         delete _nodes;
     }
+    _nodes = NULL;
+    _connectivity = UNCONNECTED;
+    if (_dimensions != NULL) {
+        delete _dimensions;
+    }
+    _dimensions = NULL;
 }
 
 
@@ -107,6 +163,13 @@ bool vtkNodes::IsNodeAtOffsetConnected(int x, int y, int z) {
     }
 }
 
+
+vtkNode* vtkNodes::GetNode(int index) {
+    if (_nodes == NULL || index < 0 || index >= _nodes->size()) {
+        return NULL;
+    }
+    return _nodes->at(index);
+}
 
 
 std::vector<vtkNode*>* vtkNodes::CreateNodesForDimensions(int* dimensions) {
