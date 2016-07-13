@@ -12,6 +12,7 @@
 class vtkImageData;
 class vtkPoints;
 class vtkEdge;
+class vtkEdges;
 class vtkGraphCutCostFunction;
 class vtkNode;
 class vtkNodes;
@@ -45,13 +46,6 @@ public:
     vtkPoints* GetForegroundPoints();
     vtkPoints* GetBackgroundPoints();
     
-    std::vector<vtkEdge>* CreateEdgesForNodes(vtkNodes* nodes, int* dimensions, vtkConnectivity connectivity);
-    
-    int IndexForEdgeFromNodeToNode(std::vector<vtkEdge>* edges, int sourceIndex, int targetIndex, int* dimensions, vtkConnectivity connectivity);
-    vtkEdge EdgeFromNodeToNode(std::vector<vtkEdge>* edges, int sourceIndex, int targetIndex, int* dimensions, vtkConnectivity connectivity);
-    std::vector<int> PathToRoot(int aNodeIndex, vtkConnectivity connectivity, int* maxPossibleFlow);
-    void PushFlowThroughEdges(int flow, std::vector<int> edges, std::vector<int>* orphans, vtkTreeType);
-    
     // Algorithm methods
     int Grow(vtkTreeType tree, bool& foundActiveNodes, std::priority_queue<std::pair<int, int> > activeNodes);
     std::vector<int>* Augment(int edgeIndex);
@@ -65,7 +59,7 @@ protected:
     vtkImageData* outputImageData;
     
     vtkNodes* nodes;
-    std::vector<vtkEdge>* edges;
+    vtkEdges* edges;
     
     vtkPoints* foregroundPoints;
     vtkPoints* backgroundPoints;

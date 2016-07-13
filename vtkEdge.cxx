@@ -46,7 +46,7 @@ int vtkEdge::nonRootNode() {
     if (_node2 < 0) {
         return _node1;
     }
-    return INVALID;
+    return NODE_NONE;
 }
 
 /**
@@ -61,7 +61,7 @@ int vtkEdge::rootNode() {
     if (_node2 < 0) {
         return _node2;
     }
-    return INVALID;
+    return NODE_NONE;
 }
 
 /**
@@ -69,14 +69,14 @@ int vtkEdge::rootNode() {
  * SOURCE or a SINK node.
  */
 bool vtkEdge::isTerminal() {
-    return _node1 == SINK || _node1 == SOURCE || _node2 == SINK || _node2 == SOURCE;
+    return _node1 == NODE_SINK || _node1 == NODE_SOURCE || _node2 == NODE_SINK || _node2 == NODE_SOURCE;
 }
 
 /**
  * Returns whether this node is a valid node.
  */
 bool vtkEdge::isValid() {
-    return _node1 != INVALID && _node2 != INVALID;
+    return _node1 != NODE_NONE && _node2 != NODE_NONE;
 }
 
 /**

@@ -79,8 +79,6 @@ void testNodesProperties() {
     
     assert(nodes->GetConnectivity() == TWENTYSIX);
     
-    assert(nodes->GetSize() == 27);
-    
     delete nodes;
     
     std::cout << "Done!" << "\n";
@@ -100,6 +98,8 @@ void testNodesUpdate() {
     nodes->SetConnectivity(SIX);
     nodes->Update();
 
+    assert(nodes->GetSize() == 27);
+    
     vtkNode* someNode = nodes->GetNode(0);
     assert(someNode != NULL);
     assert(nodes->GetNode(-1) == NULL);

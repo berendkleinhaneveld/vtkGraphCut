@@ -13,6 +13,6 @@ vtkNode::vtkNode() {
     orphan = false;
     seedPoint = false;
     depthInTree = -1;
-    tree = NONE;
-    parent = INVALID;
+    tree = TREE_NONE;
+    parent = NODE_NONE;
 }

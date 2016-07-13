@@ -29,7 +29,7 @@ int main() {
  */
 void testEdgeStruct() {
     std::cout << __FUNCTION__ << "\n";
-    vtkEdge edge = vtkEdge(SINK, 1);
+    vtkEdge edge = vtkEdge(NODE_SINK, 1);
     assert(edge.isTerminal());
     assert(edge.flowFromNode(0) == 0);
     assert(edge.capacityFromNode(0) == 0);
