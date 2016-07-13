@@ -29,6 +29,9 @@ public:
     /**
      * Updates internal state to apply
      * the new properties, if any.
+     * Make sure to set Connectivity and
+     * Dimensions properties before calling
+     * Update.
      */
     void Update();
     

@@ -24,8 +24,8 @@ void testNodeConstructor() {
     
     assert(node->active == false);
     assert(node->depthInTree == -1);
-    assert(node->tree == NONE);
-    assert(node->parent == INVALID);
+    assert(node->tree == TREE_NONE);
+    assert(node->parent == NODE_NONE);
     assert(node->orphan == false);
     
     delete node;
