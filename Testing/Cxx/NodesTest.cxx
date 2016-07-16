@@ -265,29 +265,29 @@ void testCoordinateForIndex() {
     
     int coordinate[3] = {0, 0, 0};
     
-    nodes->GetCoordinateForIndex(0, coordinate);
+    nodes->GetCoordinateForIndex((NodeIndex)0, coordinate);
     assert(coordinate[0] == 0 && coordinate[1] == 0 && coordinate[2] == 0);
     
-    nodes->GetCoordinateForIndex(1, coordinate);
+    nodes->GetCoordinateForIndex((NodeIndex)1, coordinate);
     assert(coordinate[0] == 1 && coordinate[1] == 0 && coordinate[2] == 0);
     
-    nodes->GetCoordinateForIndex(2, coordinate);
+    nodes->GetCoordinateForIndex((NodeIndex)2, coordinate);
     assert(coordinate[0] == 0 && coordinate[1] == 1 && coordinate[2] == 0);
     
-    nodes->GetCoordinateForIndex(6, coordinate);
+    nodes->GetCoordinateForIndex((NodeIndex)6, coordinate);
     assert(coordinate[0] == 0 && coordinate[1] == 0 && coordinate[2] == 1);
     
-    nodes->GetCoordinateForIndex(8, coordinate);
+    nodes->GetCoordinateForIndex((NodeIndex)8, coordinate);
     assert(coordinate[0] == 0 && coordinate[1] == 1 && coordinate[2] == 1);
     
-    nodes->GetCoordinateForIndex(23, coordinate);
+    nodes->GetCoordinateForIndex((NodeIndex)23, coordinate);
     assert(coordinate[0] == 1 && coordinate[1] == 2 && coordinate[2] == 3);
     
-    assert(!nodes->GetCoordinateForIndex(24, coordinate));
-    assert(!nodes->GetCoordinateForIndex(-1, coordinate));
-    assert(nodes->GetCoordinateForIndex(23, coordinate));
-    assert(nodes->GetCoordinateForIndex(0, coordinate));
-    assert(nodes->GetCoordinateForIndex(1, coordinate));
+    assert(!nodes->GetCoordinateForIndex((NodeIndex)24, coordinate));
+    assert(!nodes->GetCoordinateForIndex((NodeIndex)-1, coordinate));
+    assert(nodes->GetCoordinateForIndex((NodeIndex)23, coordinate));
+    assert(nodes->GetCoordinateForIndex((NodeIndex)0, coordinate));
+    assert(nodes->GetCoordinateForIndex((NodeIndex)1, coordinate));
     
     delete nodes;
     
@@ -309,9 +309,9 @@ void testIndicesForNeighbours() {
 
     int coordinate[3] = {1, 1, 1};
 
-    int index = nodes->GetIndexForCoordinate(coordinate);
+    NodeIndex index = nodes->GetIndexForCoordinate(coordinate);
     nodes->SetConnectivity(SIX);
-    std::vector<int>* indices = nodes->GetIndicesForNeighbours(index);
+    std::vector<NodeIndex>* indices = nodes->GetIndicesForNeighbours(index);
     assert(indices->size() == 6);
     
     nodes->SetConnectivity(EIGHTEEN);

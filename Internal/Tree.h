@@ -10,28 +10,35 @@
 #define vtkTree_h
 
 #include "vtkGraphCutDataTypes.h"
+#include <vector>
 
 
 class Edges;
+class Edge;
+class Node;
 
 
+/**
+ * Tree is a mutable structure that is defined
+ * by the parent and tree attributes in the 
+ * Node objects in the Nodes object.
+ */
 class Tree {
 public:
-    Tree();
+    Tree(vtkTreeType type, Edges* edges);
     ~Tree();
     
     // Properties
-    void SetEdges(Edges*);
     Edges* GetEdges();
     
-    void SetTreeType(vtkTreeType);
     vtkTreeType GetTreeType();
     
     /**
      * Adds the node at index @p child as child to the node
-     * at index @p parent.
+     * at index @p parent. If the child was connected to
+     * another parent before, that edge will be broken.
      */
-    void AddChildToParent(int child, int parent);
+    void AddChildToParent(NodeIndex child, NodeIndex parent);
     
 protected:
     Edges* _edges;

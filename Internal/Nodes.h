@@ -44,14 +44,14 @@ public:
     /**
      * Returns indices of all neighbouring nodes.
      */
-    std::vector<int>* GetIndicesForNeighbours(int index);
+    std::vector<NodeIndex>* GetIndicesForNeighbours(NodeIndex index);
     
     /**
      * Returns true iff the index is within the internal
      * nodes array and coordinate is pointing to valid value.
      * This function returns false if the index is not valid.
      */
-    bool GetCoordinateForIndex(int index, int* coordinate);
+    bool GetCoordinateForIndex(NodeIndex index, int* coordinate);
     
     /**
      * Returns true iff a node at the proposed offset
@@ -70,7 +70,7 @@ public:
     /**
      * Returns the index of a node for a given coordinate.
      */
-    int GetIndexForCoordinate(int* coordinate);
+    NodeIndex GetIndexForCoordinate(int* coordinate);
     
     /**
      * Returns the node for a given index.

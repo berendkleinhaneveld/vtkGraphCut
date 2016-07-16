@@ -59,7 +59,7 @@ int main() {
 void testTreeConstructor() {
     std::cout << __FUNCTION__ << "\n";
     
-    Tree* tree = new Tree();
+    Tree* tree = new Tree(TREE_NONE, NULL);
     
     assert(tree->GetEdges() == NULL);
     assert(tree->GetTreeType() == TREE_NONE);
@@ -75,18 +75,10 @@ void testTreeProperties() {
     
     Edges* edges = createTestData();
 
-    Tree* tree = new Tree();
-    tree->SetEdges(edges);
+    Tree* tree = new Tree(TREE_SINK, edges);
 
     assert(tree->GetEdges() == edges);
-
-    tree->SetTreeType(TREE_SINK);
-
     assert(tree->GetTreeType() == TREE_SINK);
-
-    tree->SetTreeType(TREE_SOURCE);
-
-    assert(tree->GetTreeType() == TREE_SOURCE);
     
     clearTestData(edges);
 

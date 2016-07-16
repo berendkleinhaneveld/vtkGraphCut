@@ -10,6 +10,8 @@
 #define Edge_h
 
 #include <stdio.h>
+#include "vtkGraphCutDataTypes.h"
+
 
 /**
  * Edge describes an edge between two Nodes.
@@ -24,27 +26,27 @@
 class Edge
 {
 public:
-    Edge(int firstNode, int secondNode);
+    Edge(NodeIndex firstNode, NodeIndex secondNode);
     
-    int node1();
-    int node2();
+    NodeIndex node1();
+    NodeIndex node2();
     
-    int nonRootNode();
-    int rootNode();
+    NodeIndex nonRootNode();
+    NodeIndex rootNode();
     
     bool isTerminal();
     bool isValid();
     void setCapacity(int capacity);
-    void addFlowFromNode(int node, int addedFlow);
-    bool isSaturatedFromNode(int node);
-    int flowFromNode(int node);
-    int capacityFromNode(int node);
+    void addFlowFromNode(NodeIndex node, int addedFlow);
+    bool isSaturatedFromNode(NodeIndex node);
+    int flowFromNode(NodeIndex node);
+    int capacityFromNode(NodeIndex node);
     
 protected:
     // Current flow through edge
     // Positive means from node1 to node2, negative from node2 to node1
-    int _node1;
-    int _node2;
+    NodeIndex _node1;
+    NodeIndex _node2;
     int _capacity;
     int _flow;
 };

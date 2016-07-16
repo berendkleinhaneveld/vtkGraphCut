@@ -8,11 +8,16 @@
 
 #include "Tree.h"
 #include <iostream>
+#include <assert.h>
+#include "Internal/Edges.h"
+#include "Internal/Edge.h"
+#include "Internal/Nodes.h"
+#include "Internal/Node.h"
 
 
-Tree::Tree(){
-    _edges = NULL;
-    _treeType = TREE_NONE;
+Tree::Tree(vtkTreeType type, Edges* edges) {
+    _edges = edges;
+    _treeType = type;
 };
 
 
@@ -22,18 +27,8 @@ Tree::~Tree(){
 };
 
 
-void Tree::SetEdges(Edges* edges) {
-    _edges = edges;
-}
-
-
 Edges* Tree::GetEdges() {
     return _edges;
-}
-
-
-void Tree::SetTreeType(vtkTreeType treeType) {
-    _treeType = treeType;
 }
 
 
@@ -42,6 +37,6 @@ vtkTreeType Tree::GetTreeType() {
 }
 
 
-void Tree::AddChildToParent(int child, int parent) {
+void Tree::AddChildToParent(NodeIndex childIndex, NodeIndex parentIndex) {
     
 }

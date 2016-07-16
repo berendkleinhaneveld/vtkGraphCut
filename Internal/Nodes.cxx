@@ -82,8 +82,8 @@ void Nodes::Reset() {
 }
 
 
-std::vector<int>* Nodes::GetIndicesForNeighbours(int index) {
-    std::vector<int>* result = new std::vector<int>();
+std::vector<NodeIndex>* Nodes::GetIndicesForNeighbours(NodeIndex index) {
+    std::vector<NodeIndex>* result = new std::vector<NodeIndex>();
     
     int coordinate[3];
     GetCoordinateForIndex(index, coordinate);
@@ -115,7 +115,7 @@ bool Nodes::IsValidCoordinate(int* coordinate) {
 }
 
 
-int Nodes::GetIndexForCoordinate(int* coordinate) {
+NodeIndex Nodes::GetIndexForCoordinate(int* coordinate) {
     assert(coordinate[0] < _dimensions[0]);
     assert(coordinate[1] < _dimensions[1]);
     assert(coordinate[2] < _dimensions[2]);
@@ -123,13 +123,13 @@ int Nodes::GetIndexForCoordinate(int* coordinate) {
     assert(coordinate[1] >= 0);
     assert(coordinate[2] >= 0);
     
-    return coordinate[0]
-    + coordinate[1] * _dimensions[0]
-    + coordinate[2] * _dimensions[0] * _dimensions[1];
+    return (NodeIndex) (coordinate[0]
+                        + coordinate[1] * _dimensions[0]
+                        + coordinate[2] * _dimensions[0] * _dimensions[1]);
 }
 
 
-bool Nodes::GetCoordinateForIndex(int index, int* coordinate) {
+bool Nodes::GetCoordinateForIndex(NodeIndex index, int* coordinate) {
     if (index >= _dimensions[0] * _dimensions[1] * _dimensions[2] || index < 0) {
         return false;
     }
