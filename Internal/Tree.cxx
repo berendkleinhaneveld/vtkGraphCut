@@ -80,6 +80,7 @@ std::vector<EdgeIndex> Tree::PathToRoot(NodeIndex leafIndex, int* maxFlow) {
     do {
         Node* child = _edges->GetNodes()->GetNode(childIndex);
         NodeIndex parentIndex = child->parent;
+        assert(parentIndex != NODE_NONE);
         EdgeIndex edgeIndex = _edges->IndexForEdgeFromNodeToNode(childIndex, parentIndex);
         Edge* edge = _edges->GetEdge(edgeIndex);
         path.push_back(edgeIndex);
