@@ -42,10 +42,18 @@ INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR})
 INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIR})
 
 # Find all headers in root folder
-file(GLOB HEADERS *.h)
+FILE(GLOB HEADERS *.h)
 
 # Find all source files in root folder
 FILE(GLOB SOURCES *.cxx)
+
+SET_SOURCE_FILES_PROPERTIES(
+  vtkEdge.cxx
+  vtkEdges.cxx
+  vtkNode.cxx
+  vtkNodes.cxx
+  WRAP_EXCLUDE
+)
 
 SET(ALL_SOURCES
   ${SOURCES}
