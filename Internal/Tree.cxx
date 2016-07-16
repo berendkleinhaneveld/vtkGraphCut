@@ -14,6 +14,16 @@
 #include "Internal/Nodes.h"
 #include "Internal/Node.h"
 
+namespace {
+    
+    /**
+     * Update the tree depths of the children of the given node and
+     * recursively calls this method for each child.
+     */
+    void UpdateTreeDepthOfChildren(NodeIndex childIndex, int depth, Nodes* nodes);
+    
+}
+
 
 Tree::Tree(vtkTreeType type, Edges* edges) {
     _edges = edges;
@@ -38,5 +48,42 @@ vtkTreeType Tree::GetTreeType() {
 
 
 void Tree::AddChildToParent(NodeIndex childIndex, NodeIndex parentIndex) {
+    assert(childIndex != parentIndex);
+    
+    Edge* edge = _edges->EdgeFromNodeToNode(childIndex, parentIndex);
+    assert(edge != NULL);
+    
+    Nodes* nodes = _edges->GetNodes();
+    Node* child = nodes->GetNode(childIndex);
+    
+    child->tree = _treeType;
+    if (edge->isTerminal()) {
+        assert(edge->rootNode() == parentIndex);
+        assert(edge->rootNode() == (int)_treeType);
+        child->parent = parentIndex;
+        child->depthInTree = 1;
+    } else {
+        Node* parent = nodes->GetNode(parentIndex);
+        assert(parent->tree == _treeType);
+        child->parent = parentIndex;
+        child->depthInTree = parent->depthInTree + 1;
+    }
+    
+    UpdateTreeDepthOfChildren(childIndex, child->depthInTree, nodes);
+}
+
+
+namespace {
+    
+    void UpdateTreeDepthOfChildren(NodeIndex parentIndex, int depth, Nodes* nodes) {
+        std::vector<NodeIndex>* children = nodes->GetIndicesForNeighbours(parentIndex);
+        for (std::vector<NodeIndex>::iterator child = children->begin(); child != children->end(); ++child) {
+            Node* node = nodes->GetNode(*child);
+            if (node->parent == parentIndex) {
+                node->depthInTree = depth + 1;
+                UpdateTreeDepthOfChildren(*child, node->depthInTree, nodes);
+            }
+        }
+    }
     
 }
