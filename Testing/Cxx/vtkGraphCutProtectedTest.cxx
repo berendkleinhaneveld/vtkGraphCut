@@ -13,7 +13,7 @@
 #include "Internal/Edge.h"
 #include "Internal/Edges.h"
 #include "Internal/Nodes.h"
-#include "vtkNode.h"
+#include "Internal/vtkNode.h"
 #include "vtkGraphCutDataTypes.h"
 #include "vtkGraphCutProtected.h"
 

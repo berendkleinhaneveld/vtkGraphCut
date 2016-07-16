@@ -10,7 +10,7 @@
 #define Nodes_h
 
 #include <vector>
-#include "vtkNode.h"
+#include "Internal/vtkNode.h"
 #include "vtkGraphCutDefinitions.h"
 
 class Nodes {

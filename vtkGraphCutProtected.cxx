@@ -9,7 +9,7 @@
 #include "vtkGraphCutProtected.h"
 #include <vtkImageData.h>
 #include <vtkPoints.h>
-#include "vtkNode.h"
+#include "Internal/vtkNode.h"
 #include "Internal/Nodes.h"
 #include "Internal/Edge.h"
 #include "Internal/Edges.h"

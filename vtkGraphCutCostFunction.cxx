@@ -7,7 +7,7 @@
 //
 
 #include "vtkGraphCutCostFunction.h"
-#include "vtkNode.h"
+#include "Internal/vtkNode.h"
 #include "Internal/Edge.h"
 
 
