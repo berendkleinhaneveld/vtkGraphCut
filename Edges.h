@@ -10,7 +10,7 @@
 #define Edges_h
 
 
-class vtkEdge;
+class Edge;
 class vtkNodes;
 
 
@@ -47,7 +47,7 @@ public:
      * Returns edge object at the specified index or
      * NULL if it doesn't exist.
      */
-    vtkEdge* GetEdge(int index);
+    Edge* GetEdge(int index);
     
     /**
      * Returns the number of edges.
@@ -57,12 +57,12 @@ public:
     /**
      * Returns the begin iterator of the internal vector.
      */
-    std::vector<vtkEdge*>::iterator GetBegin();
+    std::vector<Edge*>::iterator GetBegin();
     
     /**
      * Returns the end iterator of the internal vector.
      */
-    std::vector<vtkEdge*>::iterator GetEnd();
+    std::vector<Edge*>::iterator GetEnd();
     
     /**
      * Returns the index for the edge that connect the node
@@ -76,7 +76,7 @@ public:
      * IndexForEdgeFromNodeToNode. If an invalid edge is requested,
      * then this function will return NULL.
      */
-    vtkEdge* EdgeFromNodeToNode(int sourceIndex, int targetIndex);
+    Edge* EdgeFromNodeToNode(int sourceIndex, int targetIndex);
     
     /**
      * Returns a vector of indices of edges that form a path from the 
@@ -85,7 +85,7 @@ public:
      * The value that maxPossibleFlow is pointing at will be the maximum
      * possible flow that will be possible to push through the returned path.
      */
-    // TODO: return vtkEdge* vector instead of indices
+    // TODO: return Edge* vector instead of indices
     std::vector<int> PathToRoot(int aNodeIndex, int* maxPossibleFlow);
     
     /**
@@ -98,10 +98,10 @@ public:
     void PushFlowThroughEdges(int flow, std::vector<int> edges, vtkTreeType tree, std::vector<int>* orphans);
     
     /**
-     * Creates and returns a vector of vtkEdge objects. The amount of objects
+     * Creates and returns a vector of Edge objects. The amount of objects
      * depends on the connectivity property of the vtkNodes object.
      */
-    std::vector<vtkEdge*>* CreateEdgesForNodes(vtkNodes*);
+    std::vector<Edge*>* CreateEdgesForNodes(vtkNodes*);
     
     /**
      * Returns the number of edges for a given connectivity.
@@ -109,7 +109,7 @@ public:
     int NumberOfEdgesForConnectivity(vtkConnectivity connectivity);
     
 protected:
-    std::vector<vtkEdge*>* _edges;
+    std::vector<Edge*>* _edges;
     vtkNodes* _nodes;
 };
 

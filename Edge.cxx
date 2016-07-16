@@ -1,19 +1,19 @@
 //
-//  vtkEdge.cxx
+//  Edge.cxx
 //  vtkGraphCut
 //
 //  Created by Berend Klein Haneveld on 04/07/16.
 //
 //
 
-#include "vtkEdge.h"
+#include "Edge.h"
 #include <assert.h>
 #include "vtkGraphCutDataTypes.h"
 
 /**
  * Constructor
  */
-vtkEdge::vtkEdge(int firstNode, int secondNode) {
+Edge::Edge(int firstNode, int secondNode) {
     _node1 = firstNode;
     _node2 = secondNode;
     _capacity = 0;
@@ -23,14 +23,14 @@ vtkEdge::vtkEdge(int firstNode, int secondNode) {
 /**
  * Returns node1 as an index.
  */
-int vtkEdge::node1() {
+int Edge::node1() {
     return _node1;
 }
 
 /**
  * Returns node2 as an index.
  */
-int vtkEdge::node2() {
+int Edge::node2() {
     return _node2;
 }
 
@@ -38,7 +38,7 @@ int vtkEdge::node2() {
  * Returns the non-root node when this edge
  * is a terminal node. Otherwise returns INVALID.
  */
-int vtkEdge::nonRootNode() {
+int Edge::nonRootNode() {
     assert(isTerminal());
     if (_node1 < 0) {
         return _node2;
@@ -53,7 +53,7 @@ int vtkEdge::nonRootNode() {
  * Returns the root node when this edge is a
  * terminal node. Otherwise returns INVALID.
  */
-int vtkEdge::rootNode() {
+int Edge::rootNode() {
     assert(isTerminal());
     if (_node1 < 0) {
         return _node1;
@@ -68,14 +68,14 @@ int vtkEdge::rootNode() {
  * Returns whether this edge is connected to eiter a
  * SOURCE or a SINK node.
  */
-bool vtkEdge::isTerminal() {
+bool Edge::isTerminal() {
     return _node1 == NODE_SINK || _node1 == NODE_SOURCE || _node2 == NODE_SINK || _node2 == NODE_SOURCE;
 }
 
 /**
  * Returns whether this node is a valid node.
  */
-bool vtkEdge::isValid() {
+bool Edge::isValid() {
     return _node1 != NODE_NONE && _node2 != NODE_NONE;
 }
 
@@ -83,7 +83,7 @@ bool vtkEdge::isValid() {
  * Set the total capacity that this edge can hold.
  * This capacity is the max capacity in both directions.
  */
-void vtkEdge::setCapacity(int cap) {
+void Edge::setCapacity(int cap) {
     _capacity = cap;
 }
 
@@ -91,7 +91,7 @@ void vtkEdge::setCapacity(int cap) {
  * Adds the given amount of flow to the current flow
  * from the direction of the given node.
  */
-void vtkEdge::addFlowFromNode(int node, int addedFlow) {
+void Edge::addFlowFromNode(int node, int addedFlow) {
     assert(node == _node1 || node == _node2);
     assert(capacityFromNode(node) >= addedFlow);
     if (node == _node1) {
@@ -105,14 +105,14 @@ void vtkEdge::addFlowFromNode(int node, int addedFlow) {
  * Returns whether the edge is saturated as seen from
  * the given node.
  */
-bool vtkEdge::isSaturatedFromNode(int node) {
+bool Edge::isSaturatedFromNode(int node) {
     return capacityFromNode(node) == 0;
 }
 
 /**
  * Returns the current flow from a give node.
  */
-int vtkEdge::flowFromNode(int node) {
+int Edge::flowFromNode(int node) {
     if (node == _node1) {
         return _flow;
     } else {
@@ -124,6 +124,6 @@ int vtkEdge::flowFromNode(int node) {
  * Returns the capacity of the edge that is left
  * in the given direction.
  */
-int vtkEdge::capacityFromNode(int node) {
+int Edge::capacityFromNode(int node) {
     return _capacity - flowFromNode(node);
 }

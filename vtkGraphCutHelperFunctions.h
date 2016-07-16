@@ -10,7 +10,7 @@
 #define vtkGraphCutHelperFunctions_h
 
 #include <assert.h>
-#include "vtkEdge.h"
+#include "Edge.h"
 #include "Edges.h"
 #include "vtkGraphCutDataTypes.h"
 #include <vtkImageData.h>
@@ -66,7 +66,7 @@ namespace vtkGraphCutHelper
         return fabs(intensity - mean) / variance;
     }
     
-    double CalculateRegionalCapacity(vtkImageData* imageData, vtkEdge* edge, double variance) {
+    double CalculateRegionalCapacity(vtkImageData* imageData, Edge* edge, double variance) {
         assert(!edge->isTerminal());
         double intensity1 = GetIntensityForVoxel(imageData, edge->node1());
         double intensity2 = GetIntensityForVoxel(imageData, edge->node2());
@@ -77,7 +77,7 @@ namespace vtkGraphCutHelper
         return result;
     }
     
-    double CalculateCapacity(vtkImageData* imageData, vtkEdge* edge, vtkNodeStatistics statistics) {
+    double CalculateCapacity(vtkImageData* imageData, Edge* edge, vtkNodeStatistics statistics) {
         if (edge->isTerminal()) {
             int nodeIndex = edge->nonRootNode();
             assert(nodeIndex >= 0);

@@ -11,7 +11,7 @@
 
 class vtkImageData;
 class vtkPoints;
-class vtkEdge;
+class Edge;
 class Edges;
 class vtkGraphCutCostFunction;
 class vtkNode;

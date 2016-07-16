@@ -10,7 +10,7 @@
 #include <assert.h>
 #include "Edges.h"
 #include "vtkNodes.h"
-#include "vtkEdge.h"
+#include "Edge.h"
 
 void testEdgesConstructor();
 void testEdgesProperties();
@@ -85,7 +85,7 @@ void testEdgesUpdate() {
 
     edges->Update();
 
-    vtkEdge* someEdge = edges->GetEdge(0);
+    Edge* someEdge = edges->GetEdge(0);
     assert(someEdge != NULL);
     assert(edges->GetEdge(-1) == NULL);
     assert(edges->GetEdge(300) == NULL);
@@ -139,7 +139,7 @@ void testCreateEdges() {
     
     Edges* edges = new Edges();
     edges->SetNodes(nodes);
-    std::vector<vtkEdge*>* edgesVector = edges->CreateEdgesForNodes(nodes);
+    std::vector<Edge*>* edgesVector = edges->CreateEdgesForNodes(nodes);
     
     int numberOfNodes = dimensions[0] * dimensions[1] * dimensions[2];
     int numberOfEdges = numberOfNodes * 2 + numberOfNodes * (7);
@@ -290,7 +290,7 @@ void testEdgeFromNodeToNode() {
  * Tests getting the edge between two nodes for the specified connectivity.
  */
 void testEdgeFromNodeToNodeWithConnectivity(Edges* edges) {
-    vtkEdge* edge = edges->EdgeFromNodeToNode(0, 1);
+    Edge* edge = edges->EdgeFromNodeToNode(0, 1);
     assert(edge->node1() == 0);
     assert(edge->node2() == 1);
     

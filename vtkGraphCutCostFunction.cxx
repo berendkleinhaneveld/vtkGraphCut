@@ -8,7 +8,7 @@
 
 #include "vtkGraphCutCostFunction.h"
 #include "vtkNode.h"
-#include "vtkEdge.h"
+#include "Edge.h"
 
 
 vtkStandardNewMacro(vtkGraphCutCostFunction);
@@ -23,7 +23,7 @@ void vtkGraphCutCostFunction::Update() { }
 void vtkGraphCutCostFunction::SetNodes(std::vector<vtkNode>* nodes) {
 	
 }
-void vtkGraphCutCostFunction::SetEdges(std::vector<vtkEdge>* edges) {
+void vtkGraphCutCostFunction::SetEdges(std::vector<Edge>* edges) {
 	
 }
 void vtkGraphCutCostFunction::SetInput(vtkImageData* imageData) {

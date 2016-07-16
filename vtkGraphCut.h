@@ -11,7 +11,7 @@
 
 
 // Forward declaration of helper types
-class vtkEdge;
+class Edge;
 class vtkNode;
 class vtkGraphCutProtected;
 
@@ -29,7 +29,7 @@ class vtkGraphCutProtected;
  * a vtkImageData object. In order to do this, it holds a reference to an
  * undirected graph.
  * Besides this graph, a list of vktGraphEdges is kept that hold references
- * to vtkEdgeTypes in the graph. These vtkGraphCutEdges hold information about
+ * to EdgeTypes in the graph. These vtkGraphCutEdges hold information about
  * direction of flow, throughput, connectedness, etc.
  *
  * There are three stages in the algorithm:

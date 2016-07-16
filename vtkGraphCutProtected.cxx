@@ -11,7 +11,7 @@
 #include <vtkPoints.h>
 #include "vtkNode.h"
 #include "vtkNodes.h"
-#include "vtkEdge.h"
+#include "Edge.h"
 #include "Edges.h"
 #include <assert.h>
 #include "vtkGraphCutHelperFunctions.h"
@@ -294,11 +294,11 @@ int vtkGraphCutProtected::Grow(vtkTreeType tree, bool& foundActiveNodes, std::pr
     int nodeIndex = active.second;
     if (nodeIndex >= 0) {
         std::vector<int>* neighbours = nodes->GetIndicesForNeighbours(nodeIndex);
-        vtkEdge* edgeBetweenTrees = NULL;
+        Edge* edgeBetweenTrees = NULL;
         int edgeIndex = 0;
         for (std::vector<int>::iterator i = neighbours->begin(); i != neighbours->end(); ++i) {
             // Check to see if the edge to the node is saturated or not
-            vtkEdge* edge = edges->EdgeFromNodeToNode(nodeIndex, *i);
+            Edge* edge = edges->EdgeFromNodeToNode(nodeIndex, *i);
             if (!edge->isSaturatedFromNode(nodeIndex)) {
                 // If the other node is free, it can be added to the tree
                 vtkNode* neighbour = nodes->GetNode(*i);
@@ -371,7 +371,7 @@ std::vector<int>* vtkGraphCutProtected::Augment(int edgeIndex) {
     // path will become an orphan node (not connected to S or T anymore).
     assert(edgeIndex >= 0);
     assert(edgeIndex < this->edges->GetSize());
-    vtkEdge* edge = this->edges->GetEdge(edgeIndex);
+    Edge* edge = this->edges->GetEdge(edgeIndex);
     assert(edge->isValid());
     assert(edge->node1() < (int)this->nodes->GetSize());
     assert(edge->node2() < (int)this->nodes->GetSize());
@@ -528,7 +528,7 @@ void vtkGraphCutProtected::CalculateCapacitiesForEdges() {
     statistics.backgroundMean = backgroundMean;
     statistics.backgroundVariance = backgroundVariance;
     
-    for (std::vector<vtkEdge*>::iterator i = this->edges->GetBegin(); i != this->edges->GetEnd(); ++i) {
+    for (std::vector<Edge*>::iterator i = this->edges->GetBegin(); i != this->edges->GetEnd(); ++i) {
         double capacity = vtkGraphCutHelper::CalculateCapacity(this->inputImageData, *i, statistics);
         int cap = (int)(255.0 * capacity) + 1;
         (*i)->setCapacity(cap);

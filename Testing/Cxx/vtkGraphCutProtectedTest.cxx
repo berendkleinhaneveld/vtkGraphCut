@@ -10,7 +10,7 @@
 #include <iostream>
 #include <vtkPoints.h>
 #include "vtkGraphCutCostFunctionSimple.h"
-#include "vtkEdge.h"
+#include "Edge.h"
 #include "Edges.h"
 #include "vtkNode.h"
 #include "vtkGraphCutDataTypes.h"
@@ -20,7 +20,7 @@
 
 void testSettingSeedPoints();
 void testIncomingEdge();
-void testIncomingEdgeWithConnectivity(vtkGraphCutProtected*, vtkNodes*, std::vector<vtkEdge>*, int*, vtkConnectivity);
+void testIncomingEdgeWithConnectivity(vtkGraphCutProtected*, vtkNodes*, std::vector<Edge>*, int*, vtkConnectivity);
 
 
 int main(int argc, char const *argv[]) {

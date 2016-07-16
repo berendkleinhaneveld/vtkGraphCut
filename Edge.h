@@ -1,30 +1,30 @@
 //
-//  vtkEdge.h
+//  Edge.h
 //  vtkGraphCut
 //
 //  Created by Berend Klein Haneveld on 04/07/16.
 //
 //
 
-#ifndef vtkEdge_h
-#define vtkEdge_h
+#ifndef Edge_h
+#define Edge_h
 
 #include <stdio.h>
 
 /**
- * vtkEdge describes an edge between two vtkNodes.
+ * Edge describes an edge between two vtkNodes.
  * The nodes are not saved by reference or pointer
  * but by index.
  *
- * A vtkEdge can have a certain capacity and a flow.
+ * A Edge can have a certain capacity and a flow.
  * The capacity and flow are dependent on the direction,
  * so use the methods *fromNode to manipulate these
  * values.
  */
-class vtkEdge
+class Edge
 {
 public:
-    vtkEdge(int firstNode, int secondNode);
+    Edge(int firstNode, int secondNode);
     
     int node1();
     int node2();
@@ -50,4 +50,4 @@ protected:
 };
 
 
-#endif /* vtkEdge_h */
+#endif /* Edge_h */

@@ -48,7 +48,7 @@ FILE(GLOB HEADERS *.h)
 FILE(GLOB SOURCES *.cxx)
 
 SET_SOURCE_FILES_PROPERTIES(
-  vtkEdge.cxx
+  Edge.cxx
   Edges.cxx
   vtkNode.cxx
   vtkNodes.cxx

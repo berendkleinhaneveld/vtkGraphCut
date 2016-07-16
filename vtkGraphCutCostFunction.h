@@ -10,7 +10,7 @@
 #define __vtkGraphCutCostFunction_h
 
 
-class vtkEdge;
+class Edge;
 class vtkNode;
 
 
@@ -33,7 +33,7 @@ public:
 	// the following methods at all? Or should it work in a more functional
 	// manor?
 	virtual void SetNodes(std::vector<vtkNode>* nodes);
-	virtual void SetEdges(std::vector<vtkEdge>* edges);
+	virtual void SetEdges(std::vector<Edge>* edges);
 	virtual void SetInput(vtkImageData*);
 
 protected:
