@@ -35,8 +35,9 @@ public:
     
     /**
      * Adds the node at index @p child as child to the node
-     * at index @p parent. If the child was connected to
-     * another parent before, that edge will be broken.
+     * at index @p parent. If the child has any children, the
+     * @p depthInTree property of all these children will be
+     * updated recursively.
      */
     void AddChildToParent(NodeIndex child, NodeIndex parent);
     
