@@ -69,4 +69,7 @@ void testEdgeStruct() {
     assert(edge.isSaturatedFromNode(node1));
     assert(edge.capacityFromNode(node0) == 10);
     assert(edge.capacityFromNode(node1) == 0);
+    
+    assert(edge.otherNode(node1) == node0);
+    assert(edge.otherNode(node0) == node1);
 }
