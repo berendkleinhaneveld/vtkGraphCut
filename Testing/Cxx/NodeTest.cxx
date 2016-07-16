@@ -6,20 +6,20 @@
 //
 //
 
-#include <iostream>
 #include <assert.h>
 #include "Internal/Node.h"
 
+
 void testNodeConstructor();
+
 
 int main() {
     testNodeConstructor();
     return 0;
 }
 
+
 void testNodeConstructor() {
-    std::cout << __FUNCTION__ << "\n";
-    
     Node* node = new Node();
     
     assert(node->active == false);
@@ -29,6 +29,4 @@ void testNodeConstructor() {
     assert(node->orphan == false);
     
     delete node;
-    
-    std::cout << "Done!" << "\n";
 }

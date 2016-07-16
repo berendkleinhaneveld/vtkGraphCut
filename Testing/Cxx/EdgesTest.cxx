@@ -6,7 +6,6 @@
 //
 //
 
-#include <iostream>
 #include <assert.h>
 #include "Internal/Edges.h"
 #include "Internal/Nodes.h"
@@ -36,21 +35,15 @@ int main() {
 
 
 void testEdgesConstructor() {
-    std::cout << __FUNCTION__ << "\n";
-    
     Edges* edges = new Edges();
     
     assert(edges->GetNodes() == NULL);
     
     delete edges;
-    
-    std::cout << "Done!" << "\n";
 }
 
 
 void testEdgesProperties() {
-    std::cout << __FUNCTION__ << "\n";
-    
     int dimensions[3] = {3, 3, 3};
     
     Nodes* nodes = new Nodes();
@@ -64,14 +57,10 @@ void testEdgesProperties() {
     
     delete edges;
     delete nodes;
-    
-    std::cout << "Done!" << "\n";
 }
 
 
 void testEdgesUpdate() {
-    std::cout << __FUNCTION__ << "\n";
-    
     int dimensions[3] = {3, 3, 3};
     
     Nodes* nodes = new Nodes();    
@@ -97,14 +86,10 @@ void testEdgesUpdate() {
     
     delete edges;
     delete nodes;
-    
-    std::cout << "Done!" << "\n";
 }
 
 
 void testEdgesReset() {
-    std::cout << __FUNCTION__ << "\n";
-    
     int dimensions[3] = {3, 3, 3};
     
     Nodes* nodes = new Nodes();
@@ -121,8 +106,6 @@ void testEdgesReset() {
     assert(edges->GetEdge((EdgeIndex)0) == NULL);
     
     delete nodes;
-    
-    std::cout << "Done!" << "\n";
 }
 
 
@@ -130,7 +113,6 @@ void testEdgesReset() {
  * Tests the creation of edges for different dimensions and connectivity values.
  */
 void testCreateEdges() {
-    std::cout << __FUNCTION__ << "\n";
     int dimensions[3] = {1, 1, 1};
     
     Nodes* nodes = new Nodes();
@@ -236,8 +218,6 @@ void testCreateEdges() {
     
     delete edges;
     delete nodes;
-    
-    std::cout << "Done!" << "\n";
 }
 
 
@@ -247,7 +227,6 @@ void testCreateEdges() {
  * See testEdgeFromNodeToNodeWithConnectivity for more details.
  */
 void testEdgeFromNodeToNode() {
-    std::cout << __FUNCTION__ << "\n";
     int dimensions[3] = {30, 30, 30};
     
     Nodes* nodes = new Nodes();
@@ -283,8 +262,6 @@ void testEdgeFromNodeToNode() {
     
     delete edges;
     delete nodes;
-    
-    std::cout << "Done!\n";
 }
 
 /**

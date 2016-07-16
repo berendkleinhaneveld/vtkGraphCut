@@ -6,9 +6,9 @@
 //
 //
 
-#include <iostream>
 #include <assert.h>
 #include "Internal/Nodes.h"
+
 
 void testNodesConstructor();
 void testNodesProperties();
@@ -38,22 +38,16 @@ int main() {
 
 
 void testNodesConstructor() {
-    std::cout << __FUNCTION__ << "\n";
-    
     Nodes* nodes = new Nodes();
     
     assert(nodes->GetConnectivity() == UNCONNECTED);
     assert(nodes->GetDimensions() == NULL);
     
     delete nodes;
-    
-    std::cout << "Done!" << "\n";
 }
 
 
 void testNodesProperties() {
-    std::cout << __FUNCTION__ << "\n";
-    
     int dimensions[3] = {3, 3, 3};
     
     Nodes* nodes = new Nodes();
@@ -80,14 +74,10 @@ void testNodesProperties() {
     assert(nodes->GetConnectivity() == TWENTYSIX);
     
     delete nodes;
-    
-    std::cout << "Done!" << "\n";
 }
 
 
 void testNodesUpdate() {
-    std::cout << __FUNCTION__ << "\n";
-    
     int dimensions[3] = {3, 3, 3};
     
     Nodes* nodes = new Nodes();
@@ -110,14 +100,10 @@ void testNodesUpdate() {
     assert(nodes->GetNode(0)->depthInTree == 1);
     
     delete nodes;
-    
-    std::cout << "Done!" << "\n";
 }
 
 
 void testNodesReset() {
-    std::cout << __FUNCTION__ << "\n";
-    
     int dimensions[3] = {3, 3, 3};
     
     Nodes* nodes = new Nodes();
@@ -131,8 +117,6 @@ void testNodesReset() {
     assert(nodes->GetNode(0) == NULL);
     
     delete nodes;
-    
-    std::cout << "Done!" << "\n";
 }
 
 
@@ -141,7 +125,6 @@ void testNodesReset() {
  * - CreateNodesForDimensions
  */
 void testCreateNodes() {
-    std::cout << __FUNCTION__ << "\n";
     int dimensions[3] = {3, 3, 2};
     
     Nodes* nodes = new Nodes();
@@ -157,8 +140,6 @@ void testCreateNodes() {
     assert(moreNodes->size() == 70);
     
     delete nodes;
-    
-    std::cout << "Done!\n";
 }
 
 
@@ -167,8 +148,6 @@ void testCreateNodes() {
  * - IsValidCoordinate
  */
 void testIsValidCoordinate() {
-    std::cout << __FUNCTION__ << "\n";
-    
     Nodes* nodes = new Nodes();
     
     int dimensions[3] = {4, 6, 7};
@@ -198,8 +177,6 @@ void testIsValidCoordinate() {
     assert(!nodes->IsValidCoordinate(coordinate));
     
     delete nodes;
-
-    std::cout << "Done!\n";
 }
 
 
@@ -208,8 +185,6 @@ void testIsValidCoordinate() {
  * - IndexForCoordinate
  */
 void testIndexForCoordinate() {
-    std::cout << __FUNCTION__ << "\n";
-    
     Nodes* nodes = new Nodes();
     
     int dimensions[3] = {2, 3, 4};
@@ -245,8 +220,6 @@ void testIndexForCoordinate() {
     assert(index == 7);
     
     delete nodes;
-
-    std::cout << "Done!\n";
 }
 
 
@@ -256,8 +229,6 @@ void testIndexForCoordinate() {
  * - CoordinateForIndex
  */
 void testCoordinateForIndex() {
-    std::cout << __FUNCTION__ << "\n";
-    
     Nodes* nodes = new Nodes();
     
     int dimensions[3] = {2, 3, 4};
@@ -290,8 +261,6 @@ void testCoordinateForIndex() {
     assert(nodes->GetCoordinateForIndex((NodeIndex)1, coordinate));
     
     delete nodes;
-    
-    std::cout << "Done!\n";
 }
 
 
@@ -301,7 +270,6 @@ void testCoordinateForIndex() {
  * - IndicesForNeighbours
  */
 void testIndicesForNeighbours() {
-    std::cout << __FUNCTION__ << "\n";
     Nodes* nodes = new Nodes();
     
     int dimensions[3] = {3, 4, 5};
@@ -323,6 +291,4 @@ void testIndicesForNeighbours() {
     assert(indices->size() == 26);
     
     delete nodes;
-
-    std::cout << "Done!\n";
 }

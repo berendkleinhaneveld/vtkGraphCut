@@ -6,7 +6,6 @@
 //
 //
 
-#include <iostream>
 #include <assert.h>
 #include "Internal/Edge.h"
 #include "vtkGraphCutDataTypes.h"
@@ -14,10 +13,12 @@
 
 void testEdgeStruct();
 
+
 int main() {
     testEdgeStruct();
     return 0;
 }
+
 
 /**
  * Tests the methods of an Edge struct.
@@ -29,8 +30,6 @@ int main() {
  * - addFlowFromNode
  */
 void testEdgeStruct() {
-    std::cout << __FUNCTION__ << "\n";
-    
     NodeIndex node0 = (NodeIndex)0;
     NodeIndex node1 = (NodeIndex)1;
     
@@ -70,6 +69,4 @@ void testEdgeStruct() {
     assert(edge.isSaturatedFromNode(node1));
     assert(edge.capacityFromNode(node0) == 10);
     assert(edge.capacityFromNode(node1) == 0);
-    
-    std::cout << "Done!" << "\n";
 }
