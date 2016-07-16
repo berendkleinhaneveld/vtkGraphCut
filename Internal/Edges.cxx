@@ -117,8 +117,10 @@ EdgeIndex Edges::IndexForEdgeFromNodeToNode(NodeIndex sourceIndex, NodeIndex tar
         }
     }
     
-    assert(edge->node1() == from && edge->node2() == to);
-    return (EdgeIndex)index;
+    if (edge->node1() == from && edge->node2() == to) {
+        return (EdgeIndex)index;
+    }
+    return EDGE_NONE;
 }
 
 

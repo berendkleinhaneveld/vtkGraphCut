@@ -330,4 +330,7 @@ void testEdgeFromNodeToNodeWithConnectivity(Edges* edges) {
     edge = edges->EdgeFromNodeToNode((NodeIndex)79, (NodeIndex)80);
     assert(edge->node1() == (NodeIndex)79);
     assert(edge->node2() == (NodeIndex)80);
+    
+    edge = edges->EdgeFromNodeToNode((NodeIndex)0, (NodeIndex)100);
+    assert(edge == NULL);
 }
