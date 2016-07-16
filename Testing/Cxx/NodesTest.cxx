@@ -8,7 +8,7 @@
 
 #include <iostream>
 #include <assert.h>
-#include "Nodes.h"
+#include "Internal/Nodes.h"
 
 void testNodesConstructor();
 void testNodesProperties();

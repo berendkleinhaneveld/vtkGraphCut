@@ -8,9 +8,10 @@
 
 #include <iostream>
 #include <assert.h>
-#include "Edges.h"
-#include "Nodes.h"
-#include "Edge.h"
+#include "Internal/Edges.h"
+#include "Internal/Nodes.h"
+#include "Internal/Edge.h"
+
 
 void testEdgesConstructor();
 void testEdgesProperties();

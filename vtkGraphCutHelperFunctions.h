@@ -10,8 +10,8 @@
 #define vtkGraphCutHelperFunctions_h
 
 #include <assert.h>
-#include "Edge.h"
-#include "Edges.h"
+#include "Internal/Edge.h"
+#include "Internal/Edges.h"
 #include "vtkGraphCutDataTypes.h"
 #include <vtkImageData.h>
 

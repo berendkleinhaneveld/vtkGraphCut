@@ -10,12 +10,12 @@
 #include <iostream>
 #include <vtkPoints.h>
 #include "vtkGraphCutCostFunctionSimple.h"
-#include "Edge.h"
-#include "Edges.h"
+#include "Internal/Edge.h"
+#include "Internal/Edges.h"
+#include "Internal/Nodes.h"
 #include "vtkNode.h"
 #include "vtkGraphCutDataTypes.h"
 #include "vtkGraphCutProtected.h"
-#include "Nodes.h"
 
 
 void testSettingSeedPoints();

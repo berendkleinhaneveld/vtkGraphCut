@@ -8,8 +8,9 @@
 
 #include <iostream>
 #include <assert.h>
-#include "Edge.h"
+#include "Internal/Edge.h"
 #include "vtkGraphCutDataTypes.h"
+
 
 void testEdgeStruct();
 

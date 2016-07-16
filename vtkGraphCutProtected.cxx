@@ -10,9 +10,9 @@
 #include <vtkImageData.h>
 #include <vtkPoints.h>
 #include "vtkNode.h"
-#include "Nodes.h"
-#include "Edge.h"
-#include "Edges.h"
+#include "Internal/Nodes.h"
+#include "Internal/Edge.h"
+#include "Internal/Edges.h"
 #include <assert.h>
 #include "vtkGraphCutHelperFunctions.h"
 #include "vtkGraphCutCostFunction.h"

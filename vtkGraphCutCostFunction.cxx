@@ -8,7 +8,7 @@
 
 #include "vtkGraphCutCostFunction.h"
 #include "vtkNode.h"
-#include "Edge.h"
+#include "Internal/Edge.h"
 
 
 vtkStandardNewMacro(vtkGraphCutCostFunction);
