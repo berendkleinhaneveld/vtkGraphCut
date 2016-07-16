@@ -12,7 +12,7 @@
 
 // Forward declaration of helper types
 class Edge;
-class vtkNode;
+class Node;
 class vtkGraphCutProtected;
 
 

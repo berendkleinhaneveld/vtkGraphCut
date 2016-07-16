@@ -9,7 +9,7 @@
 #include "vtkGraphCutProtected.h"
 #include <vtkImageData.h>
 #include <vtkPoints.h>
-#include "Internal/vtkNode.h"
+#include "Internal/Node.h"
 #include "Internal/Nodes.h"
 #include "Internal/Edge.h"
 #include "Internal/Edges.h"
@@ -275,7 +275,7 @@ int vtkGraphCutProtected::Grow(vtkTreeType tree, bool& foundActiveNodes, std::pr
     // Pop until active node is found
     while (true) {
         if (active.second >= 0) {
-            vtkNode* node = this->nodes->GetNode(active.second);
+            Node* node = this->nodes->GetNode(active.second);
             if (node->active) {
                 break;
             }
@@ -301,7 +301,7 @@ int vtkGraphCutProtected::Grow(vtkTreeType tree, bool& foundActiveNodes, std::pr
             Edge* edge = edges->EdgeFromNodeToNode(nodeIndex, *i);
             if (!edge->isSaturatedFromNode(nodeIndex)) {
                 // If the other node is free, it can be added to the tree
-                vtkNode* neighbour = nodes->GetNode(*i);
+                Node* neighbour = nodes->GetNode(*i);
                 if (neighbour->tree == TREE_NONE) {
                     // Other node is added as a child to active node
                     neighbour->tree = tree;
@@ -320,7 +320,7 @@ int vtkGraphCutProtected::Grow(vtkTreeType tree, bool& foundActiveNodes, std::pr
         
         // If no edge has been found, then the current node can become inactive
         if (!edgeBetweenTrees) {
-            vtkNode* node = this->nodes->GetNode(nodeIndex);
+            Node* node = this->nodes->GetNode(nodeIndex);
             node->active = false;
             edgeIndex = -1;
         }
@@ -328,9 +328,9 @@ int vtkGraphCutProtected::Grow(vtkTreeType tree, bool& foundActiveNodes, std::pr
     } else { // Tree node
         int i = 0;
         int edgeIndex = -1;
-        for (std::vector<vtkNode*>::iterator it = this->nodes->GetIterator(); it != this->nodes->GetEnd(); ++it) {
+        for (std::vector<Node*>::iterator it = this->nodes->GetIterator(); it != this->nodes->GetEnd(); ++it) {
             // If the other node is free, it can be added to the tree
-            vtkNode* node = *it;
+            Node* node = *it;
             if (node->tree == TREE_NONE) {
                 // Other node is added as a child to active node
                 node->tree = tree;
@@ -383,7 +383,7 @@ std::vector<int>* vtkGraphCutProtected::Augment(int edgeIndex) {
         node1Tree = edge->rootNode();
         fromNode = node1Tree == NODE_SOURCE ? edge->rootNode() : edge->nonRootNode();
     } else {
-        vtkNode* node1 = this->nodes->GetNode(edge->node1());
+        Node* node1 = this->nodes->GetNode(edge->node1());
         assert(node1->tree == TREE_SOURCE || node1->tree == TREE_SINK);
         node1Tree = node1->tree;
         fromNode = node1Tree == NODE_SOURCE ? edge->node1() : edge->node2();

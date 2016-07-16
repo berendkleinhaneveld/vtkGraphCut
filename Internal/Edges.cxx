@@ -130,7 +130,7 @@ Edge* Edges::EdgeFromNodeToNode(int sourceIndex, int targetIndex) {
 
 std::vector<int> Edges::PathToRoot(int aNodeIndex, int* maxPossibleFlow) {
     std::vector<int> result;
-    vtkNode* node = NULL;
+    Node* node = NULL;
     int nodeIndex = aNodeIndex;
     while (true) {
         if (nodeIndex < 0) {
@@ -165,8 +165,8 @@ void Edges::PushFlowThroughEdges(int maxPossibleFlow, std::vector<int> edges, vt
             // One of the nodes is a negative number to indicate that it is a sink node
             closestToRoot = edge->node1() < edge->node2() ? 0 : 1;
         } else {
-            vtkNode* node = _nodes->GetNode(edge->node1());
-            vtkNode* otherNode = _nodes->GetNode(edge->node2());
+            Node* node = _nodes->GetNode(edge->node1());
+            Node* otherNode = _nodes->GetNode(edge->node2());
             closestToRoot = node->depthInTree < otherNode->depthInTree ? 0 : 1;
         }
         

@@ -14,7 +14,7 @@ class vtkPoints;
 class Edge;
 class Edges;
 class vtkGraphCutCostFunction;
-class vtkNode;
+class Node;
 class Nodes;
 
 #include <vtkObjectFactory.h>

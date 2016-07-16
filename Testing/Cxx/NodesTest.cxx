@@ -100,7 +100,7 @@ void testNodesUpdate() {
 
     assert(nodes->GetSize() == 27);
     
-    vtkNode* someNode = nodes->GetNode(0);
+    Node* someNode = nodes->GetNode(0);
     assert(someNode != NULL);
     assert(nodes->GetNode(-1) == NULL);
     assert(nodes->GetNode(27) == NULL);
@@ -145,7 +145,7 @@ void testCreateNodes() {
     int dimensions[3] = {3, 3, 2};
     
     Nodes* nodes = new Nodes();
-    std::vector<vtkNode*>* nodesVector = nodes->CreateNodesForDimensions(dimensions);
+    std::vector<Node*>* nodesVector = nodes->CreateNodesForDimensions(dimensions);
     
     assert(nodesVector->size() == 18);
     
@@ -153,7 +153,7 @@ void testCreateNodes() {
     dimensions[1] = 2;
     dimensions[2] = 7;
     
-    std::vector<vtkNode*>* moreNodes = nodes->CreateNodesForDimensions(dimensions);
+    std::vector<Node*>* moreNodes = nodes->CreateNodesForDimensions(dimensions);
     assert(moreNodes->size() == 70);
     
     delete nodes;

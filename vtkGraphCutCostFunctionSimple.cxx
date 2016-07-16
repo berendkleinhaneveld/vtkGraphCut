@@ -41,7 +41,7 @@ void vtkGraphCutCostFunctionSimple::Update() {
 
 }
 
-void vtkGraphCutCostFunctionSimple::SetNodes(std::vector<vtkNode>* nodes) {
+void vtkGraphCutCostFunctionSimple::SetNodes(std::vector<Node>* nodes) {
 	vtkGraphCutCostFunction::SetNodes(nodes);
 }
 

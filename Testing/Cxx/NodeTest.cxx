@@ -1,5 +1,5 @@
 //
-//  vtkNodeTest.cxx
+//  NodeTest.cxx
 //  vtkGraphCut
 //
 //  Created by Berend Klein Haneveld on 10/07/16.
@@ -8,7 +8,7 @@
 
 #include <iostream>
 #include <assert.h>
-#include "Internal/vtkNode.h"
+#include "Internal/Node.h"
 
 void testNodeConstructor();
 
@@ -20,7 +20,7 @@ int main() {
 void testNodeConstructor() {
     std::cout << __FUNCTION__ << "\n";
     
-    vtkNode* node = new vtkNode();
+    Node* node = new Node();
     
     assert(node->active == false);
     assert(node->depthInTree == -1);

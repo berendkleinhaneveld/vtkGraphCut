@@ -68,7 +68,7 @@ void Nodes::Update() {
 
 void Nodes::Reset() {
     if (_nodes != NULL) {
-        for (std::vector<vtkNode*>::iterator i = _nodes->begin(); i != _nodes->end(); ++i) {
+        for (std::vector<Node*>::iterator i = _nodes->begin(); i != _nodes->end(); ++i) {
             delete *i;
         }
         delete _nodes;
@@ -164,7 +164,7 @@ bool Nodes::IsNodeAtOffsetConnected(int x, int y, int z) {
 }
 
 
-vtkNode* Nodes::GetNode(int index) {
+Node* Nodes::GetNode(int index) {
     if (_nodes == NULL || index < 0 || index >= _nodes->size()) {
         return NULL;
     }
@@ -180,24 +180,24 @@ int Nodes::GetSize() {
 }
 
 
-std::vector<vtkNode*>::iterator Nodes::GetIterator() {
+std::vector<Node*>::iterator Nodes::GetIterator() {
     return _nodes->begin();
 }
 
 
-std::vector<vtkNode*>::iterator Nodes::GetEnd() {
+std::vector<Node*>::iterator Nodes::GetEnd() {
     return _nodes->end();
 }
 
 
-std::vector<vtkNode*>* Nodes::CreateNodesForDimensions(int* dimensions) {
-    std::vector<vtkNode*>* result = new std::vector<vtkNode*>();
+std::vector<Node*>* Nodes::CreateNodesForDimensions(int* dimensions) {
+    std::vector<Node*>* result = new std::vector<Node*>();
     
     int numberOfVertices = dimensions[0] * dimensions[1] * dimensions[2];
     result->reserve(numberOfVertices);
     
     for (int i = 0; i < numberOfVertices; i++) {
-        vtkNode* node = new vtkNode();
+        Node* node = new Node();
         result->push_back(node);
     }
     

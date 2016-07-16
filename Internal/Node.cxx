@@ -1,14 +1,14 @@
 //
-//  vtkNode.cxx
+//  Node.cxx
 //  vtkGraphCut
 //
 //  Created by Berend Klein Haneveld on 10/07/16.
 //
 //
 
-#include "vtkNode.h"
+#include "Node.h"
 
-vtkNode::vtkNode() {
+Node::Node() {
     active = false;
     orphan = false;
     seedPoint = false;

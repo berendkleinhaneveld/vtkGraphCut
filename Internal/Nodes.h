@@ -10,7 +10,7 @@
 #define Nodes_h
 
 #include <vector>
-#include "Internal/vtkNode.h"
+#include "Internal/Node.h"
 #include "vtkGraphCutDefinitions.h"
 
 class Nodes {
@@ -75,7 +75,7 @@ public:
     /**
      * Returns the node for a given index.
      */
-    vtkNode* GetNode(int index);
+    Node* GetNode(int index);
     
     /**
      * Returns the number of nodes;
@@ -85,20 +85,20 @@ public:
     /**
      * Returns an iterator to the start of the internal vector.
      */
-    std::vector<vtkNode*>::iterator GetIterator();
+    std::vector<Node*>::iterator GetIterator();
     
     /**
      * Returns the iterator at the end of the internal vector.
      */
-    std::vector<vtkNode*>::iterator GetEnd();
+    std::vector<Node*>::iterator GetEnd();
     
     /**
-     * Creates and returns a vector of vtkNode objects.
+     * Creates and returns a vector of Node objects.
      */
-    std::vector<vtkNode*>* CreateNodesForDimensions(int* dimensions);
+    std::vector<Node*>* CreateNodesForDimensions(int* dimensions);
 
 protected:
-    std::vector<vtkNode*>* _nodes;
+    std::vector<Node*>* _nodes;
     vtkConnectivity _connectivity;
     int* _dimensions;
 };

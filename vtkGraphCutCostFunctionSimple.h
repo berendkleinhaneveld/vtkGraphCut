@@ -22,7 +22,7 @@ public:
 	virtual void Reset();
 	virtual void Update();
 
-	virtual void SetNodes(std::vector<vtkNode>* nodes);
+	virtual void SetNodes(std::vector<Node>* nodes);
 	virtual void SetEdges(std::vector<Edge>* edges);
 	virtual void SetInput(vtkImageData*);
 
@@ -30,7 +30,7 @@ protected:
 	vtkGraphCutCostFunctionSimple();
 	~vtkGraphCutCostFunctionSimple();
 
-	std::vector<vtkNode>* nodes;
+	std::vector<Node>* nodes;
 	std::vector<Edge>* edges;
 	vtkImageData* imageData;
 };

@@ -11,7 +11,7 @@
 
 
 class Edge;
-class vtkNode;
+class Node;
 
 
 #include <vtkObjectFactory.h>
@@ -32,7 +32,7 @@ public:
 	// TODO: design API for cost function: what should it do? Does it need
 	// the following methods at all? Or should it work in a more functional
 	// manor?
-	virtual void SetNodes(std::vector<vtkNode>* nodes);
+	virtual void SetNodes(std::vector<Node>* nodes);
 	virtual void SetEdges(std::vector<Edge>* edges);
 	virtual void SetInput(vtkImageData*);
 
