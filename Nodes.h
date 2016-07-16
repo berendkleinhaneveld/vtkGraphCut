@@ -1,23 +1,23 @@
 //
-//  vtkNodes.h
+//  Nodes.h
 //  vtkGraphCut
 //
 //  Created by Berend Klein Haneveld on 11/07/16.
 //
 //
 
-#ifndef vtkNodes_h
-#define vtkNodes_h
+#ifndef Nodes_h
+#define Nodes_h
 
 #include <vector>
 #include "vtkNode.h"
 #include "vtkGraphCutDefinitions.h"
 
-class vtkNodes {
+class Nodes {
 public:
     // Constructors
-    vtkNodes();
-    ~vtkNodes();
+    Nodes();
+    ~Nodes();
     
     // Properties
     void SetConnectivity(vtkConnectivity);
@@ -103,4 +103,4 @@ protected:
     int* _dimensions;
 };
 
-#endif /* vtkNodes_h */
+#endif /* Nodes_h */

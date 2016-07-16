@@ -15,7 +15,7 @@ class Edge;
 class Edges;
 class vtkGraphCutCostFunction;
 class vtkNode;
-class vtkNodes;
+class Nodes;
 
 #include <vtkObjectFactory.h>
 #include <stdio.h>
@@ -58,7 +58,7 @@ protected:
     vtkImageData* inputImageData;
     vtkImageData* outputImageData;
     
-    vtkNodes* nodes;
+    Nodes* nodes;
     Edges* edges;
     
     vtkPoints* foregroundPoints;

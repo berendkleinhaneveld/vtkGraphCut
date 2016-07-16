@@ -77,7 +77,7 @@ namespace vtkGraphCutHelper
         return result;
     }
     
-    double CalculateCapacity(vtkImageData* imageData, Edge* edge, vtkNodeStatistics statistics) {
+    double CalculateCapacity(vtkImageData* imageData, Edge* edge, Nodestatistics statistics) {
         if (edge->isTerminal()) {
             int nodeIndex = edge->nonRootNode();
             assert(nodeIndex >= 0);

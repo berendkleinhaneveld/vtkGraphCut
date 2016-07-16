@@ -26,7 +26,7 @@ enum NodeIndex
     NODE_NONE = -3,
 };
 
-struct vtkNodeStatistics
+struct Nodestatistics
 {
     double minimum;
     double maximum;

@@ -15,12 +15,12 @@
 #include "vtkNode.h"
 #include "vtkGraphCutDataTypes.h"
 #include "vtkGraphCutProtected.h"
-#include "vtkNodes.h"
+#include "Nodes.h"
 
 
 void testSettingSeedPoints();
 void testIncomingEdge();
-void testIncomingEdgeWithConnectivity(vtkGraphCutProtected*, vtkNodes*, std::vector<Edge>*, int*, vtkConnectivity);
+void testIncomingEdgeWithConnectivity(vtkGraphCutProtected*, Nodes*, std::vector<Edge>*, int*, vtkConnectivity);
 
 
 int main(int argc, char const *argv[]) {

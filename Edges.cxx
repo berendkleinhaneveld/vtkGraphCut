@@ -8,7 +8,7 @@
 
 #include "Edges.h"
 #include "Edge.h"
-#include "vtkNodes.h"
+#include "Nodes.h"
 #include <assert.h>
 #include <iostream>
 
@@ -24,13 +24,13 @@ Edges::~Edges() {
 }
 
 
-void Edges::SetNodes(vtkNodes* nodes) {
+void Edges::SetNodes(Nodes* nodes) {
     Reset();
     _nodes = nodes;
 }
 
 
-vtkNodes* Edges::GetNodes() {
+Nodes* Edges::GetNodes() {
     return _nodes;
 }
 
@@ -189,7 +189,7 @@ void Edges::PushFlowThroughEdges(int maxPossibleFlow, std::vector<int> edges, vt
 }
 
 
-std::vector<Edge*>* Edges::CreateEdgesForNodes(vtkNodes* nodes) {
+std::vector<Edge*>* Edges::CreateEdgesForNodes(Nodes* nodes) {
     std::vector<Edge*>* result = new std::vector<Edge*>();
     
     int numberOfNodes = nodes->GetSize();

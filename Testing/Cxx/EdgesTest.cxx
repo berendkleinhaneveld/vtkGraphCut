@@ -9,7 +9,7 @@
 #include <iostream>
 #include <assert.h>
 #include "Edges.h"
-#include "vtkNodes.h"
+#include "Nodes.h"
 #include "Edge.h"
 
 void testEdgesConstructor();
@@ -52,7 +52,7 @@ void testEdgesProperties() {
     
     int dimensions[3] = {3, 3, 3};
     
-    vtkNodes* nodes = new vtkNodes();
+    Nodes* nodes = new Nodes();
     nodes->SetDimensions(dimensions);
     nodes->SetConnectivity(SIX);
 
@@ -73,7 +73,7 @@ void testEdgesUpdate() {
     
     int dimensions[3] = {3, 3, 3};
     
-    vtkNodes* nodes = new vtkNodes();    
+    Nodes* nodes = new Nodes();    
     nodes->SetDimensions(dimensions);
     nodes->SetConnectivity(SIX);
     nodes->Update();
@@ -106,7 +106,7 @@ void testEdgesReset() {
     
     int dimensions[3] = {3, 3, 3};
     
-    vtkNodes* nodes = new vtkNodes();
+    Nodes* nodes = new Nodes();
     nodes->SetDimensions(dimensions);
     nodes->SetConnectivity(SIX);
     nodes->Update();
@@ -132,7 +132,7 @@ void testCreateEdges() {
     std::cout << __FUNCTION__ << "\n";
     int dimensions[3] = {1, 1, 1};
     
-    vtkNodes* nodes = new vtkNodes();
+    Nodes* nodes = new Nodes();
     nodes->SetDimensions(dimensions);
     nodes->SetConnectivity(TWENTYSIX);
     nodes->Update();
@@ -249,7 +249,7 @@ void testEdgeFromNodeToNode() {
     std::cout << __FUNCTION__ << "\n";
     int dimensions[3] = {30, 30, 30};
     
-    vtkNodes* nodes = new vtkNodes();
+    Nodes* nodes = new Nodes();
     nodes->SetDimensions(dimensions);
     nodes->SetConnectivity(SIX);
     nodes->Update();

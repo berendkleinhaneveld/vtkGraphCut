@@ -10,7 +10,7 @@
 #include <vtkImageData.h>
 #include <vtkPoints.h>
 #include "vtkNode.h"
-#include "vtkNodes.h"
+#include "Nodes.h"
 #include "Edge.h"
 #include "Edges.h"
 #include <assert.h>
@@ -147,7 +147,7 @@ void vtkGraphCutProtected::Update() {
     
     // Build nodes data if not exists yet
     if (!nodes) {
-        nodes = new vtkNodes();
+        nodes = new Nodes();
         nodes->SetConnectivity(connectivity);
         nodes->SetDimensions(dimensions);
         nodes->Update();
@@ -518,7 +518,7 @@ void vtkGraphCutProtected::CalculateCapacitiesForEdges() {
         backgroundVariance = variance;
     }
     
-    vtkNodeStatistics statistics;
+    Nodestatistics statistics;
     statistics.minimum = minimum;
     statistics.maximum = maximum;
     statistics.mean = mean;

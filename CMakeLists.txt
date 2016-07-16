@@ -51,7 +51,7 @@ SET_SOURCE_FILES_PROPERTIES(
   Edge.cxx
   Edges.cxx
   vtkNode.cxx
-  vtkNodes.cxx
+  Nodes.cxx
   WRAP_EXCLUDE
 )
 

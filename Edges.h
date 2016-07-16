@@ -11,7 +11,7 @@
 
 
 class Edge;
-class vtkNodes;
+class Nodes;
 
 
 #include <vector>
@@ -26,8 +26,8 @@ public:
     ~Edges();
     
     // Properties
-    void SetNodes(vtkNodes*);
-    vtkNodes* GetNodes();
+    void SetNodes(Nodes*);
+    Nodes* GetNodes();
     
     /**
      * Updates internal state to apply
@@ -99,9 +99,9 @@ public:
     
     /**
      * Creates and returns a vector of Edge objects. The amount of objects
-     * depends on the connectivity property of the vtkNodes object.
+     * depends on the connectivity property of the Nodes object.
      */
-    std::vector<Edge*>* CreateEdgesForNodes(vtkNodes*);
+    std::vector<Edge*>* CreateEdgesForNodes(Nodes*);
     
     /**
      * Returns the number of edges for a given connectivity.
@@ -110,7 +110,7 @@ public:
     
 protected:
     std::vector<Edge*>* _edges;
-    vtkNodes* _nodes;
+    Nodes* _nodes;
 };
 
 #endif /* Edges_h */

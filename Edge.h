@@ -12,7 +12,7 @@
 #include <stdio.h>
 
 /**
- * Edge describes an edge between two vtkNodes.
+ * Edge describes an edge between two Nodes.
  * The nodes are not saved by reference or pointer
  * but by index.
  *
