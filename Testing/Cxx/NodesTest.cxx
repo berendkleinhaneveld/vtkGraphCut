@@ -279,16 +279,16 @@ void testIndicesForNeighbours() {
 
     NodeIndex index = nodes->GetIndexForCoordinate(coordinate);
     nodes->SetConnectivity(SIX);
-    std::vector<NodeIndex>* indices = nodes->GetIndicesForNeighbours(index);
-    assert(indices->size() == 6);
+    std::vector<NodeIndex> indices = nodes->GetIndicesForNeighbours(index);
+    assert(indices.size() == 6);
     
     nodes->SetConnectivity(EIGHTEEN);
     indices = nodes->GetIndicesForNeighbours(index);
-    assert(indices->size() == 18);
+    assert(indices.size() == 18);
     
     nodes->SetConnectivity(TWENTYSIX);
     indices = nodes->GetIndicesForNeighbours(index);
-    assert(indices->size() == 26);
+    assert(indices.size() == 26);
     
     delete nodes;
 }

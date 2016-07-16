@@ -20,6 +20,7 @@ void testTreeProperties();
 void testAddToParent();
 void testPathToRoot(vtkTreeType);
 void testPushFlow(vtkTreeType);
+void testAdopt(vtkTreeType type);
 
 
 /**
@@ -62,6 +63,8 @@ int main() {
     testPathToRoot(TREE_SINK);
     testPushFlow(TREE_SOURCE);
     testPushFlow(TREE_SINK);
+    testAdopt(TREE_SOURCE);
+    testAdopt(TREE_SINK);
     return 0;
 }
 
@@ -70,6 +73,7 @@ void testTreeConstructor() {
     Tree* tree = new Tree(TREE_NONE, NULL);
     
     assert(tree->GetEdges() == NULL);
+    assert(tree->GetNodes() == NULL);
     assert(tree->GetTreeType() == TREE_NONE);
     
     delete tree;
@@ -231,5 +235,56 @@ void testPushFlow(vtkTreeType type) {
     NodeIndex orphanIndex = orphans.at(0);
     assert(orphanIndex == nodeIndex2);
 
+    clearTestData(tree);
+}
+
+
+void testAdopt(vtkTreeType type) {
+    Tree* tree = createTestData(type);
+    
+    Edges* edges = tree->GetEdges();
+    
+    NodeIndex nodeIndex0 = (NodeIndex)0;
+    NodeIndex nodeIndex1 = (NodeIndex)1;
+    NodeIndex nodeIndex2 = (NodeIndex)2;
+    
+    tree->AddChildToParent(nodeIndex0, (NodeIndex)type);
+    tree->AddChildToParent(nodeIndex1, nodeIndex0);
+    tree->AddChildToParent(nodeIndex2, nodeIndex1);
+    
+    Edge* edgeRoot0 = edges->EdgeFromNodeToNode((NodeIndex)type, nodeIndex0);
+    Edge* edgeRoot1 = edges->EdgeFromNodeToNode((NodeIndex)type, nodeIndex1);
+    Edge* edge01 = edges->EdgeFromNodeToNode(nodeIndex0, nodeIndex1);
+    Edge* edge12 = edges->EdgeFromNodeToNode(nodeIndex1, nodeIndex2);
+    
+    edgeRoot0->setCapacity(3);
+    edgeRoot1->setCapacity(1);
+    edge01->setCapacity(4);
+    edge12->setCapacity(5);
+    
+    int maxFlow = -1;
+    std::vector<EdgeIndex> path = tree->PathToRoot(nodeIndex2, &maxFlow);
+    std::vector<NodeIndex> orphans = tree->PushFlowThroughPath(path, maxFlow);
+    
+    NodeIndex orphanIndex = orphans.at(0);
+    assert(orphanIndex == nodeIndex0);
+    
+    Node* node0 = edges->GetNodes()->GetNode(nodeIndex0);
+    Node* node1 = edges->GetNodes()->GetNode(nodeIndex1);
+    
+    assert(node1->parent == nodeIndex0);
+    assert(node0->orphan);
+    
+    tree->Adopt(orphanIndex);
+    
+    assert(!node0->orphan);
+    assert(node0->parent == NODE_NONE);
+    assert(node1->parent != nodeIndex0);
+    assert(node1->parent == (NodeIndex)type);
+    assert(node1->depthInTree == 1);
+
+    edgeRoot1->addFlowFromNode(type == TREE_SOURCE ? edgeRoot1->rootNode() : edgeRoot1->nonRootNode(), 1);
+    assert(edgeRoot1->isSaturatedFromNode(type == TREE_SOURCE ? edgeRoot1->rootNode() : edgeRoot1->nonRootNode()));
+    
     clearTestData(tree);
 }

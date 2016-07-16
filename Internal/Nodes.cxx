@@ -82,8 +82,8 @@ void Nodes::Reset() {
 }
 
 
-std::vector<NodeIndex>* Nodes::GetIndicesForNeighbours(NodeIndex index) {
-    std::vector<NodeIndex>* result = new std::vector<NodeIndex>();
+std::vector<NodeIndex> Nodes::GetIndicesForNeighbours(NodeIndex index) {
+    std::vector<NodeIndex> result;
     
     int coordinate[3];
     GetCoordinateForIndex(index, coordinate);
@@ -96,7 +96,7 @@ std::vector<NodeIndex>* Nodes::GetIndicesForNeighbours(NodeIndex index) {
                 coord[2] = coordinate[2]+z;
                 if (IsNodeAtOffsetConnected(x, y, z)
                     && IsValidCoordinate(coord)) {
-                    result->push_back(GetIndexForCoordinate(coord));
+                    result.push_back(GetIndexForCoordinate(coord));
                 }
             }
         }

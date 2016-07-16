@@ -44,7 +44,7 @@ public:
     /**
      * Returns indices of all neighbouring nodes.
      */
-    std::vector<NodeIndex>* GetIndicesForNeighbours(NodeIndex index);
+    std::vector<NodeIndex> GetIndicesForNeighbours(NodeIndex index);
     
     /**
      * Returns true iff the index is within the internal

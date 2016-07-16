@@ -15,6 +15,7 @@
 
 class Edges;
 class Edge;
+class Nodes;
 class Node;
 
 
@@ -30,6 +31,8 @@ public:
     
     // Properties
     Edges* GetEdges();
+    
+    Nodes* GetNodes();
     
     vtkTreeType GetTreeType();
     
@@ -69,6 +72,7 @@ public:
     
 protected:
     Edges* _edges;
+    Nodes* _nodes;
     vtkTreeType _treeType;
 };
 

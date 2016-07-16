@@ -293,10 +293,10 @@ EdgeIndex vtkGraphCutProtected::Grow(vtkTreeType tree, bool& foundActiveNodes, s
     
     NodeIndex nodeIndex = active.second;
     if (nodeIndex >= 0) {
-        std::vector<NodeIndex>* neighbours = nodes->GetIndicesForNeighbours(nodeIndex);
+        std::vector<NodeIndex> neighbours = nodes->GetIndicesForNeighbours(nodeIndex);
         Edge* edgeBetweenTrees = NULL;
         int index = 0;
-        for (std::vector<NodeIndex>::iterator i = neighbours->begin(); i != neighbours->end(); ++i) {
+        for (std::vector<NodeIndex>::iterator i = neighbours.begin(); i != neighbours.end(); ++i) {
             // Check to see if the edge to the node is saturated or not
             Edge* edge = edges->EdgeFromNodeToNode(nodeIndex, *i);
             if (!edge->isSaturatedFromNode(nodeIndex)) {
