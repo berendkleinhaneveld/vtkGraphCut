@@ -1,5 +1,5 @@
 //
-//  vtkEdgeTest.cxx
+//  EdgeTest.cxx
 //  vtkGraphCut
 //
 //  Created by Berend Klein Haneveld on 05/07/16.
@@ -8,8 +8,9 @@
 
 #include <iostream>
 #include <assert.h>
-#include "vtkEdge.h"
+#include "Internal/Edge.h"
 #include "vtkGraphCutDataTypes.h"
+
 
 void testEdgeStruct();
 
@@ -19,7 +20,7 @@ int main() {
 }
 
 /**
- * Tests the methods of an vtkEdge struct.
+ * Tests the methods of an Edge struct.
  * - isTerminal
  * - flowFromNode
  * - capacityFromNode
@@ -29,12 +30,12 @@ int main() {
  */
 void testEdgeStruct() {
     std::cout << __FUNCTION__ << "\n";
-    vtkEdge edge = vtkEdge(NODE_SINK, 1);
+    Edge edge = Edge(NODE_SINK, 1);
     assert(edge.isTerminal());
     assert(edge.flowFromNode(0) == 0);
     assert(edge.capacityFromNode(0) == 0);
     
-    edge = vtkEdge(0, 1);
+    edge = Edge(0, 1);
     assert(!edge.isTerminal());
     
     edge.setCapacity(5);

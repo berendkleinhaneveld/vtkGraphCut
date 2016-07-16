@@ -1,23 +1,23 @@
 //
-//  vtkNodes.h
+//  Nodes.h
 //  vtkGraphCut
 //
 //  Created by Berend Klein Haneveld on 11/07/16.
 //
 //
 
-#ifndef vtkNodes_h
-#define vtkNodes_h
+#ifndef Nodes_h
+#define Nodes_h
 
 #include <vector>
-#include "vtkNode.h"
+#include "Internal/Node.h"
 #include "vtkGraphCutDefinitions.h"
 
-class vtkNodes {
+class Nodes {
 public:
     // Constructors
-    vtkNodes();
-    ~vtkNodes();
+    Nodes();
+    ~Nodes();
     
     // Properties
     void SetConnectivity(vtkConnectivity);
@@ -75,7 +75,7 @@ public:
     /**
      * Returns the node for a given index.
      */
-    vtkNode* GetNode(int index);
+    Node* GetNode(int index);
     
     /**
      * Returns the number of nodes;
@@ -85,22 +85,22 @@ public:
     /**
      * Returns an iterator to the start of the internal vector.
      */
-    std::vector<vtkNode*>::iterator GetIterator();
+    std::vector<Node*>::iterator GetIterator();
     
     /**
      * Returns the iterator at the end of the internal vector.
      */
-    std::vector<vtkNode*>::iterator GetEnd();
+    std::vector<Node*>::iterator GetEnd();
     
     /**
-     * Creates and returns a vector of vtkNode objects.
+     * Creates and returns a vector of Node objects.
      */
-    std::vector<vtkNode*>* CreateNodesForDimensions(int* dimensions);
+    std::vector<Node*>* CreateNodesForDimensions(int* dimensions);
 
 protected:
-    std::vector<vtkNode*>* _nodes;
+    std::vector<Node*>* _nodes;
     vtkConnectivity _connectivity;
     int* _dimensions;
 };
 
-#endif /* vtkNodes_h */
+#endif /* Nodes_h */

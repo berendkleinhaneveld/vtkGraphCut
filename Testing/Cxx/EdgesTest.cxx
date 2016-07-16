@@ -1,5 +1,5 @@
 //
-//  vtkEdgesTest.cxx
+//  EdgesTest.cxx
 //  vtkGraphCut
 //
 //  Created by Berend Klein Haneveld on 10/07/16.
@@ -8,9 +8,10 @@
 
 #include <iostream>
 #include <assert.h>
-#include "vtkEdges.h"
-#include "vtkNodes.h"
-#include "vtkEdge.h"
+#include "Internal/Edges.h"
+#include "Internal/Nodes.h"
+#include "Internal/Edge.h"
+
 
 void testEdgesConstructor();
 void testEdgesProperties();
@@ -19,7 +20,7 @@ void testEdgesReset();
 
 void testCreateEdges();
 void testEdgeFromNodeToNode();
-void testEdgeFromNodeToNodeWithConnectivity(vtkEdges*);
+void testEdgeFromNodeToNodeWithConnectivity(Edges*);
 
 
 int main() {
@@ -37,7 +38,7 @@ int main() {
 void testEdgesConstructor() {
     std::cout << __FUNCTION__ << "\n";
     
-    vtkEdges* edges = new vtkEdges();
+    Edges* edges = new Edges();
     
     assert(edges->GetNodes() == NULL);
     
@@ -52,11 +53,11 @@ void testEdgesProperties() {
     
     int dimensions[3] = {3, 3, 3};
     
-    vtkNodes* nodes = new vtkNodes();
+    Nodes* nodes = new Nodes();
     nodes->SetDimensions(dimensions);
     nodes->SetConnectivity(SIX);
 
-    vtkEdges* edges = new vtkEdges();
+    Edges* edges = new Edges();
     edges->SetNodes(nodes);
     
     assert(edges->GetNodes() == nodes);
@@ -73,19 +74,19 @@ void testEdgesUpdate() {
     
     int dimensions[3] = {3, 3, 3};
     
-    vtkNodes* nodes = new vtkNodes();    
+    Nodes* nodes = new Nodes();    
     nodes->SetDimensions(dimensions);
     nodes->SetConnectivity(SIX);
     nodes->Update();
 
-    vtkEdges* edges = new vtkEdges();
+    Edges* edges = new Edges();
     edges->SetNodes(nodes);
 
     assert(edges->GetEdge(0) == NULL);
 
     edges->Update();
 
-    vtkEdge* someEdge = edges->GetEdge(0);
+    Edge* someEdge = edges->GetEdge(0);
     assert(someEdge != NULL);
     assert(edges->GetEdge(-1) == NULL);
     assert(edges->GetEdge(300) == NULL);
@@ -106,12 +107,12 @@ void testEdgesReset() {
     
     int dimensions[3] = {3, 3, 3};
     
-    vtkNodes* nodes = new vtkNodes();
+    Nodes* nodes = new Nodes();
     nodes->SetDimensions(dimensions);
     nodes->SetConnectivity(SIX);
     nodes->Update();
     
-    vtkEdges* edges = new vtkEdges();
+    Edges* edges = new Edges();
     edges->SetNodes(nodes);
     edges->Update();
     edges->Reset();
@@ -132,14 +133,14 @@ void testCreateEdges() {
     std::cout << __FUNCTION__ << "\n";
     int dimensions[3] = {1, 1, 1};
     
-    vtkNodes* nodes = new vtkNodes();
+    Nodes* nodes = new Nodes();
     nodes->SetDimensions(dimensions);
     nodes->SetConnectivity(TWENTYSIX);
     nodes->Update();
     
-    vtkEdges* edges = new vtkEdges();
+    Edges* edges = new Edges();
     edges->SetNodes(nodes);
-    std::vector<vtkEdge*>* edgesVector = edges->CreateEdgesForNodes(nodes);
+    std::vector<Edge*>* edgesVector = edges->CreateEdgesForNodes(nodes);
     
     int numberOfNodes = dimensions[0] * dimensions[1] * dimensions[2];
     int numberOfEdges = numberOfNodes * 2 + numberOfNodes * (7);
@@ -249,12 +250,12 @@ void testEdgeFromNodeToNode() {
     std::cout << __FUNCTION__ << "\n";
     int dimensions[3] = {30, 30, 30};
     
-    vtkNodes* nodes = new vtkNodes();
+    Nodes* nodes = new Nodes();
     nodes->SetDimensions(dimensions);
     nodes->SetConnectivity(SIX);
     nodes->Update();
     
-    vtkEdges* edges = new vtkEdges();
+    Edges* edges = new Edges();
     edges->SetNodes(nodes);
     edges->Update();
 
@@ -289,8 +290,8 @@ void testEdgeFromNodeToNode() {
 /**
  * Tests getting the edge between two nodes for the specified connectivity.
  */
-void testEdgeFromNodeToNodeWithConnectivity(vtkEdges* edges) {
-    vtkEdge* edge = edges->EdgeFromNodeToNode(0, 1);
+void testEdgeFromNodeToNodeWithConnectivity(Edges* edges) {
+    Edge* edge = edges->EdgeFromNodeToNode(0, 1);
     assert(edge->node1() == 0);
     assert(edge->node2() == 1);
     

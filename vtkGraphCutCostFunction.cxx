@@ -7,8 +7,8 @@
 //
 
 #include "vtkGraphCutCostFunction.h"
-#include "vtkNode.h"
-#include "vtkEdge.h"
+#include "Internal/Node.h"
+#include "Internal/Edge.h"
 
 
 vtkStandardNewMacro(vtkGraphCutCostFunction);
@@ -20,10 +20,10 @@ void vtkGraphCutCostFunction::PrintSelf(ostream& os, vtkIndent indent) {
 
 void vtkGraphCutCostFunction::Reset() { }
 void vtkGraphCutCostFunction::Update() { }
-void vtkGraphCutCostFunction::SetNodes(std::vector<vtkNode>* nodes) {
+void vtkGraphCutCostFunction::SetNodes(std::vector<Node>* nodes) {
 	
 }
-void vtkGraphCutCostFunction::SetEdges(std::vector<vtkEdge>* edges) {
+void vtkGraphCutCostFunction::SetEdges(std::vector<Edge>* edges) {
 	
 }
 void vtkGraphCutCostFunction::SetInput(vtkImageData* imageData) {

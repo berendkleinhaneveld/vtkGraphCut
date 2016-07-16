@@ -1,40 +1,40 @@
 //
-//  vtkNodes.cxx
+//  Nodes.cxx
 //  vtkGraphCut
 //
 //  Created by Berend Klein Haneveld on 11/07/16.
 //
 //
 
-#include "vtkNodes.h"
+#include "Nodes.h"
 #include <cstdlib>
 #include <assert.h>
 #include <stdio.h>
 
 
-vtkNodes::vtkNodes() {
+Nodes::Nodes() {
     _nodes = NULL;
     _dimensions = NULL;
     Reset();
 }
 
 
-vtkNodes::~vtkNodes() {
+Nodes::~Nodes() {
     Reset();
 }
 
 
-void vtkNodes::SetConnectivity(vtkConnectivity connectivity) {
+void Nodes::SetConnectivity(vtkConnectivity connectivity) {
     _connectivity = connectivity;
 }
 
 
-vtkConnectivity vtkNodes::GetConnectivity() {
+vtkConnectivity Nodes::GetConnectivity() {
     return _connectivity;
 }
 
 
-void vtkNodes::SetDimensions(int *dimensions) {
+void Nodes::SetDimensions(int *dimensions) {
     if (_dimensions == NULL) {
         _dimensions = new int[3];
     }
@@ -44,12 +44,12 @@ void vtkNodes::SetDimensions(int *dimensions) {
 }
 
 
-int* vtkNodes::GetDimensions() {
+int* Nodes::GetDimensions() {
     return _dimensions;
 }
 
 
-void vtkNodes::Update() {
+void Nodes::Update() {
     if (_connectivity == UNCONNECTED) {
         printf("No connectivity is specified. Skipping update.");
         return;
@@ -66,9 +66,9 @@ void vtkNodes::Update() {
 }
 
 
-void vtkNodes::Reset() {
+void Nodes::Reset() {
     if (_nodes != NULL) {
-        for (std::vector<vtkNode*>::iterator i = _nodes->begin(); i != _nodes->end(); ++i) {
+        for (std::vector<Node*>::iterator i = _nodes->begin(); i != _nodes->end(); ++i) {
             delete *i;
         }
         delete _nodes;
@@ -82,7 +82,7 @@ void vtkNodes::Reset() {
 }
 
 
-std::vector<int>* vtkNodes::GetIndicesForNeighbours(int index) {
+std::vector<int>* Nodes::GetIndicesForNeighbours(int index) {
     std::vector<int>* result = new std::vector<int>();
     
     int coordinate[3];
@@ -105,7 +105,7 @@ std::vector<int>* vtkNodes::GetIndicesForNeighbours(int index) {
 }
 
 
-bool vtkNodes::IsValidCoordinate(int* coordinate) {
+bool Nodes::IsValidCoordinate(int* coordinate) {
     for (int i = 0; i < 3; ++i) {
         if (coordinate[i] >= _dimensions[i] || coordinate[i] < 0) {
             return false;
@@ -115,7 +115,7 @@ bool vtkNodes::IsValidCoordinate(int* coordinate) {
 }
 
 
-int vtkNodes::GetIndexForCoordinate(int* coordinate) {
+int Nodes::GetIndexForCoordinate(int* coordinate) {
     assert(coordinate[0] < _dimensions[0]);
     assert(coordinate[1] < _dimensions[1]);
     assert(coordinate[2] < _dimensions[2]);
@@ -129,7 +129,7 @@ int vtkNodes::GetIndexForCoordinate(int* coordinate) {
 }
 
 
-bool vtkNodes::GetCoordinateForIndex(int index, int* coordinate) {
+bool Nodes::GetCoordinateForIndex(int index, int* coordinate) {
     if (index >= _dimensions[0] * _dimensions[1] * _dimensions[2] || index < 0) {
         return false;
     }
@@ -147,7 +147,7 @@ bool vtkNodes::GetCoordinateForIndex(int index, int* coordinate) {
 }
 
 
-bool vtkNodes::IsNodeAtOffsetConnected(int x, int y, int z) {
+bool Nodes::IsNodeAtOffsetConnected(int x, int y, int z) {
     switch (_connectivity) {
         case SIX:
             return (std::abs(x + y) == 1 && z == 0)
@@ -164,7 +164,7 @@ bool vtkNodes::IsNodeAtOffsetConnected(int x, int y, int z) {
 }
 
 
-vtkNode* vtkNodes::GetNode(int index) {
+Node* Nodes::GetNode(int index) {
     if (_nodes == NULL || index < 0 || index >= _nodes->size()) {
         return NULL;
     }
@@ -172,7 +172,7 @@ vtkNode* vtkNodes::GetNode(int index) {
 }
 
 
-int vtkNodes::GetSize() {
+int Nodes::GetSize() {
     if (_nodes == NULL) {
         return 0;
     }
@@ -180,24 +180,24 @@ int vtkNodes::GetSize() {
 }
 
 
-std::vector<vtkNode*>::iterator vtkNodes::GetIterator() {
+std::vector<Node*>::iterator Nodes::GetIterator() {
     return _nodes->begin();
 }
 
 
-std::vector<vtkNode*>::iterator vtkNodes::GetEnd() {
+std::vector<Node*>::iterator Nodes::GetEnd() {
     return _nodes->end();
 }
 
 
-std::vector<vtkNode*>* vtkNodes::CreateNodesForDimensions(int* dimensions) {
-    std::vector<vtkNode*>* result = new std::vector<vtkNode*>();
+std::vector<Node*>* Nodes::CreateNodesForDimensions(int* dimensions) {
+    std::vector<Node*>* result = new std::vector<Node*>();
     
     int numberOfVertices = dimensions[0] * dimensions[1] * dimensions[2];
     result->reserve(numberOfVertices);
     
     for (int i = 0; i < numberOfVertices; i++) {
-        vtkNode* node = new vtkNode();
+        Node* node = new Node();
         result->push_back(node);
     }
     

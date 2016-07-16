@@ -1,5 +1,5 @@
 //
-//  vtkNodesTest.cxx
+//  NodesTest.cxx
 //  vtkGraphCut
 //
 //  Created by Berend Klein Haneveld on 10/07/16.
@@ -8,7 +8,7 @@
 
 #include <iostream>
 #include <assert.h>
-#include "vtkNodes.h"
+#include "Internal/Nodes.h"
 
 void testNodesConstructor();
 void testNodesProperties();
@@ -40,7 +40,7 @@ int main() {
 void testNodesConstructor() {
     std::cout << __FUNCTION__ << "\n";
     
-    vtkNodes* nodes = new vtkNodes();
+    Nodes* nodes = new Nodes();
     
     assert(nodes->GetConnectivity() == UNCONNECTED);
     assert(nodes->GetDimensions() == NULL);
@@ -56,7 +56,7 @@ void testNodesProperties() {
     
     int dimensions[3] = {3, 3, 3};
     
-    vtkNodes* nodes = new vtkNodes();
+    Nodes* nodes = new Nodes();
     nodes->SetDimensions(dimensions);
     
     assert(nodes->GetDimensions()[0] == dimensions[0]);
@@ -90,7 +90,7 @@ void testNodesUpdate() {
     
     int dimensions[3] = {3, 3, 3};
     
-    vtkNodes* nodes = new vtkNodes();
+    Nodes* nodes = new Nodes();
     
     assert(nodes->GetNode(0) == NULL);
     
@@ -100,7 +100,7 @@ void testNodesUpdate() {
 
     assert(nodes->GetSize() == 27);
     
-    vtkNode* someNode = nodes->GetNode(0);
+    Node* someNode = nodes->GetNode(0);
     assert(someNode != NULL);
     assert(nodes->GetNode(-1) == NULL);
     assert(nodes->GetNode(27) == NULL);
@@ -120,7 +120,7 @@ void testNodesReset() {
     
     int dimensions[3] = {3, 3, 3};
     
-    vtkNodes* nodes = new vtkNodes();
+    Nodes* nodes = new Nodes();
     nodes->SetDimensions(dimensions);
     nodes->SetConnectivity(SIX);
     nodes->Update();
@@ -144,8 +144,8 @@ void testCreateNodes() {
     std::cout << __FUNCTION__ << "\n";
     int dimensions[3] = {3, 3, 2};
     
-    vtkNodes* nodes = new vtkNodes();
-    std::vector<vtkNode*>* nodesVector = nodes->CreateNodesForDimensions(dimensions);
+    Nodes* nodes = new Nodes();
+    std::vector<Node*>* nodesVector = nodes->CreateNodesForDimensions(dimensions);
     
     assert(nodesVector->size() == 18);
     
@@ -153,7 +153,7 @@ void testCreateNodes() {
     dimensions[1] = 2;
     dimensions[2] = 7;
     
-    std::vector<vtkNode*>* moreNodes = nodes->CreateNodesForDimensions(dimensions);
+    std::vector<Node*>* moreNodes = nodes->CreateNodesForDimensions(dimensions);
     assert(moreNodes->size() == 70);
     
     delete nodes;
@@ -169,7 +169,7 @@ void testCreateNodes() {
 void testIsValidCoordinate() {
     std::cout << __FUNCTION__ << "\n";
     
-    vtkNodes* nodes = new vtkNodes();
+    Nodes* nodes = new Nodes();
     
     int dimensions[3] = {4, 6, 7};
     nodes->SetDimensions(dimensions);
@@ -210,7 +210,7 @@ void testIsValidCoordinate() {
 void testIndexForCoordinate() {
     std::cout << __FUNCTION__ << "\n";
     
-    vtkNodes* nodes = new vtkNodes();
+    Nodes* nodes = new Nodes();
     
     int dimensions[3] = {2, 3, 4};
     int coordinate[3] = {0, 0, 0};
@@ -258,7 +258,7 @@ void testIndexForCoordinate() {
 void testCoordinateForIndex() {
     std::cout << __FUNCTION__ << "\n";
     
-    vtkNodes* nodes = new vtkNodes();
+    Nodes* nodes = new Nodes();
     
     int dimensions[3] = {2, 3, 4};
     nodes->SetDimensions(dimensions);
@@ -302,7 +302,7 @@ void testCoordinateForIndex() {
  */
 void testIndicesForNeighbours() {
     std::cout << __FUNCTION__ << "\n";
-    vtkNodes* nodes = new vtkNodes();
+    Nodes* nodes = new Nodes();
     
     int dimensions[3] = {3, 4, 5};
     nodes->SetDimensions(dimensions);

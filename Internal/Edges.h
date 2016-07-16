@@ -1,17 +1,17 @@
 //
-//  vtkEdges.h
+//  Edges.h
 //  vtkGraphCut
 //
 //  Created by Berend Klein Haneveld on 11/07/16.
 //
 //
 
-#ifndef vtkEdges_h
-#define vtkEdges_h
+#ifndef Edges_h
+#define Edges_h
 
 
-class vtkEdge;
-class vtkNodes;
+class Edge;
+class Nodes;
 
 
 #include <vector>
@@ -19,15 +19,15 @@ class vtkNodes;
 #include "vtkGraphCutDataTypes.h"
 
 
-class vtkEdges {
+class Edges {
 public:
     // Constructors
-    vtkEdges();
-    ~vtkEdges();
+    Edges();
+    ~Edges();
     
     // Properties
-    void SetNodes(vtkNodes*);
-    vtkNodes* GetNodes();
+    void SetNodes(Nodes*);
+    Nodes* GetNodes();
     
     /**
      * Updates internal state to apply
@@ -47,7 +47,7 @@ public:
      * Returns edge object at the specified index or
      * NULL if it doesn't exist.
      */
-    vtkEdge* GetEdge(int index);
+    Edge* GetEdge(int index);
     
     /**
      * Returns the number of edges.
@@ -57,12 +57,12 @@ public:
     /**
      * Returns the begin iterator of the internal vector.
      */
-    std::vector<vtkEdge*>::iterator GetBegin();
+    std::vector<Edge*>::iterator GetBegin();
     
     /**
      * Returns the end iterator of the internal vector.
      */
-    std::vector<vtkEdge*>::iterator GetEnd();
+    std::vector<Edge*>::iterator GetEnd();
     
     /**
      * Returns the index for the edge that connect the node
@@ -76,7 +76,7 @@ public:
      * IndexForEdgeFromNodeToNode. If an invalid edge is requested,
      * then this function will return NULL.
      */
-    vtkEdge* EdgeFromNodeToNode(int sourceIndex, int targetIndex);
+    Edge* EdgeFromNodeToNode(int sourceIndex, int targetIndex);
     
     /**
      * Returns a vector of indices of edges that form a path from the 
@@ -85,7 +85,7 @@ public:
      * The value that maxPossibleFlow is pointing at will be the maximum
      * possible flow that will be possible to push through the returned path.
      */
-    // TODO: return vtkEdge* vector instead of indices
+    // TODO: return Edge* vector instead of indices
     std::vector<int> PathToRoot(int aNodeIndex, int* maxPossibleFlow);
     
     /**
@@ -98,10 +98,10 @@ public:
     void PushFlowThroughEdges(int flow, std::vector<int> edges, vtkTreeType tree, std::vector<int>* orphans);
     
     /**
-     * Creates and returns a vector of vtkEdge objects. The amount of objects
-     * depends on the connectivity property of the vtkNodes object.
+     * Creates and returns a vector of Edge objects. The amount of objects
+     * depends on the connectivity property of the Nodes object.
      */
-    std::vector<vtkEdge*>* CreateEdgesForNodes(vtkNodes*);
+    std::vector<Edge*>* CreateEdgesForNodes(Nodes*);
     
     /**
      * Returns the number of edges for a given connectivity.
@@ -109,8 +109,8 @@ public:
     int NumberOfEdgesForConnectivity(vtkConnectivity connectivity);
     
 protected:
-    std::vector<vtkEdge*>* _edges;
-    vtkNodes* _nodes;
+    std::vector<Edge*>* _edges;
+    Nodes* _nodes;
 };
 
-#endif /* vtkEdges_h */
+#endif /* Edges_h */

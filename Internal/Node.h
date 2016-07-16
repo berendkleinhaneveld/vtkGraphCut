@@ -1,20 +1,20 @@
 //
-//  vtkNode.h
+//  Node.h
 //  vtkGraphCut
 //
 //  Created by Berend Klein Haneveld on 10/07/16.
 //
 //
 
-#ifndef vtkNode_h
-#define vtkNode_h
+#ifndef Node_h
+#define Node_h
 
 #include "vtkGraphCutDataTypes.h"
 
-class vtkNode
+class Node
 {
 public:
-    vtkNode();
+    Node();
     
     vtkTreeType tree;
     int depthInTree;
@@ -24,4 +24,4 @@ public:
     bool seedPoint;
 };
 
-#endif /* vtkNode_h */
+#endif /* Node_h */

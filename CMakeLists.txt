@@ -43,20 +43,25 @@ INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIR})
 
 # Find all headers in root folder
 FILE(GLOB HEADERS *.h)
+FILE(GLOB INTERNAL_HEADERS Internal/*.h)
 
 # Find all source files in root folder
 FILE(GLOB SOURCES *.cxx)
+FILE(GLOB INTERNAL_SOURCES Internal/*.cxx)
 
 SET_SOURCE_FILES_PROPERTIES(
-  vtkEdge.cxx
-  vtkEdges.cxx
-  vtkNode.cxx
-  vtkNodes.cxx
+  INTERNAL_SOURCES
   WRAP_EXCLUDE
 )
 
 SET(ALL_SOURCES
   ${SOURCES}
+  ${INTERNAL_SOURCES}
+)
+
+SET(ALL_HEADERS
+  ${HEADERS}
+  ${INTERNAL_HEADERS}
 )
 
 # Give user option of building shared or static libraries.  Default to
@@ -100,8 +105,8 @@ ENDIF(EXISTS ${VTK_DIR}/bin)
 
 # Create the library.
 ADD_LIBRARY(${PROJECT_NAME}
-  ${HEADERS}
-  ${SOURCES}
+  ${ALL_HEADERS}
+  ${ALL_SOURCES}
 )
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME}
