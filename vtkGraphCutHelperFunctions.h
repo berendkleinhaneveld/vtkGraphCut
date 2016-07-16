@@ -11,7 +11,7 @@
 
 #include <assert.h>
 #include "vtkEdge.h"
-#include "vtkEdges.h"
+#include "Edges.h"
 #include "vtkGraphCutDataTypes.h"
 #include <vtkImageData.h>
 

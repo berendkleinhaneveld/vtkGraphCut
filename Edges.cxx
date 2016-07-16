@@ -1,41 +1,41 @@
 //
-//  vtkEdges.cxx
+//  Edges.cxx
 //  vtkGraphCut
 //
 //  Created by Berend Klein Haneveld on 11/07/16.
 //
 //
 
-#include "vtkEdges.h"
+#include "Edges.h"
 #include "vtkEdge.h"
 #include "vtkNodes.h"
 #include <assert.h>
 #include <iostream>
 
 
-vtkEdges::vtkEdges() {
+Edges::Edges() {
     _nodes = NULL;
     _edges = NULL;
 }
 
 
-vtkEdges::~vtkEdges() {
+Edges::~Edges() {
     Reset();
 }
 
 
-void vtkEdges::SetNodes(vtkNodes* nodes) {
+void Edges::SetNodes(vtkNodes* nodes) {
     Reset();
     _nodes = nodes;
 }
 
 
-vtkNodes* vtkEdges::GetNodes() {
+vtkNodes* Edges::GetNodes() {
     return _nodes;
 }
 
 
-void vtkEdges::Update() {
+void Edges::Update() {
     if (!_nodes || _nodes == NULL) {
         std::cout << "Warning: use SetNodes before running Update. Skipping Update().";
         return;
@@ -45,7 +45,7 @@ void vtkEdges::Update() {
 }
 
 
-void vtkEdges::Reset() {
+void Edges::Reset() {
     _nodes = NULL;
     if (_edges) {
         for (std::vector<vtkEdge*>::iterator i = _edges->begin(); i != _edges->end(); ++i) {
@@ -57,7 +57,7 @@ void vtkEdges::Reset() {
 }
 
 
-vtkEdge* vtkEdges::GetEdge(int index) {
+vtkEdge* Edges::GetEdge(int index) {
     if (!_edges || index >= _edges->size() || index < 0) {
         return NULL;
     }
@@ -65,22 +65,22 @@ vtkEdge* vtkEdges::GetEdge(int index) {
 }
 
 
-int vtkEdges::GetSize() {
+int Edges::GetSize() {
     return _edges->size();
 }
 
 
-std::vector<vtkEdge*>::iterator vtkEdges::GetBegin() {
+std::vector<vtkEdge*>::iterator Edges::GetBegin() {
     return _edges->begin();
 }
 
 
-std::vector<vtkEdge*>::iterator vtkEdges::GetEnd() {
+std::vector<vtkEdge*>::iterator Edges::GetEnd() {
     return _edges->end();
 }
 
 
-int vtkEdges::IndexForEdgeFromNodeToNode(int sourceIndex, int targetIndex) {
+int Edges::IndexForEdgeFromNodeToNode(int sourceIndex, int targetIndex) {
     assert(sourceIndex != NODE_NONE);
     assert(targetIndex != NODE_NONE);
     
@@ -122,13 +122,13 @@ int vtkEdges::IndexForEdgeFromNodeToNode(int sourceIndex, int targetIndex) {
 }
 
 
-vtkEdge* vtkEdges::EdgeFromNodeToNode(int sourceIndex, int targetIndex) {
+vtkEdge* Edges::EdgeFromNodeToNode(int sourceIndex, int targetIndex) {
     int index = IndexForEdgeFromNodeToNode(sourceIndex, targetIndex);
     return index >= 0 ? _edges->at(index) : NULL;
 }
 
 
-std::vector<int> vtkEdges::PathToRoot(int aNodeIndex, int* maxPossibleFlow) {
+std::vector<int> Edges::PathToRoot(int aNodeIndex, int* maxPossibleFlow) {
     std::vector<int> result;
     vtkNode* node = NULL;
     int nodeIndex = aNodeIndex;
@@ -154,7 +154,7 @@ std::vector<int> vtkEdges::PathToRoot(int aNodeIndex, int* maxPossibleFlow) {
 }
 
 
-void vtkEdges::PushFlowThroughEdges(int maxPossibleFlow, std::vector<int> edges, vtkTreeType tree, std::vector<int>* orphans) {
+void Edges::PushFlowThroughEdges(int maxPossibleFlow, std::vector<int> edges, vtkTreeType tree, std::vector<int>* orphans) {
     for (std::vector<int>::iterator i = edges.begin(); i != edges.end(); ++i) {
         vtkEdge* edge = _edges->at(*i);
         
@@ -189,7 +189,7 @@ void vtkEdges::PushFlowThroughEdges(int maxPossibleFlow, std::vector<int> edges,
 }
 
 
-std::vector<vtkEdge*>* vtkEdges::CreateEdgesForNodes(vtkNodes* nodes) {
+std::vector<vtkEdge*>* Edges::CreateEdgesForNodes(vtkNodes* nodes) {
     std::vector<vtkEdge*>* result = new std::vector<vtkEdge*>();
     
     int numberOfNodes = nodes->GetSize();
@@ -228,7 +228,7 @@ std::vector<vtkEdge*>* vtkEdges::CreateEdgesForNodes(vtkNodes* nodes) {
 }
 
 
-int vtkEdges::NumberOfEdgesForConnectivity(vtkConnectivity connectivity) {
+int Edges::NumberOfEdgesForConnectivity(vtkConnectivity connectivity) {
     switch (connectivity) {
         case SIX:
             return 3;

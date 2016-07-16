@@ -49,7 +49,7 @@ FILE(GLOB SOURCES *.cxx)
 
 SET_SOURCE_FILES_PROPERTIES(
   vtkEdge.cxx
-  vtkEdges.cxx
+  Edges.cxx
   vtkNode.cxx
   vtkNodes.cxx
   WRAP_EXCLUDE

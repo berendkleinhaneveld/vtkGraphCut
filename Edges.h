@@ -1,13 +1,13 @@
 //
-//  vtkEdges.h
+//  Edges.h
 //  vtkGraphCut
 //
 //  Created by Berend Klein Haneveld on 11/07/16.
 //
 //
 
-#ifndef vtkEdges_h
-#define vtkEdges_h
+#ifndef Edges_h
+#define Edges_h
 
 
 class vtkEdge;
@@ -19,11 +19,11 @@ class vtkNodes;
 #include "vtkGraphCutDataTypes.h"
 
 
-class vtkEdges {
+class Edges {
 public:
     // Constructors
-    vtkEdges();
-    ~vtkEdges();
+    Edges();
+    ~Edges();
     
     // Properties
     void SetNodes(vtkNodes*);
@@ -113,4 +113,4 @@ protected:
     vtkNodes* _nodes;
 };
 
-#endif /* vtkEdges_h */
+#endif /* Edges_h */

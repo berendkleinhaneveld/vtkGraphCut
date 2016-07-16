@@ -11,7 +11,7 @@
 #include <vtkPoints.h>
 #include "vtkGraphCutCostFunctionSimple.h"
 #include "vtkEdge.h"
-#include "vtkEdges.h"
+#include "Edges.h"
 #include "vtkNode.h"
 #include "vtkGraphCutDataTypes.h"
 #include "vtkGraphCutProtected.h"

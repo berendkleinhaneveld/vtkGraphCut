@@ -12,7 +12,7 @@
 #include "vtkNode.h"
 #include "vtkNodes.h"
 #include "vtkEdge.h"
-#include "vtkEdges.h"
+#include "Edges.h"
 #include <assert.h>
 #include "vtkGraphCutHelperFunctions.h"
 #include "vtkGraphCutCostFunction.h"
@@ -154,7 +154,7 @@ void vtkGraphCutProtected::Update() {
     }
     // Build edges data if not exists yet
     if (!edges) {
-        edges = new vtkEdges();
+        edges = new Edges();
         edges->SetNodes(nodes);
         edges->Update();
     }

@@ -1,5 +1,5 @@
 //
-//  vtkEdgesTest.cxx
+//  EdgesTest.cxx
 //  vtkGraphCut
 //
 //  Created by Berend Klein Haneveld on 10/07/16.
@@ -8,7 +8,7 @@
 
 #include <iostream>
 #include <assert.h>
-#include "vtkEdges.h"
+#include "Edges.h"
 #include "vtkNodes.h"
 #include "vtkEdge.h"
 
@@ -19,7 +19,7 @@ void testEdgesReset();
 
 void testCreateEdges();
 void testEdgeFromNodeToNode();
-void testEdgeFromNodeToNodeWithConnectivity(vtkEdges*);
+void testEdgeFromNodeToNodeWithConnectivity(Edges*);
 
 
 int main() {
@@ -37,7 +37,7 @@ int main() {
 void testEdgesConstructor() {
     std::cout << __FUNCTION__ << "\n";
     
-    vtkEdges* edges = new vtkEdges();
+    Edges* edges = new Edges();
     
     assert(edges->GetNodes() == NULL);
     
@@ -56,7 +56,7 @@ void testEdgesProperties() {
     nodes->SetDimensions(dimensions);
     nodes->SetConnectivity(SIX);
 
-    vtkEdges* edges = new vtkEdges();
+    Edges* edges = new Edges();
     edges->SetNodes(nodes);
     
     assert(edges->GetNodes() == nodes);
@@ -78,7 +78,7 @@ void testEdgesUpdate() {
     nodes->SetConnectivity(SIX);
     nodes->Update();
 
-    vtkEdges* edges = new vtkEdges();
+    Edges* edges = new Edges();
     edges->SetNodes(nodes);
 
     assert(edges->GetEdge(0) == NULL);
@@ -111,7 +111,7 @@ void testEdgesReset() {
     nodes->SetConnectivity(SIX);
     nodes->Update();
     
-    vtkEdges* edges = new vtkEdges();
+    Edges* edges = new Edges();
     edges->SetNodes(nodes);
     edges->Update();
     edges->Reset();
@@ -137,7 +137,7 @@ void testCreateEdges() {
     nodes->SetConnectivity(TWENTYSIX);
     nodes->Update();
     
-    vtkEdges* edges = new vtkEdges();
+    Edges* edges = new Edges();
     edges->SetNodes(nodes);
     std::vector<vtkEdge*>* edgesVector = edges->CreateEdgesForNodes(nodes);
     
@@ -254,7 +254,7 @@ void testEdgeFromNodeToNode() {
     nodes->SetConnectivity(SIX);
     nodes->Update();
     
-    vtkEdges* edges = new vtkEdges();
+    Edges* edges = new Edges();
     edges->SetNodes(nodes);
     edges->Update();
 
@@ -289,7 +289,7 @@ void testEdgeFromNodeToNode() {
 /**
  * Tests getting the edge between two nodes for the specified connectivity.
  */
-void testEdgeFromNodeToNodeWithConnectivity(vtkEdges* edges) {
+void testEdgeFromNodeToNodeWithConnectivity(Edges* edges) {
     vtkEdge* edge = edges->EdgeFromNodeToNode(0, 1);
     assert(edge->node1() == 0);
     assert(edge->node2() == 1);
