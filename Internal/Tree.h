@@ -55,6 +55,18 @@ public:
      */
     std::vector<NodeIndex> PushFlowThroughPath(std::vector<EdgeIndex> path, int flow);
     
+    /**
+     * Adopts the orphan at @p orphanIndex by looking for a new parent.
+     * The new parent must be connected through a non-saturated edge and
+     * must be from the same tree and (may not be an orphan as well).
+     * From all the possible parents, the parent with the lowest depth in
+     * the tree is chosen.
+     * When no adopting parent can be found, then the node is removed from
+     * the tree and then all its children become orphans and will be adopted 
+     * recursively.
+     */
+    void Adopt(NodeIndex orphanIndex);
+    
 protected:
     Edges* _edges;
     vtkTreeType _treeType;

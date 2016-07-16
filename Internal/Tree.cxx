@@ -118,6 +118,7 @@ std::vector<NodeIndex> Tree::PushFlowThroughPath(std::vector<EdgeIndex> path, in
         edge->addFlowFromNode(pushFrom, flow);
         if (edge->isSaturatedFromNode(pushFrom)) {
             orphans.push_back(childIndex);
+            nodes->GetNode(childIndex)->orphan = true;
         }
     }
     

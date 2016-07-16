@@ -216,9 +216,13 @@ void testPushFlow(vtkTreeType type) {
     
     assert(maxFlow == 3);
     
+    Node* node2 = edges->GetNodes()->GetNode(nodeIndex2);
+    assert(!node2->orphan);
+    
     std::vector<NodeIndex> orphans = tree->PushFlowThroughPath(path, maxFlow);
     
     assert(orphans.size() == 1);
+    assert(node2->orphan);
     
     path = tree->PathToRoot(nodeIndex2, &maxFlow);
     
