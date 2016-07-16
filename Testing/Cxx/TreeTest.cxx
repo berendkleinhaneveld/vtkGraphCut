@@ -19,6 +19,7 @@ void testTreeConstructor();
 void testTreeProperties();
 void testAddToParent();
 void testPathToRoot(vtkTreeType);
+void testPushFlow(vtkTreeType);
 
 
 /**
@@ -59,6 +60,8 @@ int main() {
     testAddToParent();
     testPathToRoot(TREE_SOURCE);
     testPathToRoot(TREE_SINK);
+    testPushFlow(TREE_SOURCE);
+    testPushFlow(TREE_SINK);
     return 0;
 }
 
@@ -182,4 +185,47 @@ void testPathToRoot(vtkTreeType type) {
     
     assert(path.size() == 3);
     assert(maxFlow == 3);
+    
+    clearTestData(tree);
+}
+
+
+void testPushFlow(vtkTreeType type) {
+    Tree* tree = createTestData(type);
+    
+    Edges* edges = tree->GetEdges();
+    
+    NodeIndex nodeIndex0 = (NodeIndex)0;
+    NodeIndex nodeIndex1 = (NodeIndex)1;
+    NodeIndex nodeIndex2 = (NodeIndex)2;
+    
+    tree->AddChildToParent(nodeIndex0, (NodeIndex)type);
+    tree->AddChildToParent(nodeIndex1, nodeIndex0);
+    tree->AddChildToParent(nodeIndex2, nodeIndex1);
+    
+    Edge* edgeRoot0 = edges->EdgeFromNodeToNode((NodeIndex)type, nodeIndex0);
+    Edge* edge01 = edges->EdgeFromNodeToNode(nodeIndex0, nodeIndex1);
+    Edge* edge12 = edges->EdgeFromNodeToNode(nodeIndex1, nodeIndex2);
+    
+    edgeRoot0->setCapacity(5);
+    edge01->setCapacity(4);
+    edge12->setCapacity(3);
+    
+    int maxFlow = -1;
+    std::vector<EdgeIndex> path = tree->PathToRoot(nodeIndex2, &maxFlow);
+    
+    assert(maxFlow == 3);
+    
+    std::vector<NodeIndex> orphans = tree->PushFlowThroughPath(path, maxFlow);
+    
+    assert(orphans.size() == 1);
+    
+    path = tree->PathToRoot(nodeIndex2, &maxFlow);
+    
+    assert(maxFlow == 0);
+    
+    NodeIndex orphanIndex = orphans.at(0);
+    assert(orphanIndex == nodeIndex2);
+
+    clearTestData(tree);
 }

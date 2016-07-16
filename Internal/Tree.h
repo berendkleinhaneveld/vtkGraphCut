@@ -41,13 +41,19 @@ public:
      */
     void AddChildToParent(NodeIndex child, NodeIndex parent);
     
-    
     /**
      * Returns the path to the root as a vector of edge indices.
-     * The value of maxFlow will be updated to hold the value of
+     * The value of @p maxFlow will be updated to hold the value of
      * the maximum flow that is possible to push through the path.
      */
     std::vector<EdgeIndex> PathToRoot(NodeIndex leaf, int* maxFlow);
+    
+    /**
+     * Pushes the given @p flow through all the edges in @p path.
+     * Whenever an edge becomes saturated, the node is made an orphan
+     * and returned in a vector.
+     */
+    std::vector<NodeIndex> PushFlowThroughPath(std::vector<EdgeIndex> path, int flow);
     
 protected:
     Edges* _edges;

@@ -84,12 +84,44 @@ std::vector<EdgeIndex> Tree::PathToRoot(NodeIndex leafIndex, int* maxFlow) {
         EdgeIndex edgeIndex = _edges->IndexForEdgeFromNodeToNode(childIndex, parentIndex);
         Edge* edge = _edges->GetEdge(edgeIndex);
         path.push_back(edgeIndex);
-        int capacity = edge->capacityFromNode(childIndex);
+        NodeIndex pushFrom = _treeType == TREE_SOURCE ? parentIndex : childIndex;
+        int capacity = edge->capacityFromNode(pushFrom);
         *maxFlow = (*maxFlow < 0 ? capacity : std::min(*maxFlow, capacity));
         childIndex = parentIndex;
     } while (childIndex >= 0);
     
     return path;
+}
+
+
+std::vector<NodeIndex> Tree::PushFlowThroughPath(std::vector<EdgeIndex> path, int flow) {
+    std::vector<NodeIndex> orphans;
+    
+    Nodes* nodes = _edges->GetNodes();
+    
+    for (std::vector<EdgeIndex>::iterator edgeIndex = path.begin(); edgeIndex != path.end(); ++edgeIndex) {
+        Edge* edge = _edges->GetEdge(*edgeIndex);
+        NodeIndex childIndex = NODE_NONE;
+        NodeIndex parentIndex = NODE_NONE;
+        if (edge->isTerminal()) {
+            childIndex = edge->nonRootNode();
+            parentIndex = edge->rootNode();
+            assert(nodes->GetNode(childIndex)->depthInTree == 1);
+        } else {
+            Node* node1 = nodes->GetNode(edge->node1());
+            childIndex = node1->parent == edge->node2() ? edge->node1() : edge->node2();
+            parentIndex = edge->node1() == childIndex ? edge->node2() : edge->node1();
+            assert(nodes->GetNode(parentIndex)->depthInTree < nodes->GetNode(childIndex)->depthInTree);
+        }
+        assert(childIndex != parentIndex);
+        NodeIndex pushFrom = _treeType == TREE_SOURCE ? parentIndex : childIndex;
+        edge->addFlowFromNode(pushFrom, flow);
+        if (edge->isSaturatedFromNode(pushFrom)) {
+            orphans.push_back(childIndex);
+        }
+    }
+    
+    return orphans;
 }
 
 
