@@ -41,6 +41,14 @@ public:
      */
     void AddChildToParent(NodeIndex child, NodeIndex parent);
     
+    
+    /**
+     * Returns the path to the root as a vector of edge indices.
+     * The value of maxFlow will be updated to hold the value of
+     * the maximum flow that is possible to push through the path.
+     */
+    std::vector<EdgeIndex> PathToRoot(NodeIndex leaf, int* maxFlow);
+    
 protected:
     Edges* _edges;
     vtkTreeType _treeType;

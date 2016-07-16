@@ -73,6 +73,25 @@ void Tree::AddChildToParent(NodeIndex childIndex, NodeIndex parentIndex) {
 }
 
 
+std::vector<EdgeIndex> Tree::PathToRoot(NodeIndex leafIndex, int* maxFlow) {
+    std::vector<EdgeIndex> path;
+    
+    NodeIndex childIndex = leafIndex;
+    do {
+        Node* child = _edges->GetNodes()->GetNode(childIndex);
+        NodeIndex parentIndex = child->parent;
+        EdgeIndex edgeIndex = _edges->IndexForEdgeFromNodeToNode(childIndex, parentIndex);
+        Edge* edge = _edges->GetEdge(edgeIndex);
+        path.push_back(edgeIndex);
+        int capacity = edge->capacityFromNode(childIndex);
+        *maxFlow = (*maxFlow < 0 ? capacity : std::min(*maxFlow, capacity));
+        childIndex = parentIndex;
+    } while (childIndex >= 0);
+    
+    return path;
+}
+
+
 namespace {
     
     void UpdateTreeDepthOfChildren(NodeIndex parentIndex, int depth, Nodes* nodes) {
