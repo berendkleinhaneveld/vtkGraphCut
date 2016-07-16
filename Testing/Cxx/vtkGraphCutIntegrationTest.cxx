@@ -1,5 +1,5 @@
 //
-//  vtkGraphCutTestApp.cxx
+//  vtkGraphCutIntegrationTest.cxx
 //  vtkGraphCut
 //
 //  Created by Berend Klein Haneveld.
