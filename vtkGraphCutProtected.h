@@ -17,13 +17,16 @@ class vtkGraphCutCostFunction;
 class Node;
 class Nodes;
 class Tree;
+class TreeDepthComparator;
+
 
 #include <vtkObjectFactory.h>
-#include <stdio.h>
 #include <vector>
 #include <queue>
 #include "vtkGraphCutDefinitions.h"
 #include "vtkGraphCutDataTypes.h"
+
+typedef std::priority_queue<std::pair<int, NodeIndex>, std::vector<std::pair<int, NodeIndex> >, TreeDepthComparator> PriorityQueue;
 
 class VTK_EXPORT vtkGraphCutProtected: public vtkObject
 {
@@ -47,12 +50,12 @@ public:
     vtkPoints* GetForegroundPoints();
     vtkPoints* GetBackgroundPoints();
     
+protected:
     // Algorithm methods
-    EdgeIndex Grow(vtkTreeType tree, bool& foundActiveNodes, std::priority_queue<std::pair<int, NodeIndex> > activeNodes);
+    EdgeIndex Grow(vtkTreeType tree, bool& foundActiveNodes, PriorityQueue* activeNodes);
     std::vector<NodeIndex>* Augment(EdgeIndex edgeIndex);
     void Adopt(std::vector<NodeIndex>*);
     
-protected:
     vtkGraphCutProtected();
     ~vtkGraphCutProtected();
     

@@ -13,8 +13,8 @@
 
 // Test methods
 void testGraphCutReset();
-void testCostFunctionSimple();
 void testBasicRunThrough();
+void testCostFunctionSimple();
 
 // Convenience method for creating a simple dataset.
 vtkImageData* createTestImageData(int dimensions[3]);
@@ -22,8 +22,8 @@ vtkImageData* createTestImageData(int dimensions[3]);
 
 int main(int argc, char const *argv[]) {
     testGraphCutReset();
-    // testCostFunctionSimple();
-    // testBasicRunThrough();
+    testBasicRunThrough();
+    testCostFunctionSimple();
     return 0;
 }
 
@@ -105,7 +105,7 @@ void testGraphCutReset() {
 }
 
 
-void testCostFunctionSimple() {
+void testBasicRunThrough() {
     vtkGraphCut* graphCut = vtkGraphCut::New();
     vtkPoints* foregroundPoints = vtkPoints::New();
     foregroundPoints->SetNumberOfPoints(2);
@@ -139,10 +139,13 @@ void testCostFunctionSimple() {
     graphCut->Update();
     
     graphCut->Delete();
+    foregroundPoints->Delete();
+    backgroundPoints->Delete();
+    imageData->Delete();
 }
 
 
-void testBasicRunThrough() {
+void testCostFunctionSimple() {
     int dimensions[3] = {2, 3, 4};
     vtkImageData* input = createTestImageData(dimensions);
     input->SetOrigin(0.0, 0.5, 1.0);
@@ -185,12 +188,16 @@ void testBasicRunThrough() {
 
     float outputPoint1 = output->GetScalarComponentAsFloat(0, 0, 0, 0);
     float outputPoint2 = output->GetScalarComponentAsFloat(1, 1, 1, 0);
+    // FIXME: make sure the tests work with the following asserts
     assert(outputPoint2 < outputPoint1);
-    assert(outputPoint2 == 0.0);
+    assert(outputPoint2 == -1.0);
     assert(outputPoint1 == 1.0);
 
     graphCut->Reset();
     assert(graphCut->GetOutput() == NULL);
 
     graphCut->Delete();
+    foregroundPoints->Delete();
+    backgroundPoints->Delete();
+    input->Delete();
 }
