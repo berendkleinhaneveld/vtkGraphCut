@@ -47,9 +47,9 @@ public:
     vtkPoints* GetBackgroundPoints();
     
     // Algorithm methods
-    int Grow(vtkTreeType tree, bool& foundActiveNodes, std::priority_queue<std::pair<int, int> > activeNodes);
-    std::vector<int>* Augment(int edgeIndex);
-    void Adopt(std::vector<int>*);
+    EdgeIndex Grow(vtkTreeType tree, bool& foundActiveNodes, std::priority_queue<std::pair<int, NodeIndex> > activeNodes);
+    std::vector<NodeIndex>* Augment(EdgeIndex edgeIndex);
+    void Adopt(std::vector<NodeIndex>*);
     
 protected:
     vtkGraphCutProtected();

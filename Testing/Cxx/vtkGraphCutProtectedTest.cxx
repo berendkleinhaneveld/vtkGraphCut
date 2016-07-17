@@ -7,14 +7,7 @@
 //
 
 #include <assert.h>
-#include <iostream>
 #include <vtkPoints.h>
-#include "vtkGraphCutCostFunctionSimple.h"
-#include "Internal/Edge.h"
-#include "Internal/Edges.h"
-#include "Internal/Nodes.h"
-#include "Internal/Node.h"
-#include "vtkGraphCutDataTypes.h"
 #include "vtkGraphCutProtected.h"
 
 
@@ -23,8 +16,7 @@ void testIncomingEdge();
 void testIncomingEdgeWithConnectivity(vtkGraphCutProtected*, Nodes*, std::vector<Edge>*, int*, vtkConnectivity);
 
 
-int main(int argc, char const *argv[]) {
-    
+int main() {
     testSettingSeedPoints();
     
     return 0;
@@ -35,8 +27,6 @@ int main(int argc, char const *argv[]) {
  * Tests setting the seedpoints properties of the vtkGraphCut.
  */
 void testSettingSeedPoints() {
-    std::cout << __FUNCTION__ << "\n";
-
     vtkGraphCutProtected* graphCut = vtkGraphCutProtected::New();
     
     vtkPoints* foregroundPoints = vtkPoints::New();
@@ -50,6 +40,4 @@ void testSettingSeedPoints() {
     assert(backgroundPoints == backgroundResult);
 
     graphCut->Delete();
-    
-    std::cout << "Done!\n";
 }

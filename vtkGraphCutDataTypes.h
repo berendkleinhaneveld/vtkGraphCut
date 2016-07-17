@@ -26,6 +26,11 @@ enum NodeIndex
     NODE_NONE = -3,
 };
 
+enum EdgeIndex
+{
+    EDGE_NONE = -1,
+};
+
 struct Nodestatistics
 {
     double minimum;

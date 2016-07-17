@@ -47,7 +47,7 @@ public:
      * Returns edge object at the specified index or
      * NULL if it doesn't exist.
      */
-    Edge* GetEdge(int index);
+    Edge* GetEdge(EdgeIndex index);
     
     /**
      * Returns the number of edges.
@@ -69,14 +69,14 @@ public:
      * at sourceIndex to the node at targetIndex. When there
      * is no valid index, returns -1.
      */
-    int IndexForEdgeFromNodeToNode(int sourceIndex, int targetIndex);
+    EdgeIndex IndexForEdgeFromNodeToNode(NodeIndex sourceIndex, NodeIndex targetIndex);
     
     /**
      * Returns the edge at the index that is found by
      * IndexForEdgeFromNodeToNode. If an invalid edge is requested,
      * then this function will return NULL.
      */
-    Edge* EdgeFromNodeToNode(int sourceIndex, int targetIndex);
+    Edge* EdgeFromNodeToNode(NodeIndex sourceIndex, NodeIndex targetIndex);
     
     /**
      * Returns a vector of indices of edges that form a path from the 
@@ -86,7 +86,7 @@ public:
      * possible flow that will be possible to push through the returned path.
      */
     // TODO: return Edge* vector instead of indices
-    std::vector<int> PathToRoot(int aNodeIndex, int* maxPossibleFlow);
+    std::vector<EdgeIndex> PathToRoot(NodeIndex aNodeIndex, int* maxPossibleFlow);
     
     /**
      * Pushes the given flow through all of the edges at the given indices.
@@ -95,7 +95,7 @@ public:
      * vector passed into this function. The treetype is used to define whether
      * the flow should be pushed from root to leaf or from leaf to root.
      */
-    void PushFlowThroughEdges(int flow, std::vector<int> edges, vtkTreeType tree, std::vector<int>* orphans);
+    void PushFlowThroughEdges(int flow, std::vector<EdgeIndex> edges, vtkTreeType tree, std::vector<NodeIndex>* orphans);
     
     /**
      * Creates and returns a vector of Edge objects. The amount of objects

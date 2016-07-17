@@ -7,7 +7,6 @@
 //
 
 #include <assert.h>
-#include <iostream>
 #include "vtkGraphCut.h"
 #include "vtkGraphCutCostFunctionSimple.h"
 
@@ -28,6 +27,7 @@ int main(int argc, char const *argv[]) {
     return 0;
 }
 
+
 vtkImageData* createTestImageData(int dimensions[3]) {
     vtkImageData* imageData = vtkImageData::New();
     imageData->SetDimensions(dimensions[0], dimensions[1], dimensions[2]);
@@ -41,6 +41,7 @@ vtkImageData* createTestImageData(int dimensions[3]) {
     }
     return imageData;
 }
+
 
 /**
  * Tests the default state of a new vtkGraphCut object and tests whether
@@ -58,8 +59,6 @@ vtkImageData* createTestImageData(int dimensions[3]) {
  * - GetOutput
  */
 void testGraphCutReset() {
-    std::cout << __FUNCTION__ << "\n";
-    
     vtkGraphCut* graphCut = vtkGraphCut::New();
     
     assert(graphCut->GetForegroundPoints() == NULL);
@@ -103,11 +102,10 @@ void testGraphCutReset() {
     assert(graphCut->GetOutput() == NULL);
     
     graphCut->Delete();
-    std::cout << "Done!" << "\n";
 }
 
+
 void testCostFunctionSimple() {
-    std::cout << __FUNCTION__ << "\n";
     vtkGraphCut* graphCut = vtkGraphCut::New();
     vtkPoints* foregroundPoints = vtkPoints::New();
     foregroundPoints->SetNumberOfPoints(2);
@@ -141,12 +139,10 @@ void testCostFunctionSimple() {
     graphCut->Update();
     
     graphCut->Delete();
-    std::cout << "Done!" << "\n";
 }
 
-void testBasicRunThrough() {
-    std::cout << __FUNCTION__ << "\n";
 
+void testBasicRunThrough() {
     int dimensions[3] = {2, 3, 4};
     vtkImageData* input = createTestImageData(dimensions);
     input->SetOrigin(0.0, 0.5, 1.0);
@@ -197,5 +193,4 @@ void testBasicRunThrough() {
     assert(graphCut->GetOutput() == NULL);
 
     graphCut->Delete();
-    std::cout << "Done!" << "\n";
 }

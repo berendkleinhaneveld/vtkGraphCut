@@ -18,7 +18,7 @@ public:
     
     vtkTreeType tree;
     int depthInTree;
-    int parent;
+    NodeIndex parent;
     bool active;
     bool orphan;
     bool seedPoint;

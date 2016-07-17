@@ -6,7 +6,6 @@
 //
 //
 
-#include <iostream>
 #include <assert.h>
 #include "Internal/Edges.h"
 #include "Internal/Nodes.h"
@@ -36,21 +35,15 @@ int main() {
 
 
 void testEdgesConstructor() {
-    std::cout << __FUNCTION__ << "\n";
-    
     Edges* edges = new Edges();
     
     assert(edges->GetNodes() == NULL);
     
     delete edges;
-    
-    std::cout << "Done!" << "\n";
 }
 
 
 void testEdgesProperties() {
-    std::cout << __FUNCTION__ << "\n";
-    
     int dimensions[3] = {3, 3, 3};
     
     Nodes* nodes = new Nodes();
@@ -64,14 +57,10 @@ void testEdgesProperties() {
     
     delete edges;
     delete nodes;
-    
-    std::cout << "Done!" << "\n";
 }
 
 
 void testEdgesUpdate() {
-    std::cout << __FUNCTION__ << "\n";
-    
     int dimensions[3] = {3, 3, 3};
     
     Nodes* nodes = new Nodes();    
@@ -82,29 +71,25 @@ void testEdgesUpdate() {
     Edges* edges = new Edges();
     edges->SetNodes(nodes);
 
-    assert(edges->GetEdge(0) == NULL);
+    assert(edges->GetEdge((EdgeIndex)0) == NULL);
 
     edges->Update();
 
-    Edge* someEdge = edges->GetEdge(0);
+    Edge* someEdge = edges->GetEdge((EdgeIndex)0);
     assert(someEdge != NULL);
-    assert(edges->GetEdge(-1) == NULL);
-    assert(edges->GetEdge(300) == NULL);
+    assert(edges->GetEdge(EDGE_NONE) == NULL);
+    assert(edges->GetEdge((EdgeIndex)300) == NULL);
     
     someEdge->setCapacity(1);
     
-    assert(edges->GetEdge(0)->capacityFromNode(0) == 1);
+    assert(edges->GetEdge((EdgeIndex)0)->capacityFromNode((NodeIndex)0) == 1);
     
     delete edges;
     delete nodes;
-    
-    std::cout << "Done!" << "\n";
 }
 
 
 void testEdgesReset() {
-    std::cout << __FUNCTION__ << "\n";
-    
     int dimensions[3] = {3, 3, 3};
     
     Nodes* nodes = new Nodes();
@@ -118,11 +103,9 @@ void testEdgesReset() {
     edges->Reset();
     
     assert(edges->GetNodes() == NULL);
-    assert(edges->GetEdge(0) == NULL);
+    assert(edges->GetEdge((EdgeIndex)0) == NULL);
     
     delete nodes;
-    
-    std::cout << "Done!" << "\n";
 }
 
 
@@ -130,7 +113,6 @@ void testEdgesReset() {
  * Tests the creation of edges for different dimensions and connectivity values.
  */
 void testCreateEdges() {
-    std::cout << __FUNCTION__ << "\n";
     int dimensions[3] = {1, 1, 1};
     
     Nodes* nodes = new Nodes();
@@ -236,8 +218,6 @@ void testCreateEdges() {
     
     delete edges;
     delete nodes;
-    
-    std::cout << "Done!" << "\n";
 }
 
 
@@ -247,7 +227,6 @@ void testCreateEdges() {
  * See testEdgeFromNodeToNodeWithConnectivity for more details.
  */
 void testEdgeFromNodeToNode() {
-    std::cout << __FUNCTION__ << "\n";
     int dimensions[3] = {30, 30, 30};
     
     Nodes* nodes = new Nodes();
@@ -283,51 +262,52 @@ void testEdgeFromNodeToNode() {
     
     delete edges;
     delete nodes;
-    
-    std::cout << "Done!\n";
 }
 
 /**
  * Tests getting the edge between two nodes for the specified connectivity.
  */
 void testEdgeFromNodeToNodeWithConnectivity(Edges* edges) {
-    Edge* edge = edges->EdgeFromNodeToNode(0, 1);
+    Edge* edge = edges->EdgeFromNodeToNode((NodeIndex)0, (NodeIndex)1);
     assert(edge->node1() == 0);
     assert(edge->node2() == 1);
     
-    edge = edges->EdgeFromNodeToNode(1, 0);
+    edge = edges->EdgeFromNodeToNode((NodeIndex)1, (NodeIndex)0);
     assert(edge->node1() == 0);
     assert(edge->node2() == 1);
     
-    edge = edges->EdgeFromNodeToNode(NODE_SOURCE, 80);
+    edge = edges->EdgeFromNodeToNode((NodeIndex)NODE_SOURCE, (NodeIndex)80);
     assert(edge->node1() == NODE_SOURCE);
-    assert(edge->node2() == 80);
+    assert(edge->node2() == (NodeIndex)80);
     
-    edge = edges->EdgeFromNodeToNode(80, NODE_SOURCE);
+    edge = edges->EdgeFromNodeToNode((NodeIndex)80, (NodeIndex)NODE_SOURCE);
     assert(edge->node1() == NODE_SOURCE);
-    assert(edge->node2() == 80);
+    assert(edge->node2() == (NodeIndex)80);
     
-    edge = edges->EdgeFromNodeToNode(80, 81);
-    assert(edge->node1() == 80);
-    assert(edge->node2() == 81);
+    edge = edges->EdgeFromNodeToNode((NodeIndex)80, (NodeIndex)81);
+    assert(edge->node1() == (NodeIndex)80);
+    assert(edge->node2() == (NodeIndex)81);
     
-    edge = edges->EdgeFromNodeToNode(81, 80);
-    assert(edge->node1() == 80);
-    assert(edge->node2() == 81);
+    edge = edges->EdgeFromNodeToNode((NodeIndex)81, (NodeIndex)80);
+    assert(edge->node1() == (NodeIndex)80);
+    assert(edge->node2() == (NodeIndex)81);
     
-    edge = edges->EdgeFromNodeToNode(80, NODE_SINK);
-    assert(edge->node1() == 80);
+    edge = edges->EdgeFromNodeToNode((NodeIndex)80, NODE_SINK);
+    assert(edge->node1() == (NodeIndex)80);
     assert(edge->node2() == NODE_SINK);
     
-    edge = edges->EdgeFromNodeToNode(NODE_SINK, 80);
-    assert(edge->node1() == 80);
+    edge = edges->EdgeFromNodeToNode(NODE_SINK, (NodeIndex)80);
+    assert(edge->node1() == (NodeIndex)80);
     assert(edge->node2() == NODE_SINK);
     
-    edge = edges->EdgeFromNodeToNode(80, 79);
-    assert(edge->node1() == 79);
-    assert(edge->node2() == 80);
+    edge = edges->EdgeFromNodeToNode((NodeIndex)80, (NodeIndex)79);
+    assert(edge->node1() == (NodeIndex)79);
+    assert(edge->node2() == (NodeIndex)80);
     
-    edge = edges->EdgeFromNodeToNode(79, 80);
-    assert(edge->node1() == 79);
-    assert(edge->node2() == 80);
+    edge = edges->EdgeFromNodeToNode((NodeIndex)79, (NodeIndex)80);
+    assert(edge->node1() == (NodeIndex)79);
+    assert(edge->node2() == (NodeIndex)80);
+    
+    edge = edges->EdgeFromNodeToNode((NodeIndex)0, (NodeIndex)100);
+    assert(edge == NULL);
 }

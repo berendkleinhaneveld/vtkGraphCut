@@ -57,7 +57,7 @@ void Edges::Reset() {
 }
 
 
-Edge* Edges::GetEdge(int index) {
+Edge* Edges::GetEdge(EdgeIndex index) {
     if (!_edges || index >= _edges->size() || index < 0) {
         return NULL;
     }
@@ -80,7 +80,7 @@ std::vector<Edge*>::iterator Edges::GetEnd() {
 }
 
 
-int Edges::IndexForEdgeFromNodeToNode(int sourceIndex, int targetIndex) {
+EdgeIndex Edges::IndexForEdgeFromNodeToNode(NodeIndex sourceIndex, NodeIndex targetIndex) {
     assert(sourceIndex != NODE_NONE);
     assert(targetIndex != NODE_NONE);
     
@@ -109,7 +109,7 @@ int Edges::IndexForEdgeFromNodeToNode(int sourceIndex, int targetIndex) {
     Edge* edge = _edges->at(index);
     if (to == NODE_SOURCE) {
         assert(edge->node1() == NODE_SOURCE && edge->node2() == from);
-        return index;
+        return (EdgeIndex)index;
     } else {
         while (edge->node1() <= from && edge->node2() != to) {
             ++index;
@@ -117,28 +117,30 @@ int Edges::IndexForEdgeFromNodeToNode(int sourceIndex, int targetIndex) {
         }
     }
     
-    assert(edge->node1() == from && edge->node2() == to);
-    return index;
+    if (edge->node1() == from && edge->node2() == to) {
+        return (EdgeIndex)index;
+    }
+    return EDGE_NONE;
 }
 
 
-Edge* Edges::EdgeFromNodeToNode(int sourceIndex, int targetIndex) {
+Edge* Edges::EdgeFromNodeToNode(NodeIndex sourceIndex, NodeIndex targetIndex) {
     int index = IndexForEdgeFromNodeToNode(sourceIndex, targetIndex);
     return index >= 0 ? _edges->at(index) : NULL;
 }
 
 
-std::vector<int> Edges::PathToRoot(int aNodeIndex, int* maxPossibleFlow) {
-    std::vector<int> result;
+std::vector<EdgeIndex> Edges::PathToRoot(NodeIndex aNodeIndex, int* maxPossibleFlow) {
+    std::vector<EdgeIndex> result;
     Node* node = NULL;
-    int nodeIndex = aNodeIndex;
+    NodeIndex nodeIndex = aNodeIndex;
     while (true) {
         if (nodeIndex < 0) {
             // Encountered root node
             break;
         }
         node = _nodes->GetNode(nodeIndex);
-        int edgeIndex = IndexForEdgeFromNodeToNode(nodeIndex, node->parent);
+        EdgeIndex edgeIndex = IndexForEdgeFromNodeToNode(nodeIndex, node->parent);
         assert(edgeIndex >= 0);
         assert(edgeIndex < _edges->size());
         result.push_back(edgeIndex);
@@ -154,11 +156,11 @@ std::vector<int> Edges::PathToRoot(int aNodeIndex, int* maxPossibleFlow) {
 }
 
 
-void Edges::PushFlowThroughEdges(int maxPossibleFlow, std::vector<int> edges, vtkTreeType tree, std::vector<int>* orphans) {
-    for (std::vector<int>::iterator i = edges.begin(); i != edges.end(); ++i) {
+void Edges::PushFlowThroughEdges(int maxPossibleFlow, std::vector<EdgeIndex> edges, vtkTreeType tree, std::vector<NodeIndex>* orphans) {
+    for (std::vector<EdgeIndex>::iterator i = edges.begin(); i != edges.end(); ++i) {
         Edge* edge = _edges->at(*i);
         
-        int nodes[2] = {edge->node1(), edge->node2()};
+        NodeIndex nodes[2] = {edge->node1(), edge->node2()};
         int closestToRoot = -1;
         
         if (edge->isTerminal()) {
@@ -170,13 +172,13 @@ void Edges::PushFlowThroughEdges(int maxPossibleFlow, std::vector<int> edges, vt
             closestToRoot = node->depthInTree < otherNode->depthInTree ? 0 : 1;
         }
         
-        int parent = nodes[closestToRoot];
-        int child = nodes[(closestToRoot + 1) % 2];
+        NodeIndex parent = nodes[closestToRoot];
+        NodeIndex child = nodes[(closestToRoot + 1) % 2];
         
         assert(child >= 0);
         
         // When tree type is SINK, then the flow should be pushed from child to parent
-        int nodeFromWhichToPush = tree == TREE_SOURCE ? parent : child;
+        NodeIndex nodeFromWhichToPush = tree == TREE_SOURCE ? parent : child;
         
         // Update the flow
         edge->addFlowFromNode(nodeFromWhichToPush, maxPossibleFlow);
@@ -198,14 +200,14 @@ std::vector<Edge*>* Edges::CreateEdgesForNodes(Nodes* nodes) {
     result->reserve(numberOfEdges);
     
     for (int i = 0; i < numberOfNodes; ++i) {
-        Edge* sourceEdge = new Edge(NODE_SOURCE, i);
+        Edge* sourceEdge = new Edge(NODE_SOURCE, (NodeIndex)i);
         result->push_back(sourceEdge);
         
-        Edge* sinkEdge = new Edge(i, NODE_SINK);
+        Edge* sinkEdge = new Edge((NodeIndex)i, NODE_SINK);
         result->push_back(sinkEdge);
         
         int coordinate[3] = {0, 0, 0};
-        nodes->GetCoordinateForIndex(i, coordinate);
+        nodes->GetCoordinateForIndex((NodeIndex)i, coordinate);
         int coord[3] = {0, 0, 0};
         int index = 0;
         for (int z = 0; z < 2; ++z) {
@@ -215,7 +217,7 @@ std::vector<Edge*>* Edges::CreateEdgesForNodes(Nodes* nodes) {
                     coord[1] = coordinate[1]+y;
                     coord[2] = coordinate[2]+z;
                     if (nodes->IsNodeAtOffsetConnected(x, y, z)) {
-                        Edge* nodeEdge = new Edge(i, nodes->IsValidCoordinate(coord) ? nodes->GetIndexForCoordinate(coord) : NODE_NONE);
+                        Edge* nodeEdge = new Edge((NodeIndex)i, nodes->IsValidCoordinate(coord) ? nodes->GetIndexForCoordinate(coord) : NODE_NONE);
                         result->push_back(nodeEdge);
                     }
                     ++index;
