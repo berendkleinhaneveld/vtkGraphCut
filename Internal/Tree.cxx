@@ -99,7 +99,7 @@ std::vector<EdgeIndex> Tree::PathToRoot(NodeIndex leafIndex, int* maxFlow) {
 
     NodeIndex childIndex = leafIndex;
     do {
-        Node* child = _edges->GetNodes()->GetNode(childIndex);
+        Node* child = _nodes->GetNode(childIndex);
         NodeIndex parentIndex = child->parent;
         assert(parentIndex != NODE_NONE);
         EdgeIndex edgeIndex = _edges->IndexForEdgeFromNodeToNode(childIndex, parentIndex);
