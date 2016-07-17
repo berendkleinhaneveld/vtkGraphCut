@@ -142,6 +142,7 @@ std::vector<NodeIndex> Tree::PushFlowThroughPath(std::vector<EdgeIndex> path, in
 
 
 void Tree::Adopt(NodeIndex orphanIndex) {
+    assert(_nodes->GetNode(orphanIndex)->tree == _treeType);
     std::vector<NodeIndex> neighbours = _nodes->GetIndicesForNeighbours(orphanIndex);
     neighbours.push_back((NodeIndex)_treeType);
     NodeIndex bestParent = NODE_NONE;
