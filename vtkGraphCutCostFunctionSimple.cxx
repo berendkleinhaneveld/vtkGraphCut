@@ -14,27 +14,27 @@
 vtkStandardNewMacro(vtkGraphCutCostFunctionSimple);
 
 void vtkGraphCutCostFunctionSimple::PrintSelf(ostream& os, vtkIndent indent) {
-	this->Superclass::PrintSelf(os, indent);
+	Superclass::PrintSelf(os, indent);
 }	
 
 void vtkGraphCutCostFunctionSimple::Reset() {
-	this->nodes = NULL;
-	this->edges = NULL;
-	this->imageData = NULL;
+	_nodes = NULL;
+	_edges = NULL;
+	_imageData = NULL;
 }
 
 void vtkGraphCutCostFunctionSimple::Update() {
-	if (!this->nodes) {
+	if (!_nodes) {
 		std::cout << "Warning: no nodes are set for cost function\n";
 		return;
 	}
 
-	if (!this->edges) {
+	if (!_edges) {
 		std::cout << "Warning: no edges are set for cost function\n";
 		return;
 	}
 
-	if (!this->imageData) {
+	if (!_imageData) {
 		std::cout << "Warning: no image data is set for cost function\n";
 		return;
 	}

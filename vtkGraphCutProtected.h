@@ -16,13 +16,17 @@ class Edges;
 class vtkGraphCutCostFunction;
 class Node;
 class Nodes;
+class Tree;
+class TreeDepthComparator;
+
 
 #include <vtkObjectFactory.h>
-#include <stdio.h>
 #include <vector>
 #include <queue>
 #include "vtkGraphCutDefinitions.h"
 #include "vtkGraphCutDataTypes.h"
+
+typedef std::priority_queue<std::pair<int, NodeIndex>, std::vector<std::pair<int, NodeIndex> >, TreeDepthComparator> PriorityQueue;
 
 class VTK_EXPORT vtkGraphCutProtected: public vtkObject
 {
@@ -46,28 +50,33 @@ public:
     vtkPoints* GetForegroundPoints();
     vtkPoints* GetBackgroundPoints();
     
+protected:
     // Algorithm methods
-    EdgeIndex Grow(vtkTreeType tree, bool& foundActiveNodes, std::priority_queue<std::pair<int, NodeIndex> > activeNodes);
+    EdgeIndex Grow(vtkTreeType tree, bool& foundActiveNodes, PriorityQueue* activeNodes);
     std::vector<NodeIndex>* Augment(EdgeIndex edgeIndex);
     void Adopt(std::vector<NodeIndex>*);
     
-protected:
     vtkGraphCutProtected();
     ~vtkGraphCutProtected();
     
-    vtkImageData* inputImageData;
-    vtkImageData* outputImageData;
+    vtkImageData* _inputImageData;
+    vtkImageData* _outputImageData;
     
-    Nodes* nodes;
-    Edges* edges;
+    Nodes* _nodes;
+    Edges* _edges;
+
+    Tree* _sourceTree;
+    Tree* _sinkTree;
+
+    std::vector<NodeIndex>* _orphans;
+
+    vtkPoints* _foregroundPoints;
+    vtkPoints* _backgroundPoints;
     
-    vtkPoints* foregroundPoints;
-    vtkPoints* backgroundPoints;
+    vtkGraphCutCostFunction* _costFunction;
     
-    vtkGraphCutCostFunction* costFunction;
-    
-    int* dimensions;
-    vtkConnectivity connectivity;
+    int _dimensions[3];
+    vtkConnectivity _connectivity;
     
 private:
     void CalculateCapacitiesForEdges();
