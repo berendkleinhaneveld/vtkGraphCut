@@ -54,9 +54,9 @@ public:
     /**
      * Pushes the given @p flow through all the edges in @p path.
      * Whenever an edge becomes saturated, the node is made an orphan
-     * and returned in a vector.
+     * and added to the @p orphans vector.
      */
-    std::vector<NodeIndex> PushFlowThroughPath(std::vector<EdgeIndex> path, int flow);
+    void PushFlowThroughPath(std::vector<EdgeIndex> path, int flow, std::vector<NodeIndex>* orphans);
     
     /**
      * Adopts the orphan at @p orphanIndex by looking for a new parent.

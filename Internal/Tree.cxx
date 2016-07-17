@@ -115,9 +115,7 @@ std::vector<EdgeIndex> Tree::PathToRoot(NodeIndex leafIndex, int* maxFlow) {
 }
 
 
-std::vector<NodeIndex> Tree::PushFlowThroughPath(std::vector<EdgeIndex> path, int flow) {
-    std::vector<NodeIndex> orphans;
-    
+void Tree::PushFlowThroughPath(std::vector<EdgeIndex> path, int flow, std::vector<NodeIndex>* orphans) {
     for (std::vector<EdgeIndex>::iterator edgeIndex = path.begin(); edgeIndex != path.end(); ++edgeIndex) {
         Edge* edge = _edges->GetEdge(*edgeIndex);
         NodeIndex childIndex = NODE_NONE;
@@ -136,12 +134,10 @@ std::vector<NodeIndex> Tree::PushFlowThroughPath(std::vector<EdgeIndex> path, in
         NodeIndex pushFrom = _treeType == TREE_SOURCE ? parentIndex : childIndex;
         edge->addFlowFromNode(pushFrom, flow);
         if (edge->isSaturatedFromNode(pushFrom)) {
-            orphans.push_back(childIndex);
+            orphans->push_back(childIndex);
             _nodes->GetNode(childIndex)->orphan = true;
         }
     }
-    
-    return orphans;
 }
 
 

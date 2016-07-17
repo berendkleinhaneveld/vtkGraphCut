@@ -225,20 +225,22 @@ void testPushFlow(vtkTreeType type) {
     
     Node* node2 = edges->GetNodes()->GetNode(nodeIndex2);
     assert(!node2->orphan);
+
+    std::vector<NodeIndex>* orphans = new std::vector<NodeIndex>();
+    tree->PushFlowThroughPath(path, maxFlow, orphans);
     
-    std::vector<NodeIndex> orphans = tree->PushFlowThroughPath(path, maxFlow);
-    
-    assert(orphans.size() == 1);
+    assert(orphans->size() == 1);
     assert(node2->orphan);
     
     path = tree->PathToRoot(nodeIndex2, &maxFlow);
     
     assert(maxFlow == 0);
     
-    NodeIndex orphanIndex = orphans.at(0);
+    NodeIndex orphanIndex = orphans->at(0);
     assert(orphanIndex == nodeIndex2);
 
     clearTestData(tree);
+    delete orphans;
 }
 
 
@@ -267,9 +269,10 @@ void testAdopt(vtkTreeType type) {
     
     int maxFlow = -1;
     std::vector<EdgeIndex> path = tree->PathToRoot(nodeIndex2, &maxFlow);
-    std::vector<NodeIndex> orphans = tree->PushFlowThroughPath(path, maxFlow);
+    std::vector<NodeIndex>* orphans = new std::vector<NodeIndex>();
+    tree->PushFlowThroughPath(path, maxFlow, orphans);
     
-    NodeIndex orphanIndex = orphans.at(0);
+    NodeIndex orphanIndex = orphans->at(0);
     assert(orphanIndex == nodeIndex0);
     
     Node* node0 = edges->GetNodes()->GetNode(nodeIndex0);
@@ -290,4 +293,5 @@ void testAdopt(vtkTreeType type) {
     assert(edgeRoot1->isSaturatedFromNode(type == TREE_SOURCE ? edgeRoot1->rootNode() : edgeRoot1->nonRootNode()));
     
     clearTestData(tree);
+    delete orphans;
 }
