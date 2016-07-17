@@ -15,7 +15,7 @@ vtkStandardNewMacro(vtkGraphCutCostFunction);
 
 
 void vtkGraphCutCostFunction::PrintSelf(ostream& os, vtkIndent indent) {
-	this->Superclass::PrintSelf(os, indent);
+	Superclass::PrintSelf(os, indent);
 }
 
 void vtkGraphCutCostFunction::Reset() { }

@@ -55,19 +55,19 @@ protected:
     vtkGraphCutProtected();
     ~vtkGraphCutProtected();
     
-    vtkImageData* inputImageData;
-    vtkImageData* outputImageData;
+    vtkImageData* _inputImageData;
+    vtkImageData* _outputImageData;
     
-    Nodes* nodes;
-    Edges* edges;
+    Nodes* _nodes;
+    Edges* _edges;
     
-    vtkPoints* foregroundPoints;
-    vtkPoints* backgroundPoints;
+    vtkPoints* _foregroundPoints;
+    vtkPoints* _backgroundPoints;
     
-    vtkGraphCutCostFunction* costFunction;
+    vtkGraphCutCostFunction* _costFunction;
     
-    int* dimensions;
-    vtkConnectivity connectivity;
+    int* _dimensions;
+    vtkConnectivity _connectivity;
     
 private:
     void CalculateCapacitiesForEdges();

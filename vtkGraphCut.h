@@ -69,7 +69,7 @@ protected:
 	vtkGraphCut();
 	~vtkGraphCut();
     
-    vtkGraphCutProtected* graphCut;
+    vtkGraphCutProtected* _graphCut;
 };
 
 #endif // __vtkGraphCut_h

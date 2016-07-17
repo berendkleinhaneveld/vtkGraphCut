@@ -30,9 +30,9 @@ protected:
 	vtkGraphCutCostFunctionSimple();
 	~vtkGraphCutCostFunctionSimple();
 
-	std::vector<Node>* nodes;
-	std::vector<Edge>* edges;
-	vtkImageData* imageData;
+	std::vector<Node>* _nodes;
+	std::vector<Edge>* _edges;
+	vtkImageData* _imageData;
 };
 
 #endif // __vtkGraphCutCostFunctionSimple_h

@@ -9,68 +9,70 @@
 #include "vtkGraphCut.h"
 #include "vtkGraphCutProtected.h"
 
+
 vtkStandardNewMacro(vtkGraphCut);
+
 
 // Public
 
 void vtkGraphCut::PrintSelf(ostream& os, vtkIndent indent) {
-	this->Superclass::PrintSelf(os, indent);
+	Superclass::PrintSelf(os, indent);
 }
 
 void vtkGraphCut::Reset() {
-    this->graphCut->Reset();
+    _graphCut->Reset();
 }
 
 void vtkGraphCut::Update() {
-    this->graphCut->Update();
+    _graphCut->Update();
 }
 
 vtkImageData* vtkGraphCut::GetOutput() {
-    return this->graphCut->GetOutput();
+    return _graphCut->GetOutput();
 }
 
 void vtkGraphCut::SetInput(vtkImageData* imageData) {
-    this->graphCut->SetInput(imageData);
+    _graphCut->SetInput(imageData);
 }
 
 vtkImageData* vtkGraphCut::GetInput() {
-    return this->graphCut->GetInput();
+    return _graphCut->GetInput();
 }
 
 void vtkGraphCut::SetSeedPoints(vtkPoints* foreground, vtkPoints* background) {
-    this->graphCut->SetSeedPoints(foreground, background);
+    _graphCut->SetSeedPoints(foreground, background);
 }
 
 vtkPoints* vtkGraphCut::GetForegroundPoints() {
-    return this->graphCut->GetForegroundPoints();
+    return _graphCut->GetForegroundPoints();
 }
 
 vtkPoints* vtkGraphCut::GetBackgroundPoints() {
-    return this->graphCut->GetBackgroundPoints();
+    return _graphCut->GetBackgroundPoints();
 }
 
 void vtkGraphCut::SetCostFunction(vtkGraphCutCostFunction* costFunction) {
-    this->graphCut->SetCostFunction(costFunction);
+    _graphCut->SetCostFunction(costFunction);
 }
 
 vtkGraphCutCostFunction* vtkGraphCut::GetCostFunction() {
-    return this->graphCut->GetCostFunction();
+    return _graphCut->GetCostFunction();
 }
 
 void vtkGraphCut::SetConnectivity(vtkConnectivity connectivity) {
-    this->graphCut->SetConnectivity(connectivity);
+    _graphCut->SetConnectivity(connectivity);
 }
 
 vtkConnectivity vtkGraphCut::GetConnectivity() {
-    return this->graphCut->GetConnectivity();
+    return _graphCut->GetConnectivity();
 }
 
 // Protected
 
 vtkGraphCut::vtkGraphCut() {
-    this->graphCut = vtkGraphCutProtected::New();
+    _graphCut = vtkGraphCutProtected::New();
 }
 
 vtkGraphCut::~vtkGraphCut() {
-    this->graphCut->Delete();
+    _graphCut->Delete();
 }
