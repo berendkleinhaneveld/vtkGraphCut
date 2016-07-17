@@ -16,6 +16,7 @@ class Edges;
 class vtkGraphCutCostFunction;
 class Node;
 class Nodes;
+class Tree;
 
 #include <vtkObjectFactory.h>
 #include <stdio.h>
@@ -60,13 +61,18 @@ protected:
     
     Nodes* _nodes;
     Edges* _edges;
-    
+
+    Tree* _sourceTree;
+    Tree* _sinkTree;
+
+    std::vector<NodeIndex>* _orphans;
+
     vtkPoints* _foregroundPoints;
     vtkPoints* _backgroundPoints;
     
     vtkGraphCutCostFunction* _costFunction;
     
-    int* _dimensions;
+    int _dimensions[3];
     vtkConnectivity _connectivity;
     
 private:
