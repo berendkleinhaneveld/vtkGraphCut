@@ -92,7 +92,11 @@ void Tree::AddChildToParent(NodeIndex childIndex, NodeIndex parentIndex) {
 
 std::vector<EdgeIndex> Tree::PathToRoot(NodeIndex leafIndex, int* maxFlow) {
     std::vector<EdgeIndex> path;
-    
+
+    if (leafIndex < 0) {
+        return path;
+    }
+
     NodeIndex childIndex = leafIndex;
     do {
         Node* child = _edges->GetNodes()->GetNode(childIndex);

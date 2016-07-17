@@ -189,6 +189,9 @@ void testPathToRoot(vtkTreeType type) {
     
     assert(path.size() == 3);
     assert(maxFlow == 3);
+
+    path = tree->PathToRoot((NodeIndex)type, &maxFlow);
+    assert(path.size() == 0);
     
     clearTestData(tree);
 }
