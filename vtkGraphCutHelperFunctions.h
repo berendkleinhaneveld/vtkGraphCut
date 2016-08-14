@@ -19,11 +19,11 @@ namespace vtkGraphCutHelper
 {
     // Helper functions
 
-    bool CalculateCoordinateForIndex(int index, int* dimensions, int* coordinate) {
-        if (index >= dimensions[0] * dimensions[1] * dimensions[2] || index < 0) {
-            return false;
-        }
-        
+    /**
+     * Calculates the coordinate that corresponds to the given index for the given
+     * dimensions.
+     */
+    void CalculateCoordinateForIndex(int index, int* dimensions, int* coordinate) {
         int dims = dimensions[0] * dimensions[1];
         int rest = index;
         coordinate[2] = rest / dims;
@@ -32,8 +32,6 @@ namespace vtkGraphCutHelper
         coordinate[1] = rest / dims;
         rest -= coordinate[1] * dims;
         coordinate[0] = rest;
-        
-        return true;
     }
     
     double GetIntensityForVoxel(vtkImageData* imageData, int x, int y, int z) {
