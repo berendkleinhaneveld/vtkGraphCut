@@ -136,32 +136,6 @@ Edge* Edges::EdgeFromNodeToNode(NodeIndex sourceIndex, NodeIndex targetIndex) {
 }
 
 
-std::vector<EdgeIndex> Edges::PathToRoot(NodeIndex aNodeIndex, int* maxPossibleFlow) {
-    std::vector<EdgeIndex> result;
-    Node* node = NULL;
-    NodeIndex nodeIndex = aNodeIndex;
-    while (true) {
-        if (nodeIndex < 0) {
-            // Encountered root node
-            break;
-        }
-        node = _nodes->GetNode(nodeIndex);
-        EdgeIndex edgeIndex = IndexForEdgeFromNodeToNode(nodeIndex, node->parent);
-        assert(edgeIndex >= 0);
-        assert(edgeIndex < _edges->size());
-        result.push_back(edgeIndex);
-        Edge* edge = _edges->at(edgeIndex);
-        int possibleFlow = edge->capacityFromNode(node->tree == TREE_SOURCE ? node->parent : nodeIndex);
-        *maxPossibleFlow = std::min(possibleFlow, *maxPossibleFlow);
-        nodeIndex = node->parent;
-        if (edge->isTerminal()) {
-            break;
-        }
-    }
-    return result;
-}
-
-
 std::vector<Edge*>* Edges::CreateEdgesForNodes(Nodes* nodes) {
     std::vector<Edge*>* result = new std::vector<Edge*>();
     

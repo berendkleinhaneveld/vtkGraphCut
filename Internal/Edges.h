@@ -79,15 +79,6 @@ public:
     Edge* EdgeFromNodeToNode(NodeIndex sourceIndex, NodeIndex targetIndex);
     
     /**
-     * Returns a vector of indices of edges that form a path from the 
-     * node at aNodeIndex to the root of the tree. The node at the given
-     * index should be part of a tree.
-     * The value that maxPossibleFlow is pointing at will be the maximum
-     * possible flow that will be possible to push through the returned path.
-     */
-    std::vector<EdgeIndex> PathToRoot(NodeIndex aNodeIndex, int* maxPossibleFlow);
-    
-    /**
      * Creates and returns a vector of Edge objects. The amount of objects
      * depends on the connectivity property of the Nodes object.
      */
