@@ -186,5 +186,4 @@ int Edges::NumberOfEdgesForConnectivity(vtkConnectivity connectivity) {
         case UNCONNECTED:
             return 0;
     }
-    return -1;
 }

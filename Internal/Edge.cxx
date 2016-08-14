@@ -31,25 +31,15 @@ NodeIndex Edge::node2() {
 
 NodeIndex Edge::nonRootNode() {
     assert(isTerminal());
-    if (_node1 < 0) {
-        return _node2;
-    }
-    if (_node2 < 0) {
-        return _node1;
-    }
-    return NODE_NONE;
+    assert(isValid());
+    return _node1 < 0 ? _node2 : _node1;
 }
 
 
 NodeIndex Edge::rootNode() {
     assert(isTerminal());
-    if (_node1 < 0) {
-        return _node1;
-    }
-    if (_node2 < 0) {
-        return _node2;
-    }
-    return NODE_NONE;
+    assert(isValid());
+    return _node1 < 0 ? _node1 : _node2;
 }
 
 NodeIndex Edge::otherNode(NodeIndex node) {

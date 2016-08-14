@@ -16,6 +16,7 @@ void testEdgesConstructor();
 void testEdgesProperties();
 void testEdgesUpdate();
 void testEdgesReset();
+void testEdgesConnectivity();
 
 void testCreateEdges();
 void testEdgeFromNodeToNode();
@@ -27,6 +28,7 @@ int main() {
     testEdgesProperties();
     testEdgesUpdate();
     testEdgesReset();
+    testEdgesConnectivity();
     
     testCreateEdges();
     testEdgeFromNodeToNode();
@@ -108,6 +110,14 @@ void testEdgesReset() {
     delete nodes;
 }
 
+
+void testEdgesConnectivity() {
+    Edges* edges = new Edges();
+    
+    assert(edges->NumberOfEdgesForConnectivity(UNCONNECTED) == 0);
+    
+    delete edges;
+}
 
 /**
  * Tests the creation of edges for different dimensions and connectivity values.

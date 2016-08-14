@@ -72,4 +72,6 @@ void testEdgeStruct() {
     
     assert(edge.otherNode(node1) == node0);
     assert(edge.otherNode(node0) == node1);
+    
+    assert(edge.otherNode((NodeIndex)33) == NODE_NONE);
 }
