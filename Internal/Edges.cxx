@@ -162,41 +162,6 @@ std::vector<EdgeIndex> Edges::PathToRoot(NodeIndex aNodeIndex, int* maxPossibleF
 }
 
 
-void Edges::PushFlowThroughEdges(int maxPossibleFlow, std::vector<EdgeIndex> edges, vtkTreeType tree, std::vector<NodeIndex>* orphans) {
-    for (std::vector<EdgeIndex>::iterator i = edges.begin(); i != edges.end(); ++i) {
-        Edge* edge = _edges->at(*i);
-        
-        NodeIndex nodes[2] = {edge->node1(), edge->node2()};
-        int closestToRoot = -1;
-        
-        if (edge->isTerminal()) {
-            // One of the nodes is a negative number to indicate that it is a sink node
-            closestToRoot = edge->node1() < edge->node2() ? 0 : 1;
-        } else {
-            Node* node = _nodes->GetNode(edge->node1());
-            Node* otherNode = _nodes->GetNode(edge->node2());
-            closestToRoot = node->depthInTree < otherNode->depthInTree ? 0 : 1;
-        }
-        
-        NodeIndex parent = nodes[closestToRoot];
-        NodeIndex child = nodes[(closestToRoot + 1) % 2];
-        
-        assert(child >= 0);
-        
-        // When tree type is SINK, then the flow should be pushed from child to parent
-        NodeIndex nodeFromWhichToPush = tree == TREE_SOURCE ? parent : child;
-        
-        // Update the flow
-        edge->addFlowFromNode(nodeFromWhichToPush, maxPossibleFlow);
-        
-        if (edge->isSaturatedFromNode(nodeFromWhichToPush)) {
-            // Push the child if the edge becomes saturated
-            orphans->push_back(child);
-        }
-    }
-}
-
-
 std::vector<Edge*>* Edges::CreateEdgesForNodes(Nodes* nodes) {
     std::vector<Edge*>* result = new std::vector<Edge*>();
     

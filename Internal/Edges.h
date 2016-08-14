@@ -88,15 +88,6 @@ public:
     std::vector<EdgeIndex> PathToRoot(NodeIndex aNodeIndex, int* maxPossibleFlow);
     
     /**
-     * Pushes the given flow through all of the edges at the given indices.
-     * Whenever an edge becomes saturated because of the pushed flow, then
-     * the index of the parent node of that edge will be added to the orphans
-     * vector passed into this function. The treetype is used to define whether
-     * the flow should be pushed from root to leaf or from leaf to root.
-     */
-    void PushFlowThroughEdges(int flow, std::vector<EdgeIndex> edges, vtkTreeType tree, std::vector<NodeIndex>* orphans);
-    
-    /**
      * Creates and returns a vector of Edge objects. The amount of objects
      * depends on the connectivity property of the Nodes object.
      */
