@@ -84,8 +84,8 @@ namespace vtkGraphCutHelper
             int coordinate[3] = {0, 0, 0};
             CalculateCoordinateForIndex(nodeIndex, imageData->GetDimensions(), coordinate);
             double intensity = GetIntensityForVoxel(imageData, coordinate);
-            double mean = edge->node1() == NODE_SINK ? statistics.foregroundMean : statistics.backgroundMean;
-            double variance = edge->node1() == NODE_SINK ? statistics.foregroundVariance : statistics.backgroundVariance;
+            double mean = edge->rootNode() == NODE_SOURCE ? statistics.foregroundMean : statistics.backgroundMean;
+            double variance = edge->rootNode() == NODE_SOURCE ? statistics.foregroundVariance : statistics.backgroundVariance;
             return CalculateTerminalCapacity(intensity, mean, variance);
         } else {
             return CalculateRegionalCapacity(imageData, edge, statistics.variance);
