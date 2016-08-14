@@ -12,8 +12,6 @@
 
 
 void testSettingSeedPoints();
-void testIncomingEdge();
-void testIncomingEdgeWithConnectivity(vtkGraphCutProtected*, Nodes*, std::vector<Edge>*, int*, vtkConnectivity);
 
 
 int main() {
