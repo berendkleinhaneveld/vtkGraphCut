@@ -85,7 +85,6 @@ public:
      * The value that maxPossibleFlow is pointing at will be the maximum
      * possible flow that will be possible to push through the returned path.
      */
-    // TODO: return Edge* vector instead of indices
     std::vector<EdgeIndex> PathToRoot(NodeIndex aNodeIndex, int* maxPossibleFlow);
     
     /**
