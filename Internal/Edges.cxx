@@ -125,8 +125,14 @@ EdgeIndex Edges::IndexForEdgeFromNodeToNode(NodeIndex sourceIndex, NodeIndex tar
 
 
 Edge* Edges::EdgeFromNodeToNode(NodeIndex sourceIndex, NodeIndex targetIndex) {
+    assert(sourceIndex != NODE_NONE);
+    assert(targetIndex != NODE_NONE);
     int index = IndexForEdgeFromNodeToNode(sourceIndex, targetIndex);
-    return index >= 0 ? _edges->at(index) : NULL;
+    if (index >= 0) {
+        assert(_edges->at(index)->isValid());
+        return _edges->at(index);
+    }
+    return NULL;
 }
 
 
