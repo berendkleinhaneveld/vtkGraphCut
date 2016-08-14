@@ -115,6 +115,8 @@ void testNodesReset() {
     assert(nodes->GetConnectivity() == UNCONNECTED);
     assert(nodes->GetDimensions() == NULL);
     assert(nodes->GetNode(0) == NULL);
+    assert(nodes->GetSize() == 0);
+    assert(nodes->IsNodeAtOffsetConnected(0, 0, 0) == false);
     
     delete nodes;
 }
