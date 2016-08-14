@@ -32,7 +32,6 @@ class VTK_EXPORT vtkGraphCutProtected: public vtkObject
 {
 public:
     static vtkGraphCutProtected* New();
-    vtkTypeMacro(vtkGraphCutProtected, vtkObject);
     void PrintSelf(ostream& os, vtkIndent indent);
     
     void Reset();

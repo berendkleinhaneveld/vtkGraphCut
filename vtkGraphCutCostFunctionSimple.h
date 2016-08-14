@@ -16,7 +16,6 @@ class VTK_EXPORT vtkGraphCutCostFunctionSimple : public vtkGraphCutCostFunction
 {
 public:
 	static vtkGraphCutCostFunctionSimple* New();
-	vtkTypeMacro(vtkGraphCutCostFunctionSimple, vtkObject);
 	void PrintSelf(ostream& os, vtkIndent indent);
 
 	virtual void Reset();
