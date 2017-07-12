@@ -129,25 +129,25 @@ void vtkGraphCutProtected::Update() {
     // Verify all inputs (if changed since last update):
     
     if (_connectivity == UNCONNECTED) {
-        std::cout << "No connectivity was specified. Skipping update.\n";
+        vtkWarningMacro(<< "No connectivity was specified. Skipping update.");
         return;
     }
     
     // Verify input image data
     if (!_inputImageData) {
-        std::cout << "No image data was set. Skipping update.\n";
+        vtkWarningMacro(<< "No image data was set. Skipping update.");
         return;
     }
     
     // Verify seed points
     if (!_foregroundPoints || !_backgroundPoints) {
-        std::cout << "No fore- or background points were set. Skipping update.\n";
+        vtkWarningMacro(<< "No fore- or background points were set. Skipping update.");
         return;
     } else if (_foregroundPoints->GetNumberOfPoints() == 0) {
-        std::cout << "Number of foreground points is zero. Skipping update.\n";
+        vtkWarningMacro(<< "Number of foreground points is zero. Skipping update.");
         return;
     } else if (_backgroundPoints->GetNumberOfPoints() == 0) {
-        std::cout << "Number of foreground points is zero. Skipping update.\n";
+        vtkWarningMacro(<< "Number of foreground points is zero. Skipping update.");
         return;
     }
     
@@ -515,7 +515,7 @@ void vtkGraphCutProtected::CalculateCapacitiesForEdges() {
     }
     
     if (minimum == maximum) {
-        std::cout << "Warning: all nodes have the same intensity.\n";
+        vtkWarningMacro("Warning: all nodes have the same intensity.");
         return;
     }
     
