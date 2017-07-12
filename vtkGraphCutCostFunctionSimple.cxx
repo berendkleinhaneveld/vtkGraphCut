@@ -25,17 +25,17 @@ void vtkGraphCutCostFunctionSimple::Reset() {
 
 void vtkGraphCutCostFunctionSimple::Update() {
 	if (!_nodes) {
-		std::cout << "Warning: no nodes are set for cost function\n";
+		vtkWarningMacro(<< "No nodes are set for cost function.");
 		return;
 	}
 
 	if (!_edges) {
-		std::cout << "Warning: no edges are set for cost function\n";
+		vtkWarningMacro(<< "No edges are set for cost function.");
 		return;
 	}
 
 	if (!_imageData) {
-		std::cout << "Warning: no image data is set for cost function\n";
+		vtkWarningMacro(<< "No image data is set for cost function.");
 		return;
 	}
 
