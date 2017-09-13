@@ -15,6 +15,7 @@ void testNodesProperties();
 void testNodesUpdate();
 void testNodesReset();
 
+void testIsNodeAtOffsetConnected();
 void testCreateNodes();
 void testIsValidCoordinate();
 void testIndexForCoordinate();
@@ -28,6 +29,7 @@ int main() {
     testNodesUpdate();
     testNodesReset();
     
+    testIsNodeAtOffsetConnected();
     testCreateNodes();
     testIsValidCoordinate();
     testIndexForCoordinate();
@@ -122,6 +124,105 @@ void testNodesReset() {
 }
 
 
+void testIsNodeAtOffsetConnected() {
+//    int dimensions[3] = {3, 3, 3};
+    
+    Nodes* nodes = new Nodes();
+//    nodes->SetDimensions(dimensions);
+    nodes->SetConnectivity(SIX);
+    //    nodes->Update();
+    
+    assert(nodes->IsNodeAtOffsetConnected(-1, -1, -1) == false);
+    assert(nodes->IsNodeAtOffsetConnected(0, -1, -1) == false);
+    assert(nodes->IsNodeAtOffsetConnected(1, -1, -1) == false);
+    assert(nodes->IsNodeAtOffsetConnected(-1, 0, -1) == false);
+    assert(nodes->IsNodeAtOffsetConnected(0, 0, -1) == true);
+    assert(nodes->IsNodeAtOffsetConnected(1, 0, -1) == false);
+    assert(nodes->IsNodeAtOffsetConnected(-1, 1, -1) == false);
+    assert(nodes->IsNodeAtOffsetConnected(0, 1, -1) == false);
+    assert(nodes->IsNodeAtOffsetConnected(1, 1, -1) == false);
+    assert(nodes->IsNodeAtOffsetConnected(-1, -1, 0) == false);
+    assert(nodes->IsNodeAtOffsetConnected(0, -1, 0) == true);
+    assert(nodes->IsNodeAtOffsetConnected(1, -1, 0) == false);
+    assert(nodes->IsNodeAtOffsetConnected(-1, 0, 0) == true);
+    assert(nodes->IsNodeAtOffsetConnected(0, 0, 0) == false);
+    assert(nodes->IsNodeAtOffsetConnected(1, 0, 0) == true);
+    assert(nodes->IsNodeAtOffsetConnected(-1, 1, 0) == false);
+    assert(nodes->IsNodeAtOffsetConnected(0, 1, 0) == true);
+    assert(nodes->IsNodeAtOffsetConnected(1, 1, 0) == false);
+    assert(nodes->IsNodeAtOffsetConnected(-1, -1, 1) == false);
+    assert(nodes->IsNodeAtOffsetConnected(0, -1, 1) == false);
+    assert(nodes->IsNodeAtOffsetConnected(1, -1, 1) == false);
+    assert(nodes->IsNodeAtOffsetConnected(-1, 0, 1) == false);
+    assert(nodes->IsNodeAtOffsetConnected(0, 0, 1) == true);
+    assert(nodes->IsNodeAtOffsetConnected(1, 0, 1) == false);
+    assert(nodes->IsNodeAtOffsetConnected(-1, 1, 1) == false);
+    assert(nodes->IsNodeAtOffsetConnected(0, 1, 1) == false);
+    assert(nodes->IsNodeAtOffsetConnected(1, 1, 1) == false);
+    
+    nodes->SetConnectivity(EIGHTEEN);
+
+    assert(nodes->IsNodeAtOffsetConnected(-1, -1, -1) == false);
+    assert(nodes->IsNodeAtOffsetConnected(0, -1, -1) == true);
+    assert(nodes->IsNodeAtOffsetConnected(1, -1, -1) == false);
+    assert(nodes->IsNodeAtOffsetConnected(-1, 0, -1) == true);
+    assert(nodes->IsNodeAtOffsetConnected(0, 0, -1) == true);
+    assert(nodes->IsNodeAtOffsetConnected(1, 0, -1) == true);
+    assert(nodes->IsNodeAtOffsetConnected(-1, 1, -1) == false);
+    assert(nodes->IsNodeAtOffsetConnected(0, 1, -1) == true);
+    assert(nodes->IsNodeAtOffsetConnected(1, 1, -1) == false);
+    assert(nodes->IsNodeAtOffsetConnected(-1, -1, 0) == true);
+    assert(nodes->IsNodeAtOffsetConnected(0, -1, 0) == true);
+    assert(nodes->IsNodeAtOffsetConnected(1, -1, 0) == true);
+    assert(nodes->IsNodeAtOffsetConnected(-1, 0, 0) == true);
+    assert(nodes->IsNodeAtOffsetConnected(0, 0, 0) == false);
+    assert(nodes->IsNodeAtOffsetConnected(1, 0, 0) == true);
+    assert(nodes->IsNodeAtOffsetConnected(-1, 1, 0) == true);
+    assert(nodes->IsNodeAtOffsetConnected(0, 1, 0) == true);
+    assert(nodes->IsNodeAtOffsetConnected(1, 1, 0) == true);
+    assert(nodes->IsNodeAtOffsetConnected(-1, -1, 1) == false);
+    assert(nodes->IsNodeAtOffsetConnected(0, -1, 1) == true);
+    assert(nodes->IsNodeAtOffsetConnected(1, -1, 1) == false);
+    assert(nodes->IsNodeAtOffsetConnected(-1, 0, 1) == true);
+    assert(nodes->IsNodeAtOffsetConnected(0, 0, 1) == true);
+    assert(nodes->IsNodeAtOffsetConnected(1, 0, 1) == true);
+    assert(nodes->IsNodeAtOffsetConnected(-1, 1, 1) == false);
+    assert(nodes->IsNodeAtOffsetConnected(0, 1, 1) == true);
+    assert(nodes->IsNodeAtOffsetConnected(1, 1, 1) == false);
+
+    nodes->SetConnectivity(TWENTYSIX);
+    
+    assert(nodes->IsNodeAtOffsetConnected(-1, -1, -1) == true);
+    assert(nodes->IsNodeAtOffsetConnected(0, -1, -1) == true);
+    assert(nodes->IsNodeAtOffsetConnected(1, -1, -1) == true);
+    assert(nodes->IsNodeAtOffsetConnected(-1, 0, -1) == true);
+    assert(nodes->IsNodeAtOffsetConnected(0, 0, -1) == true);
+    assert(nodes->IsNodeAtOffsetConnected(1, 0, -1) == true);
+    assert(nodes->IsNodeAtOffsetConnected(-1, 1, -1) == true);
+    assert(nodes->IsNodeAtOffsetConnected(0, 1, -1) == true);
+    assert(nodes->IsNodeAtOffsetConnected(1, 1, -1) == true);
+    assert(nodes->IsNodeAtOffsetConnected(-1, -1, 0) == true);
+    assert(nodes->IsNodeAtOffsetConnected(0, -1, 0) == true);
+    assert(nodes->IsNodeAtOffsetConnected(1, -1, 0) == true);
+    assert(nodes->IsNodeAtOffsetConnected(-1, 0, 0) == true);
+    assert(nodes->IsNodeAtOffsetConnected(0, 0, 0) == false);
+    assert(nodes->IsNodeAtOffsetConnected(1, 0, 0) == true);
+    assert(nodes->IsNodeAtOffsetConnected(-1, 1, 0) == true);
+    assert(nodes->IsNodeAtOffsetConnected(0, 1, 0) == true);
+    assert(nodes->IsNodeAtOffsetConnected(1, 1, 0) == true);
+    assert(nodes->IsNodeAtOffsetConnected(-1, -1, 1) == true);
+    assert(nodes->IsNodeAtOffsetConnected(0, -1, 1) == true);
+    assert(nodes->IsNodeAtOffsetConnected(1, -1, 1) == true);
+    assert(nodes->IsNodeAtOffsetConnected(-1, 0, 1) == true);
+    assert(nodes->IsNodeAtOffsetConnected(0, 0, 1) == true);
+    assert(nodes->IsNodeAtOffsetConnected(1, 0, 1) == true);
+    assert(nodes->IsNodeAtOffsetConnected(-1, 1, 1) == true);
+    assert(nodes->IsNodeAtOffsetConnected(0, 1, 1) == true);
+    assert(nodes->IsNodeAtOffsetConnected(1, 1, 1) == true);
+    
+    delete nodes;
+}
+
 /**
  * Tests the creation of nodes for different dimensions.
  * - CreateNodesForDimensions
@@ -203,11 +304,23 @@ void testIndexForCoordinate() {
     index = nodes->GetIndexForCoordinate(coordinate);
     assert(index == 1);
     
+    coordinate[0] = 0;
+    coordinate[1] = 1;
+    coordinate[2] = 0;
+    index = nodes->GetIndexForCoordinate(coordinate);
+    assert(index == 2);
+    
     coordinate[0] = 1;
     coordinate[1] = 1;
     coordinate[2] = 0;
     index = nodes->GetIndexForCoordinate(coordinate);
     assert(index == 3);
+    
+    coordinate[0] = 0;
+    coordinate[1] = 2;
+    coordinate[2] = 0;
+    index = nodes->GetIndexForCoordinate(coordinate);
+    assert(index == 4);
     
     coordinate[0] = 0;
     coordinate[1] = 0;

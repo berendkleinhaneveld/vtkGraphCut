@@ -148,16 +148,17 @@ bool Nodes::GetCoordinateForIndex(NodeIndex index, int* coordinate) {
 
 
 bool Nodes::IsNodeAtOffsetConnected(int x, int y, int z) {
+    assert(std::abs(x) < 2 && std::abs(y) < 2 && std::abs(z) < 2);
     switch (_connectivity) {
         case SIX:
             return (std::abs(x + y) == 1 && z == 0)
             || (std::abs(y + z) == 1 && x == 0)
             || (std::abs(z + x) == 1 && y == 0);
         case EIGHTEEN:
-            return (x != 0 || y != 0 || z != 0)
-            && (std::abs(x) + std::abs(y) + std::abs(z) != 3);
+            return (x == 0 || y == 0 || z == 0) && !(x == 0 && y == 0 && z == 0);
         case TWENTYSIX:
-            return (x != 0 || y != 0 || z != 0);
+            return !(x == 0 && y == 0 && z == 0);
+            break;
         default:
             return false;
     }
