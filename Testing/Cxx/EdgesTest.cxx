@@ -20,6 +20,7 @@ void testEdgesDoubleUpdate();
 void testEdgesConnectivity();
 
 void testCreateEdges();
+void testIndexForEdgeFromNodeToNode();
 void testEdgeFromNodeToNode();
 void testEdgeFromNodeToNodeWithConnectivity(Edges*);
 
@@ -33,6 +34,7 @@ int main() {
     testEdgesConnectivity();
     
     testCreateEdges();
+    testIndexForEdgeFromNodeToNode();
     testEdgeFromNodeToNode();
     return 0;
 }
@@ -166,9 +168,7 @@ void testCreateEdges() {
     edges->SetNodes(nodes);
     std::vector<Edge*>* edgesVector = edges->CreateEdgesForNodes(nodes);
     
-    int numberOfNodes = dimensions[0] * dimensions[1] * dimensions[2];
-    int numberOfEdges = numberOfNodes * 2 + numberOfNodes * (7);
-    assert(edgesVector->size() == numberOfEdges);
+    assert(edgesVector->size() == 2);
     
     dimensions[0] = 2;
     dimensions[1] = 1;
@@ -183,25 +183,24 @@ void testCreateEdges() {
     edges->Update();
     
     edgesVector = edges->CreateEdgesForNodes(nodes);
-    numberOfNodes = dimensions[0] * dimensions[1] * dimensions[2];
-    numberOfEdges = numberOfNodes * 2 + numberOfNodes * (7);
-    assert(edgesVector->size() == numberOfEdges);
+    int numberOfNodes = dimensions[0] * dimensions[1] * dimensions[2];
+    int numberOfEdges = numberOfNodes * 2 + numberOfNodes * (26);
+    assert(edgesVector->size() == 5);
     
     nodes->Reset();
     nodes->SetDimensions(dimensions);
     nodes->SetConnectivity(EIGHTEEN);
     nodes->Update();
-    edgesVector = edges->CreateEdgesForNodes(nodes);
-    numberOfEdges = numberOfNodes * 2 + numberOfNodes * (6);
-    assert(edgesVector->size() == numberOfEdges);
+
+    assert(edgesVector->size() == 5);
     
     nodes->Reset();
     nodes->SetDimensions(dimensions);
     nodes->SetConnectivity(SIX);
     nodes->Update();
     edgesVector = edges->CreateEdgesForNodes(nodes);
-    numberOfEdges = numberOfNodes * 2 + numberOfNodes * (3);
-    assert(edgesVector->size() == numberOfEdges);
+    numberOfEdges = numberOfNodes * 2 + numberOfNodes * (6);
+    assert(edgesVector->size() == 5);
     
     dimensions[0] = 2;
     dimensions[1] = 2;
@@ -212,25 +211,23 @@ void testCreateEdges() {
     nodes->SetConnectivity(TWENTYSIX);
     nodes->Update();
     edgesVector = edges->CreateEdgesForNodes(nodes);
-    numberOfNodes = dimensions[0] * dimensions[1] * dimensions[2];
-    numberOfEdges = numberOfNodes * 2 + numberOfNodes * (7);
-    assert(edgesVector->size() == numberOfEdges);
+    
+    assert(edgesVector->size() == 14);
     
     nodes->Reset();
     nodes->SetDimensions(dimensions);
     nodes->SetConnectivity(EIGHTEEN);
     nodes->Update();
-    edgesVector = edges->CreateEdgesForNodes(nodes);
-    numberOfEdges = numberOfNodes * 2 + numberOfNodes * (6);
-    assert(edgesVector->size() == numberOfEdges);
+    
+    assert(edgesVector->size() == 14);
     
     nodes->Reset();
     nodes->SetDimensions(dimensions);
     nodes->SetConnectivity(SIX);
     nodes->Update();
     edgesVector = edges->CreateEdgesForNodes(nodes);
-    numberOfEdges = numberOfNodes * 2 + numberOfNodes * (3);
-    assert(edgesVector->size() == numberOfEdges);
+    
+    assert(edgesVector->size() == 12);
     
     dimensions[0] = 2;
     dimensions[1] = 3;
@@ -241,9 +238,8 @@ void testCreateEdges() {
     nodes->SetConnectivity(TWENTYSIX);
     nodes->Update();
     edgesVector = edges->CreateEdgesForNodes(nodes);
-    numberOfNodes = dimensions[0] * dimensions[1] * dimensions[2];
-    numberOfEdges = numberOfNodes * 2 + numberOfNodes * (7);
-    assert(edgesVector->size() == numberOfEdges);
+    
+    assert(edgesVector->size() == 23);
     
     dimensions[0] = 20;
     dimensions[1] = 33;
@@ -254,14 +250,90 @@ void testCreateEdges() {
     nodes->SetConnectivity(TWENTYSIX);
     nodes->Update();
     edgesVector = edges->CreateEdgesForNodes(nodes);
-    numberOfNodes = dimensions[0] * dimensions[1] * dimensions[2];
-    numberOfEdges = numberOfNodes * 2 + numberOfNodes * (7);
-    assert(edgesVector->size() == numberOfEdges);
+
+    assert(edgesVector->size() == 107522);
     
     delete edges;
     delete nodes;
 }
 
+
+void testIndexForEdgeFromNodeToNode() {
+    int dimensions[3] = {30, 30, 30};
+    
+    Nodes* nodes = new Nodes();
+    nodes->SetDimensions(dimensions);
+    nodes->SetConnectivity(SIX);
+    nodes->Update();
+    
+    Edges* edges = new Edges();
+    edges->SetNodes(nodes);
+    edges->Update();
+    
+    EdgeIndex index = edges->IndexForEdgeFromNodeToNode(NODE_SOURCE, (NodeIndex)0);
+    assert(index == 0);
+    index = edges->IndexForEdgeFromNodeToNode((NodeIndex)0, NODE_SOURCE);
+    assert(index == 0);
+    index = edges->IndexForEdgeFromNodeToNode(NODE_SINK, (NodeIndex)0);
+    assert(index == (EdgeIndex)1);
+    index = edges->IndexForEdgeFromNodeToNode((NodeIndex)0, NODE_SINK);
+    assert(index == (EdgeIndex)1);
+    index = edges->IndexForEdgeFromNodeToNode((NodeIndex)0, (NodeIndex)1);
+    assert(index == (EdgeIndex)2);
+    index = edges->IndexForEdgeFromNodeToNode((NodeIndex)1, (NodeIndex)0);
+    assert(index == (EdgeIndex)2);
+    index = edges->IndexForEdgeFromNodeToNode((NodeIndex)0, (NodeIndex)2);
+    assert(index == EDGE_NONE);
+    index = edges->IndexForEdgeFromNodeToNode((NodeIndex)0, (NodeIndex)29);
+    assert(index == EDGE_NONE);
+    index = edges->IndexForEdgeFromNodeToNode((NodeIndex)0, (NodeIndex)30);
+    assert(index == (EdgeIndex)3);
+    index = edges->IndexForEdgeFromNodeToNode((NodeIndex)0, (NodeIndex)31);
+    assert(index == EDGE_NONE);
+    index = edges->IndexForEdgeFromNodeToNode((NodeIndex)0, (NodeIndex)900);
+    assert(index == (EdgeIndex)4);
+    
+    index = edges->IndexForEdgeFromNodeToNode((NodeIndex)1, NODE_SOURCE);
+    assert(index == (EdgeIndex)5);
+    index = edges->IndexForEdgeFromNodeToNode(NODE_SINK, (NodeIndex)1);
+    assert(index == (EdgeIndex)6);
+    index = edges->IndexForEdgeFromNodeToNode((NodeIndex)1, NODE_SINK);
+    assert(index == (EdgeIndex)6);
+    index = edges->IndexForEdgeFromNodeToNode((NodeIndex)1, (NodeIndex)2);
+    assert(index == (EdgeIndex)7);
+    index = edges->IndexForEdgeFromNodeToNode((NodeIndex)2, (NodeIndex)1);
+    assert(index == (EdgeIndex)7);
+    index = edges->IndexForEdgeFromNodeToNode((NodeIndex)1, (NodeIndex)3);
+    assert(index == EDGE_NONE);
+    index = edges->IndexForEdgeFromNodeToNode((NodeIndex)1, (NodeIndex)30);
+    assert(index == EDGE_NONE);
+    index = edges->IndexForEdgeFromNodeToNode((NodeIndex)1, (NodeIndex)31);
+    assert(index == (EdgeIndex)8);
+    index = edges->IndexForEdgeFromNodeToNode((NodeIndex)1, (NodeIndex)32);
+    assert(index == EDGE_NONE);
+    index = edges->IndexForEdgeFromNodeToNode((NodeIndex)1, (NodeIndex)901);
+    assert(index == (EdgeIndex)9);
+}
+
+
+void testIndexForEdgeFromNoteToNode18() {
+    int dimensions[3] = {30, 30, 30};
+    
+    Nodes* nodes = new Nodes();
+    nodes->SetDimensions(dimensions);
+    nodes->SetConnectivity(EIGHTEEN);
+    nodes->Update();
+    
+    Edges* edges = new Edges();
+    edges->SetNodes(nodes);
+    edges->Update();
+    
+    EdgeIndex index = edges->IndexForEdgeFromNodeToNode(NODE_SOURCE, (NodeIndex)0);
+    assert(index == 0);
+    
+    delete edges;
+    delete nodes;
+}
 
 
 /**

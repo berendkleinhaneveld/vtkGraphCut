@@ -96,38 +96,34 @@ EdgeIndex Edges::IndexForEdgeFromNodeToNode(NodeIndex sourceIndex, NodeIndex tar
     int to;
     
     if (targetIndex < 0 || sourceIndex < 0) {
-        from = std::max(targetIndex, sourceIndex);
+        // Sink nodes
+        from = std::max(sourceIndex, targetIndex);
         to = std::min(sourceIndex, targetIndex);
         assert(from >= 0);
-    } else if (targetIndex < sourceIndex) {
-        from = targetIndex;
-        to = sourceIndex;
     } else {
-        from = sourceIndex;
-        to = targetIndex;
+        from = std::min(sourceIndex, targetIndex);
+        to = std::max(sourceIndex, targetIndex);
     }
     
     int* dimensions = _nodes->GetDimensions();
     assert(from >= 0);
     assert(from < dimensions[0] * dimensions[1] * dimensions[2]);
     
-    int index = from * (2 + NumberOfEdgesForConnectivity(_nodes->GetConnectivity()));
-    assert(index >= from);
+    int index = 0;
     
     Edge* edge = _edges->at(index);
-    if (to == NODE_SOURCE) {
-        assert(edge->node1() == NODE_SOURCE && edge->node2() == from);
-        return (EdgeIndex)index;
-    } else {
-        while (edge->node1() <= from && edge->node2() != to) {
-            ++index;
-            edge = _edges->at(index);
+    while (!((edge->node1() == from && edge->node2() == to) || (edge->node1() == to && edge->node2() == from))) {
+        ++index;
+        if (index >= _edges->size()) {
+            break;
         }
+        edge = _edges->at(index);
     }
     
-    if (edge->node1() == from && edge->node2() == to) {
+    if ((edge->node1() == from && edge->node2() == to) || (edge->node2() == from && edge->node1() == to)) {
         return (EdgeIndex)index;
     }
+
     return EDGE_NONE;
 }
 
@@ -140,6 +136,7 @@ Edge* Edges::EdgeFromNodeToNode(NodeIndex sourceIndex, NodeIndex targetIndex) {
         assert(_edges->at(index)->isValid());
         return _edges->at(index);
     }
+
     return NULL;
 }
 
@@ -149,31 +146,37 @@ std::vector<Edge*>* Edges::CreateEdgesForNodes(Nodes* nodes) {
     
     int numberOfNodes = nodes->GetSize();
     int numberOfEdges = numberOfNodes * 2 + numberOfNodes * NumberOfEdgesForConnectivity(nodes->GetConnectivity());
+
     assert(numberOfEdges >= 0);
     result->reserve(numberOfEdges);
     
-    for (int i = 0; i < numberOfNodes; ++i) {
-        Edge* sourceEdge = new Edge(NODE_SOURCE, (NodeIndex)i);
+    for (int index = 0; index < numberOfNodes; ++index) {
+        Edge* sourceEdge = new Edge(NODE_SOURCE, (NodeIndex)index);
         result->push_back(sourceEdge);
         
-        Edge* sinkEdge = new Edge((NodeIndex)i, NODE_SINK);
+        Edge* sinkEdge = new Edge((NodeIndex)index, NODE_SINK);
         result->push_back(sinkEdge);
         
         int coordinate[3] = {0, 0, 0};
-        nodes->GetCoordinateForIndex((NodeIndex)i, coordinate);
+        nodes->GetCoordinateForIndex((NodeIndex)index, coordinate);
         int coord[3] = {0, 0, 0};
-        int index = 0;
-        for (int z = 0; z < 2; ++z) {
-            for (int y = 0; y < 2; ++y) {
-                for (int x = 0; x < 2; ++x) {
+        for (int z = -1; z <= 1; ++z) {
+            for (int y = -1; y <= 1; ++y) {
+                for (int x = -1; x <= 1; ++x) {
                     coord[0] = coordinate[0]+x;
                     coord[1] = coordinate[1]+y;
                     coord[2] = coordinate[2]+z;
                     if (nodes->IsNodeAtOffsetConnected(x, y, z)) {
-                        Edge* nodeEdge = new Edge((NodeIndex)i, nodes->IsValidCoordinate(coord) ? nodes->GetIndexForCoordinate(coord) : NODE_NONE);
-                        result->push_back(nodeEdge);
+                        NodeIndex neighbour_index = nodes->IsValidCoordinate(coord) ? nodes->GetIndexForCoordinate(coord) : NODE_NONE;
+                        if (neighbour_index < index) {
+                            neighbour_index = NODE_NONE;
+                        }
+                        
+                        if (neighbour_index != NODE_NONE) {
+                            Edge* nodeEdge = new Edge((NodeIndex)index, neighbour_index);
+                            result->push_back(nodeEdge);
+                        }
                     }
-                    ++index;
                 }
             }
         }
@@ -186,11 +189,11 @@ std::vector<Edge*>* Edges::CreateEdgesForNodes(Nodes* nodes) {
 int Edges::NumberOfEdgesForConnectivity(vtkConnectivity connectivity) {
     switch (connectivity) {
         case SIX:
-            return 3;
-        case EIGHTEEN:
             return 6;
+        case EIGHTEEN:
+            return 18;
         case TWENTYSIX:
-            return 7;
+            return 26;
         case UNCONNECTED:
             return 0;
     }
