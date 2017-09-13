@@ -16,6 +16,7 @@ void testEdgesConstructor();
 void testEdgesProperties();
 void testEdgesUpdate();
 void testEdgesReset();
+void testEdgesDoubleUpdate();
 void testEdgesConnectivity();
 
 void testCreateEdges();
@@ -28,6 +29,7 @@ int main() {
     testEdgesProperties();
     testEdgesUpdate();
     testEdgesReset();
+    testEdgesDoubleUpdate();
     testEdgesConnectivity();
     
     testCreateEdges();
@@ -107,6 +109,36 @@ void testEdgesReset() {
     assert(edges->GetNodes() == NULL);
     assert(edges->GetEdge((EdgeIndex)0) == NULL);
     
+    // Make sure that calling Update on a reset edges object
+    // will not fail
+    edges->Update();
+    
+    delete edges;
+    delete nodes;
+}
+
+
+void testEdgesDoubleUpdate() {
+    int dimensions[3] = {3, 3, 3};
+    
+    Nodes* nodes = new Nodes();
+    nodes->SetDimensions(dimensions);
+    nodes->SetConnectivity(SIX);
+    nodes->Update();
+    
+    Edges* edges = new Edges();
+    edges->SetNodes(nodes);
+    edges->Update();
+    
+    Edge* edge = edges->GetEdge((EdgeIndex)0);
+    
+    edges->Update();
+    Edge* sameEdge = edges->GetEdge((EdgeIndex)0);
+    
+    // Should be the exact same object
+    assert(edge == sameEdge);
+    
+    delete edges;
     delete nodes;
 }
 

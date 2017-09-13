@@ -92,6 +92,7 @@ public:
 protected:
     std::vector<Edge*>* _edges;
     Nodes* _nodes;
+    bool _dirty;
 };
 
 #endif /* Edges_h */

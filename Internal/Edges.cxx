@@ -16,6 +16,7 @@
 Edges::Edges() {
     _nodes = NULL;
     _edges = NULL;
+    _dirty = true;
 }
 
 
@@ -27,6 +28,7 @@ Edges::~Edges() {
 void Edges::SetNodes(Nodes* nodes) {
     Reset();
     _nodes = nodes;
+    _dirty = true;
 }
 
 
@@ -37,11 +39,16 @@ Nodes* Edges::GetNodes() {
 
 void Edges::Update() {
     if (!_nodes || _nodes == NULL) {
-        std::cout << "Warning: use SetNodes before running Update. Skipping Update().";
+        std::cout << "Warning: use SetNodes before running Update. Skipping Update().\n";
+        return;
+    }
+    
+    if (!_dirty) {
         return;
     }
 
     _edges = CreateEdgesForNodes(_nodes);
+    _dirty = false;
 }
 
 
@@ -54,6 +61,7 @@ void Edges::Reset() {
         delete _edges;
     }
     _edges = NULL;
+    _dirty = true;
 }
 
 
