@@ -81,6 +81,8 @@ public:
     /**
      * Creates and returns a vector of Edge objects. The amount of objects
      * depends on the connectivity property of the Nodes object.
+     * The vector is ordered as follows: an edge from NODE_SOURCE to node,
+     * then from node to NODE_SINK and then all the other connected nodes.
      */
     std::vector<Edge*>* CreateEdgesForNodes(Nodes*);
     

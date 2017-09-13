@@ -69,6 +69,9 @@ public:
     
     /**
      * Returns the index of a node for a given coordinate.
+     * Make sure to call IsValidCoordinate before calling this
+     * method to make sure that the index is actually valid for
+     * further use.
      */
     NodeIndex GetIndexForCoordinate(int* coordinate);
     
